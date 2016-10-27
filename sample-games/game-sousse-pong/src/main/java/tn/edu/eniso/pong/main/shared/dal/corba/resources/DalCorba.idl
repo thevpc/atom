@@ -1,0 +1,27 @@
+module ConnectorCorba{
+    struct SpriteCorba{
+        long life;
+        double x;
+        double y;
+        double direction;
+        double speed;
+    };
+    
+    struct ModelCorba{
+        long long frame;
+        SpriteCorba ball;
+        SpriteCorba paddle1;
+        SpriteCorba paddle2;
+    };
+
+    interface ClientOperationsCorba{
+        oneway void modelChanged(in ModelCorba data);
+    };
+
+    interface ServerOperationsCorba{
+        void setClient(inout ClientOperationsCorba client);
+        void keyLeft() ;
+        void keyRight();
+        void keySpace();
+    };
+};

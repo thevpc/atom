@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Created-By: 1.7.0
+
+Name: org/vpc/gaming
+Specification-Title: Simple Java Game Engine and Library
+Specification-Version: 1.3
+Specification-Vendor: Taha Ben Salah
+Implementation-Title: org.vpc.gaming
+Implementation-Version: 1.3
+Implementation-Vendor: Simple Java Game Engine and Library
+
