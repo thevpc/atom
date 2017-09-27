@@ -20,11 +20,12 @@ import java.util.List;
  */
 public class SList extends DefaultSceneComponent {
 
-    private Integer selectedIndex;
+    private Integer selectedIndex = -1;
     private List<SListItem> values = new ArrayList<SListItem>();
     private TextStyleMap styleMap = new TextStyleMap();
     private ListComponentType listType = ListComponentType.VERTICAL;
     private int spacing = 0;
+    private List<SceneComponentSelectionListener> listeners = new ArrayList<>();
 
 
     public SList() {
@@ -98,7 +99,27 @@ public class SList extends DefaultSceneComponent {
     }
 
     public void setSelectedIndex(Integer selectedIndex) {
+        int old = this.selectedIndex;
         this.selectedIndex = selectedIndex;
+        if (old != selectedIndex) {
+            for (SceneComponentSelectionListener listener : listeners) {
+                listener.onSelectionChanged(new SceneComponentSelectionChangeEvent(
+                        this, old, selectedIndex
+                ));
+            }
+        }
+    }
+
+    public void addSelectionListener(SceneComponentSelectionListener li) {
+        if (li != null && !listeners.contains(li)) {
+            listeners.add(li);
+        }
+    }
+
+    public void removeSelectionListener(SceneComponentSelectionListener li) {
+        if (li != null && !listeners.contains(li)) {
+            listeners.remove(li);
+        }
     }
 
     @Override
@@ -118,7 +139,7 @@ public class SList extends DefaultSceneComponent {
                     int y1 = getY();
                     y1 += +i * (height1 + spacing);
                     int status = 0;
-                    if (isFocused()) {
+                    if (hasFocus()) {
                         status |= TextStyle.FOCUSED;
                     }
                     if (!isEnabled()) {
@@ -143,7 +164,7 @@ public class SList extends DefaultSceneComponent {
                     int y1 = getY();
                     x1 += +i * (width1 + spacing);
                     int status = 0;
-                    if (isFocused()) {
+                    if (hasFocus()) {
                         status |= TextStyle.FOCUSED;
                     }
                     if (!isEnabled()) {
@@ -166,7 +187,7 @@ public class SList extends DefaultSceneComponent {
                 int x1 = getX();
                 int y1 = getY();
                 int status = 0;
-                if (isFocused()) {
+                if (hasFocus()) {
                     status |= TextStyle.FOCUSED;
                 }
                 if (!isEnabled()) {

@@ -39,7 +39,7 @@ public class DefaultSceneComponent implements SceneComponent {
         this.focusable = focusable;
     }
 
-    public boolean isFocused() {
+    public boolean hasFocus() {
         return focused;
     }
 

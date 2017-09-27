@@ -1594,7 +1594,7 @@ public class DefaultScene implements Scene {
         java.util.List<String> found = new ArrayList<String>();
         for (Map.Entry<String, SceneComponentLayout> sceneComponentLayout : namedComponents.entrySet()) {
             SceneComponent c = sceneComponentLayout.getValue().getComponent();
-            if (c.isVisible() && c.isFocusable() && c.isFocused()) {
+            if (c.isVisible() && c.isFocusable() && c.hasFocus()) {
                 found.add(sceneComponentLayout.getKey());
             }
         }
@@ -1783,7 +1783,7 @@ public class DefaultScene implements Scene {
                 case KEY_PRESSED: {
                     for (SceneComponentLayout l : components.values()) {
                         SceneComponent c = l.getComponent();
-                        if (c.isVisible() && c.isFocusable() && c.isFocused()) {
+                        if (c.isVisible() && c.isFocusable() && c.hasFocus()) {
                             SceneController ctrl = c.getController();
                             if (ctrl != null) {
                                 if (ctrl.acceptEvent(SceneController.KEY_PRESSED)) {
@@ -1810,7 +1810,7 @@ public class DefaultScene implements Scene {
                 case KEY_RELEASED: {
                     for (SceneComponentLayout l : components.values()) {
                         SceneComponent c = l.getComponent();
-                        if (c.isVisible() && c.isFocusable() && c.isFocused()) {
+                        if (c.isVisible() && c.isFocusable() && c.hasFocus()) {
                             SceneController ctrl = c.getController();
                             if (ctrl != null) {
                                 if (ctrl.acceptEvent(SceneController.KEY_RELEASED)) {
@@ -1837,7 +1837,7 @@ public class DefaultScene implements Scene {
                 case KEY_TYPED: {
                     for (SceneComponentLayout l : components.values()) {
                         SceneComponent c = l.getComponent();
-                        if (c.isVisible() && c.isFocusable() && c.isFocused()) {
+                        if (c.isVisible() && c.isFocusable() && c.hasFocus()) {
                             SceneController ctrl = c.getController();
                             if (ctrl != null) {
                                 if (ctrl.acceptEvent(SceneController.KEY_TYPED)) {

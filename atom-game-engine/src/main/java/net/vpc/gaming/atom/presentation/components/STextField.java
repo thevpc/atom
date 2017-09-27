@@ -51,7 +51,7 @@ public class STextField extends DefaultSceneComponent {
             return;
         }
         int status = 0;
-        if (isFocused()) {
+        if (hasFocus()) {
             status |= TextStyle.FOCUSED;
         }
         if (!isEnabled()) {
@@ -59,7 +59,7 @@ public class STextField extends DefaultSceneComponent {
         }
         TextStyle style = styleMap.getTextStyle(status);
 
-        AtomUtils.drawText(context, text, getX(), getY(), getWidth(), getHeight(), style, (isFocusable() && isFocused()) ? cursorPosition : -1);
+        AtomUtils.drawText(context, text, getX(), getY(), getWidth(), getHeight(), style, (isFocusable() && hasFocus()) ? cursorPosition : -1);
     }
 
     private void keyPressedImpl(SceneKeyEvent e) {

@@ -11,6 +11,7 @@ import net.vpc.gaming.atom.presentation.layers.LayerDrawingContext;
 import net.vpc.gaming.atom.util.AtomUtils;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * @author Taha Ben Salah
@@ -19,6 +20,7 @@ public class SButton extends DefaultSceneComponent {
 
     private String text;
     private TextStyleMap styleMap = new TextStyleMap();
+    private java.util.List<SceneComponentActionListener> listeners = new ArrayList<>();
 
     public SButton(String name, String value) {
         super(name);
@@ -48,7 +50,7 @@ public class SButton extends DefaultSceneComponent {
             return;
         }
         int status = 0;
-        if (isFocused()) {
+        if (hasFocus()) {
             status |= TextStyle.FOCUSED;
         }
         if (!isEnabled()) {
@@ -65,6 +67,26 @@ public class SButton extends DefaultSceneComponent {
                 e.setConsumed(true);
                 break;
             }
+            case SceneKeyEvent.VK_ENTER: {
+                if (hasFocus()) {
+                    for (SceneComponentActionListener listener : listeners) {
+                        listener.onAction(new SceneComponentActionEvent(this));
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    public void addSelectionListener(SceneComponentActionListener li) {
+        if (li != null && !listeners.contains(li)) {
+            listeners.add(li);
+        }
+    }
+
+    public void removeSelectionListener(SceneComponentActionListener li) {
+        if (li != null && !listeners.contains(li)) {
+            listeners.remove(li);
         }
     }
 

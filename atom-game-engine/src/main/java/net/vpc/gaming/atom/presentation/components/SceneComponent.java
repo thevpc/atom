@@ -50,7 +50,7 @@ public interface SceneComponent {
 
     public boolean isFocusable();
 
-    public boolean isFocused();
+    public boolean hasFocus();
 
     public void setFocused(boolean focused);
 

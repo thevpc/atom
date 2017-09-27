@@ -50,7 +50,7 @@ public class SLabel extends DefaultSceneComponent {
             return;
         }
         int status = 0;
-        if (isFocused()) {
+        if (hasFocus()) {
             status |= TextStyle.FOCUSED;
         }
         if (!isEnabled()) {
