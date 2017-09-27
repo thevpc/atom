@@ -10,13 +10,13 @@ import java.awt.*;
  */
 public interface SpriteView {
 
-    public void draw(SpriteDrawingContext context);
+    void draw(SpriteDrawingContext context);
 
-    public Shape getShape(Sprite sprite, Scene view);
+    Shape getShape(Sprite sprite, Scene view);
 
 //    public boolean isIsometric(Sprite sprite, Scene view);
 //
 //    public SceneLayoutType getSceneLayoutType();
 
-    public SpriteViewConstraints getSpriteViewConstraints(Sprite sprite);
+    SpriteViewConstraints getSpriteViewConstraints(Sprite sprite);
 }

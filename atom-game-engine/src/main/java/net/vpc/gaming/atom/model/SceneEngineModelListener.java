@@ -11,17 +11,17 @@ import java.beans.PropertyChangeEvent;
  */
 public interface SceneEngineModelListener {
 
-    public void playerAdded(SceneEngineModel model, Player player);
+     void playerAdded(SceneEngineModel model, Player player);
 
-    public void playerRemoved(SceneEngineModel model, Player player);
+     void playerRemoved(SceneEngineModel model, Player player);
 
-    public void spriteAdded(SceneEngineModel model, Sprite sprite);
+     void spriteAdded(SceneEngineModel model, Sprite sprite);
 
-    public void spriteRemoving(SceneEngineModel model, Sprite sprite);
+     void spriteRemoving(SceneEngineModel model, Sprite sprite);
 
-    public void spriteRemoved(SceneEngineModel model, Sprite sprite);
+     void spriteRemoved(SceneEngineModel model, Sprite sprite);
 
-    public void spriteUpdated(SceneEngineModel model, Sprite sprite, PropertyChangeEvent event);
+     void spriteUpdated(SceneEngineModel model, Sprite sprite, PropertyChangeEvent event);
 
-    public void spriteMoved(SceneEngineModel model, Sprite sprite, ModelPoint oldLocation, ModelPoint newLocation);
+     void spriteMoved(SceneEngineModel model, Sprite sprite, ModelPoint oldLocation, ModelPoint newLocation);
 }

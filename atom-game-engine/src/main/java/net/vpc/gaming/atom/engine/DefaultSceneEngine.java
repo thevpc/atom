@@ -41,7 +41,6 @@ import net.vpc.gaming.atom.model.SpriteArmor;
 import net.vpc.gaming.atom.model.SpriteArmorAction;
 import net.vpc.gaming.atom.model.SpriteWeapon;
 import net.vpc.gaming.atom.model.Tile;
-import net.vpc.gaming.atom.presentation.Game;
 import net.vpc.gaming.atom.util.MultiChronometer;
 
 /**
@@ -870,6 +869,7 @@ public class DefaultSceneEngine implements SceneEngine {
 
         //////////////////////////////
         //update model
+        modelTracker.reset();
         updateModel();
         chronometer.snapshot("updateModel");
 
@@ -914,6 +914,7 @@ public class DefaultSceneEngine implements SceneEngine {
         if (chronometer.getTime() > 100L) {
             System.out.println(chronometer);
         }
+
 //        System.out.println("###### nextFrame ending : "+getModel().getFrame());
     }
 
@@ -1602,7 +1603,7 @@ public class DefaultSceneEngine implements SceneEngine {
      */
     private class ModelTracker extends SceneEngineModelAdapter {
 
-        boolean ttt = false;
+        boolean stillFiringCollisionEvents = false;
 
         /**
          * {@inheritDoc }
@@ -1610,7 +1611,7 @@ public class DefaultSceneEngine implements SceneEngine {
          */
         @Override
         public void spriteAdded(SceneEngineModel model, Sprite sprite) {
-            if (ttt) {
+            if (stillFiringCollisionEvents) {
                 return;
             }
 //            fireCollisionEvents(sprite, null, sprite.getLocation());
@@ -1650,7 +1651,7 @@ public class DefaultSceneEngine implements SceneEngine {
          */
         @Override
         public void spriteMoved(SceneEngineModel model, Sprite sprite, ModelPoint oldLocation, ModelPoint newLocation) {
-            if (ttt) {
+            if (stillFiringCollisionEvents) {
                 return;
             }
             //update movingSprites list
@@ -1667,14 +1668,14 @@ public class DefaultSceneEngine implements SceneEngine {
         }
 
         protected void fireCollisionEvents() {
-            ttt = true;
+            stillFiringCollisionEvents = true;
             for (Map.Entry<Integer, ModelPoint> entry : movingSprites.entrySet()) {
                 Sprite s = getSprite(entry.getKey());
                 if (s != null) {
                     fireCollisionEvents(s, entry.getValue(), s.getLocation());
                 }
             }
-            ttt = false;
+            stillFiringCollisionEvents = false;
         }
 
         protected void fireCollisionEvents(Sprite sprite, ModelPoint oldLocation, ModelPoint newLocation) {
@@ -1710,6 +1711,9 @@ public class DefaultSceneEngine implements SceneEngine {
                     }
                 }
             }
+        }
+        public void reset(){
+            movingSprites.clear();
         }
     }
 

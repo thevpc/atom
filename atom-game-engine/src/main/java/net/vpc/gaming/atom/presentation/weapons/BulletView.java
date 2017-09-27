@@ -17,7 +17,7 @@ public class BulletView extends DefaultSpriteView {
     public void draw(SpriteDrawingContext context) {
         Graphics2D graphics = context.getGraphics();
         graphics.setColor(Color.red);
-        ViewBox bounds = new ViewBox(getShape(context.getSprite(), context.getScene()).getBounds());
+        ViewBox bounds = context.getSpriteBounds();
         graphics.fillRect(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
     }
 

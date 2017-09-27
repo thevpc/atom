@@ -19,9 +19,17 @@ public interface Sprite extends Serializable {
     public static final int SPRITES_LAYER = Layer.SPRITES_LAYER;
     public static final int OUT_OF_RANGE = -1;
 
+    /**
+     * collision sides are updated by atom whenever collision is detected for this sprite
+     * @return
+     */
+    int getCollisionSides();
+
+    void setCollisionSides(int sides);
+
     int getLayer();
 
-    public void setLayer(int layer) ;
+    public void setLayer(int layer);
 
     SpriteArmor[] getArmors();
 
@@ -53,9 +61,9 @@ public interface Sprite extends Serializable {
 
     public ModelPoint getLocation();
 
-    public void setLocation(int x,int y);
-
     public void setLocation(ModelPoint point);
+
+    public void setLocation(int x, int y);
 
     public boolean isMoving();
 
@@ -63,9 +71,9 @@ public interface Sprite extends Serializable {
 
     public ModelDimension getSize();
 
-    public void setSize(int width,int height);
-
     public void setSize(ModelDimension dimension);
+
+    public void setSize(int width, int height);
 
     public ModelBox getBounds();
 
@@ -106,6 +114,8 @@ public interface Sprite extends Serializable {
 
     public boolean isCrossable();
 
+    public void setCrossable(boolean crossable);
+
     void addPropertyChangeListener(PropertyChangeListener listener);
 
     void addPropertyChangeListener(String property, PropertyChangeListener listener);
@@ -116,15 +126,13 @@ public interface Sprite extends Serializable {
 
     public double getDirection();
 
-    public void setDirection(double value);
-
     public void setDirection(Direction value);
+
+    public void setDirection(double value);
 
     public double getSpeed();
 
     public void setSpeed(double speed);
-
-    public void setCrossable(boolean crossable);
 
     public double getAngularSpeed();
 

@@ -25,7 +25,7 @@
         <dependency>
             <groupId>net.vpc.games</groupId>
             <artifactId>atom-game-engine</artifactId>
-            <version>1.5.1.0</version>
+            <version>1.5.3.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -34,18 +34,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <!-- comment this if no internet connection -->
-    <!--
-    <repositories>
-        <repository>
-            <id>vpc</id>
-            <name>VPC Maven Repository</name>
-            <layout>default</layout>
-            <url>http://46.105.16.224:8081/nexus/content/repositories/releases</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    -->
 </project>

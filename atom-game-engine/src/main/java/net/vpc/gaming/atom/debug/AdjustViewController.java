@@ -34,7 +34,7 @@ public class AdjustViewController extends DefaultSceneController {
             new ViewDimension(1400, 1050)
     );
 
-    private SceneKeyEventFilter nextResolutionFilter=new DefaultSceneKeyEventFilter(new int[]{SceneKeyEvent.VK_CONTROL, SceneKeyEvent.VK_R,SceneKeyEvent.VK_ADD});
+    private SceneKeyEventFilter nextResolutionFilter=new DefaultSceneKeyEventFilter(new int[]{SceneKeyEvent.VK_CONTROL ,SceneKeyEvent.VK_R,SceneKeyEvent.VK_ADD});
     private SceneKeyEventFilter previousResolutionFilter=new DefaultSceneKeyEventFilter(new int[]{SceneKeyEvent.VK_CONTROL, SceneKeyEvent.VK_R,SceneKeyEvent.VK_SUBTRACT});
     private SceneKeyEventFilter nextTileSizeFilter=new DefaultSceneKeyEventFilter(new int[]{SceneKeyEvent.VK_CONTROL, SceneKeyEvent.VK_T,SceneKeyEvent.VK_ADD});
     private SceneKeyEventFilter previousTileSizeFilter=new DefaultSceneKeyEventFilter(new int[]{SceneKeyEvent.VK_CONTROL, SceneKeyEvent.VK_T,SceneKeyEvent.VK_SUBTRACT});

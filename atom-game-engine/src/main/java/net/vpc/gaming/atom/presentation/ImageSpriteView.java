@@ -104,7 +104,7 @@ public class ImageSpriteView extends DefaultSpriteView {
         Scene view = context.getScene();
         Graphics2D graphics = context.getGraphics();
 
-        ViewBox rb = new ViewBox(getShape(sprite, view).getBounds());
+        ViewBox rb = new ViewBox(context.getSpriteBounds());
 
         Image image = getImage(sprite, view, rb.getWidth(), rb.getHeight());
 

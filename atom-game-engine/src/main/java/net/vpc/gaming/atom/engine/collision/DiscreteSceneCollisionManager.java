@@ -1,6 +1,7 @@
 package net.vpc.gaming.atom.engine.collision;
 
 import net.vpc.gaming.atom.engine.SceneEngine;
+import net.vpc.gaming.atom.model.*;
 import net.vpc.gaming.atom.util.AtomUtils;
 import net.vpc.gaming.atom.util.CollectionHashMap;
 
@@ -8,11 +9,6 @@ import java.util.*;
 
 import static java.lang.Math.max;
 import static java.lang.Math.sqrt;
-import net.vpc.gaming.atom.model.ModelBox;
-import net.vpc.gaming.atom.model.ModelDimension;
-import net.vpc.gaming.atom.model.ModelPoint;
-import net.vpc.gaming.atom.model.Sprite;
-import net.vpc.gaming.atom.model.Tile;
 
 /**
  * Created with IntelliJ IDEA. User: vpc Date: 9/6/13 Time: 11:42 AM To change
@@ -76,12 +72,16 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
         CollectionHashMap<Integer, Collision> spriteCollisionsList = new CollectionHashMap<>();
         List<Obstacle> motionlessObstacles = new ArrayList<>();
         List<Obstacle> motionObstacles = new ArrayList<>();
+//        Sprite sprite000=null;
         for (Sprite sprite : engine.getSprites()) {
+            //reset collision sides
+            sprite.setCollisionSides(0);
+//            sprite000=sprite;
             SpriteMove m = movesMap.get(sprite.getId());
             if (m == null) {
-                ModelPoint lastSpritePosition = engine.getLastSpritePosition(sprite.getId());
+                ModelPoint lastSpritePosition =engine.getLastSpritePosition(sprite.getId());
                 if (lastSpritePosition != null) {
-                    motionObstacles.add(new Obstacle(ObstacleType.SPRITE,
+                    motionObstacles.add(new Obstacle(ObstacleType.SPRITE,sprite.getName(),
                             sprite, new ModelBox(lastSpritePosition, sprite.getSize()), sprite.getBounds(), true, sprite.isCrossable(), false
                     ));
                 }
@@ -95,7 +95,7 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
                     nextSpritePosition = sprite.getLocation();
                 }
                 if (lastSpritePosition != null) {
-                    motionObstacles.add(new Obstacle(ObstacleType.SPRITE,
+                    motionObstacles.add(new Obstacle(ObstacleType.SPRITE,sprite.getName(),
                             sprite, new ModelBox(lastSpritePosition, sprite.getSize()), new ModelBox(nextSpritePosition, sprite.getSize()), true, sprite.isCrossable(), false
                     ));
                 }
@@ -103,15 +103,26 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
         }
         //TODO should cache this
         for (Tile tile : engine.getObstacleTiles()) {
-            motionlessObstacles.add(new Obstacle(ObstacleType.TILE, tile, tile.getBounds(), tile.getBounds(), false, false, true));
+            motionlessObstacles.add(new Obstacle(ObstacleType.TILE,"tile:"+tile, tile, tile.getBounds(), tile.getBounds(), false, false, true));
         }
         ModelDimension size = engine.getModel().getSize();
-        int borderPrecision = 10;
+        double xUniverse = size.getWidth()*100;
+        double xUniverseMin = -xUniverse;
+        double xUniverseWidth = size.getWidth()+2*xUniverse;
+
+        double yUniverse = size.getHeight()*100;
+        double yUniverseMin = -yUniverse;
+        double yUniverseWidth = size.getHeight()+2*yUniverse;
+//        if(sprite000!=null){
+//            if(sprite000.getLocation().getX()>9){
+//                System.out.println("And so?");
+//            }
+//        }
         //TODO should cache this
-        motionlessObstacles.add(new Obstacle(ObstacleType.BORDER, Collision.SIDE_NORTH, new ModelBox(0, -borderPrecision, size.getWidth(), borderPrecision), null, false, false, true));
-        motionlessObstacles.add(new Obstacle(ObstacleType.BORDER, Collision.SIDE_SOUTH, new ModelBox(0, size.getHeight(), size.getWidth(), borderPrecision), null, false, false, true));
-        motionlessObstacles.add(new Obstacle(ObstacleType.BORDER, Collision.SIDE_WEST, new ModelBox(-borderPrecision, 0, borderPrecision, size.getHeight()), null, false, false, true));
-        motionlessObstacles.add(new Obstacle(ObstacleType.BORDER, Collision.SIDE_EAST, new ModelBox(size.getWidth(), 0, borderPrecision, size.getHeight()), null, false, false, true));
+        motionlessObstacles.add(new Obstacle(ObstacleType.BORDER, "SIDE_NORTH",Collision.SIDE_NORTH, new ModelBox(xUniverseMin, yUniverseMin, xUniverseWidth, yUniverse), null, false, false, true));
+        motionlessObstacles.add(new Obstacle(ObstacleType.BORDER, "SIDE_SOUTH",Collision.SIDE_SOUTH, new ModelBox(xUniverseMin, size.getHeight(), xUniverseWidth, yUniverse), null, false, false, true));
+        motionlessObstacles.add(new Obstacle(ObstacleType.BORDER, "SIDE_EAST",Collision.SIDE_EAST, new ModelBox(xUniverseMin, yUniverseMin, xUniverse, yUniverseWidth), null, false, false, true));
+        motionlessObstacles.add(new Obstacle(ObstacleType.BORDER, "SIDE_EAST",Collision.SIDE_EAST, new ModelBox(size.getWidth(), yUniverseMin, xUniverse, yUniverseWidth), null, false, false, true));
 
         for (CollisionInfo o : evalCollisions(engine, motionObstacles, motionlessObstacles)) {
             if (o.collisionInitiator instanceof Sprite) {
@@ -182,8 +193,8 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
                     boolean moved2 = !o2.oldBox.equals(o2.nextBox);
                     if ( //at least one obs moved
                             (moved1 || moved2)
-                            //at least one obs moved
-                            && o1.getBoundingBox().intersects(o2.getBoundingBox())) {
+                                    //at least one obs moved
+                                    && o1.getBoundingBox().intersects(o2.getBoundingBox())) {
                         if (moved1) {
                             obstacleChecks.add(s1, s2);
                         } else {
@@ -200,9 +211,26 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
                 for (Integer s2 : e.getValue()) {
                     Obstacle o2 = allObstacles.get(s2);
                     if (eval(o1, o2)) {
-                        if (!o1.collidesWith.contains(o2)) {
-                            o1.collidesWith.add(o2);
-                            collided.add(o1.id);
+                        if (!o1.isCollideWith(o2)) {
+                            ModelBox intersection = o1.getOriginalBoundingBox().intersect(o2.getOriginalBoundingBox());
+                            int sides = minkowskiSum(o1, o2);
+                            if (!intersection.isEmpty()) {
+                                if (sides != 0) {
+                                    ObstacleCollInfo e1 = new ObstacleCollInfo(
+                                            o1,
+                                            o2, intersection,
+                                            sides
+                                    );
+                                    o1.collidesWith.add(e1);
+                                    collided.add(o1.id);
+                                } else {
+//                                    System.out.println("Why");
+                                }
+                                //reevaluate collision in the other side to help update next position or the second sprite
+                                if(!o1.motionless && !o2.motionless){
+                                    eval(o2,o1);
+                                }
+                            }
                         }
                         coll = true;
                     }
@@ -217,42 +245,127 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
         for (Integer integer : collided) {
             Obstacle obstacle = allObstacles.get(integer);
             if (obstacle.collides) {
-                double oX = obstacle.originalNextBox.getX();
-                double oY = obstacle.originalNextBox.getY();
-                double fX = obstacle.nextBox.getX();
-                double fY = obstacle.nextBox.getY();
-                int collisionSides = 0;
-                int otherCollisionSides = 0;
-                if (fX > oX) {
-                    collisionSides = Collision.SIDE_WEST;
-                    otherCollisionSides = Collision.SIDE_EAST;
-                } else if (fX < oX) {
-                    collisionSides = Collision.SIDE_EAST;
-                    otherCollisionSides = Collision.SIDE_WEST;
-                }
-                if (fY > oY) {
-                    collisionSides = Collision.SIDE_NORTH;
-                    otherCollisionSides = Collision.SIDE_SOUTH;
-                } else if (fY < oY) {
-                    collisionSides = Collision.SIDE_SOUTH;
-                    otherCollisionSides = Collision.SIDE_NORTH;
-                }
-                for (Obstacle other : obstacle.collidesWith) {
+//                double oX = obstacle.originalNextBox.getX();
+//                double oY = obstacle.originalNextBox.getY();
+//                double fX = obstacle.nextBox.getX();
+//                double fY = obstacle.nextBox.getY();
+//                int collisionSides = 0;
+//                int otherCollisionSides = 0;
+//                if (fX > oX) {
+//                    collisionSides = Collision.SIDE_WEST;
+//                    otherCollisionSides = Collision.SIDE_EAST;
+//                } else if (fX < oX) {
+//                    collisionSides = Collision.SIDE_EAST;
+//                    otherCollisionSides = Collision.SIDE_WEST;
+//                }
+//                if (fY > oY) {
+//                    collisionSides = Collision.SIDE_NORTH;
+//                    otherCollisionSides = Collision.SIDE_SOUTH;
+//                } else if (fY < oY) {
+//                    collisionSides = Collision.SIDE_SOUTH;
+//                    otherCollisionSides = Collision.SIDE_NORTH;
+//                }
+
+                for (ObstacleCollInfo other : obstacle.collidesWith) {
                     CollisionInfo i = new CollisionInfo();
                     i.collisionInitiator = obstacle.element;
-                    i.collisionObstacle = other.element;
-                    i.collisionSides = collisionSides;
-                    i.otherCollisionSides = otherCollisionSides;
+                    i.collisionObstacle = other.other.element;
+                    i.collisionSides = other.myCollisionSides;
+                    i.otherCollisionSides = other.otherCollisionSides;
                     i.preferredPosition = obstacle.nextBox.getLocation();
+                    if (i.collisionInitiator instanceof Sprite) {
+                        Sprite s = (Sprite) i.collisionInitiator;
+                        s.setCollisionSides(s.getCollisionSides()|i.collisionSides);
+                    }
+                    if (i.collisionObstacle instanceof Sprite) {
+                        Sprite s = (Sprite) i.collisionObstacle;
+                        s.setCollisionSides(s.getCollisionSides()|i.otherCollisionSides);
+                    }
+                    if (i.collisionInitiator instanceof Sprite) {
+                        Sprite s = (Sprite) i.collisionInitiator;
+                        double w = s.getWidth();
+                        double h = s.getHeight();
+                        double a = s.getAltitude();
+                        ModelDimension size = engine.getModel().getSize();
+                        if (i.preferredPosition.getX() > size.getWidth() - w) {
+                            i.preferredPosition = new ModelPoint(
+                                    size.getWidth() - w,
+                                    i.preferredPosition.getY(),
+                                    i.preferredPosition.getZ()
+                            );
+                        } else if (i.preferredPosition.getX() < 0) {
+                            i.preferredPosition = new ModelPoint(
+                                    0,
+                                    i.preferredPosition.getY(),
+                                    i.preferredPosition.getZ()
+                            );
+                        }
+                        if (i.preferredPosition.getY() > size.getHeight() - h) {
+                            i.preferredPosition = new ModelPoint(
+                                    i.preferredPosition.getX(),
+                                    size.getHeight() - h,
+                                    i.preferredPosition.getZ()
+                            );
+                        } else if (i.preferredPosition.getY() < 0) {
+                            i.preferredPosition = new ModelPoint(
+                                    i.preferredPosition.getX(),
+                                    0,
+                                    i.preferredPosition.getZ()
+                            );
+                        }
+                        if (i.preferredPosition.getZ() > size.getAltitude() - a) {
+                            i.preferredPosition = new ModelPoint(
+                                    i.preferredPosition.getX(),
+                                    i.preferredPosition.getY(),
+                                    size.getAltitude() - a
+                            );
+                        } else if (i.preferredPosition.getY() < 0) {
+                            i.preferredPosition = new ModelPoint(
+                                    i.preferredPosition.getX(),
+                                    i.preferredPosition.getY(),
+                                    0
+                            );
+                        }
+                    }
                     i.lastPosition = obstacle.oldBox.getLocation();
-                    i.nextPosition = obstacle.originalNextBox.getLocation();
+                    i.nextPosition = i.preferredPosition;//obstacle.originalNextBox.getLocation();
                     i.collisionTiles = engine.findTiles(obstacle.nextBox);
-                    i.collisionTiles.retainAll(engine.findTiles(other.nextBox));
+                    i.collisionTiles.retainAll(engine.findTiles(other.other.nextBox));
                     collisions.add(i);
                 }
             }
         }
         return collisions;
+    }
+
+    private int minkowskiSum(Obstacle o1, Obstacle o2) {
+
+        double w = 0.5 * (o1.getBoundingBox().getWidth() + o2.getBoundingBox().getWidth());
+        double h = 0.5 * (o1.getBoundingBox().getHeight() + o2.getBoundingBox().getHeight());
+
+        double dx = o1.getBoundingBox().getCenterX() - o2.getBoundingBox().getCenterX();
+        double dy = o1.getBoundingBox().getCenterY() - o2.getBoundingBox().getCenterY();
+
+        if (Math.abs(dx) <= w && Math.abs(dy) <= h) {
+            /* collision! */
+            double wy = w * dy;
+            double hx = h * dx;
+
+            if (wy > hx) {
+                if (wy > -hx) {
+                    return Collision.SIDE_SOUTH;//Collision.SIDE_NORTH;
+                    /* collision at the top */
+                } else {
+                    return Collision.SIDE_EAST;//Collision.SIDE_WEST;
+                }
+            } /* on the left */ else if (wy > -hx) {
+                return Collision.SIDE_WEST;//Collision.SIDE_EAST;
+            } /* on the right */ else {
+                return Collision.SIDE_NORTH;//Collision.SIDE_SOUTH;
+            }
+            /* at the bottom */
+        }
+        return 0;
     }
 
     private boolean eval(Obstacle o1, Obstacle o2) {
@@ -265,6 +378,7 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
             o1.collides = true;
             return true;
         }
+
         double oldX = o1.oldBox.getX();
         double oldY = o1.oldBox.getY();
         double width = o1.nextBox.getWidth();
@@ -304,7 +418,7 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
             //should
             if (AtomUtils.safeEquals(a, 0, modelPrecision)) {
                 //disable all update
-                double x = 0;
+                double x = (a + b) / 2;
                 double projectedMoveX = nextMoveX * ((safeVecLen + x) / vectorLength);
                 double projectedMoveY = nextMoveY * ((safeVecLen + x) / vectorLength);
                 o1.nextBox = new ModelBox(oldX + projectedMoveX, oldY + projectedMoveY, width, height);
@@ -316,7 +430,9 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
                 return true;
             }
         }
-        return false;
+//        o1.nextBox=o1.oldBox;
+        o1.collides=true;
+        return true;
     }
 
     private static enum ObstacleType {
@@ -324,9 +440,48 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
         SPRITE, TILE, BORDER
     }
 
+    private static class ObstacleCollInfo {
+
+        Obstacle me;
+        Obstacle other;
+        ModelBox intersection;
+        int myCollisionSides;
+        int otherCollisionSides;
+
+        public ObstacleCollInfo(Obstacle me, Obstacle other, ModelBox intersection, int myCollisionSides) {
+            this.me = me;
+            this.other = other;
+            this.intersection = intersection;
+            this.myCollisionSides = myCollisionSides;
+
+            switch (myCollisionSides) {
+                case Collision.SIDE_EAST: {
+                    otherCollisionSides = Collision.SIDE_WEST;
+                    break;
+                }
+                case Collision.SIDE_WEST: {
+                    otherCollisionSides = Collision.SIDE_EAST;
+                    break;
+                }
+                case Collision.SIDE_NORTH: {
+                    otherCollisionSides = Collision.SIDE_SOUTH;
+                    break;
+                }
+                case Collision.SIDE_SOUTH: {
+                    otherCollisionSides = Collision.SIDE_NORTH;
+                    break;
+                }
+                default:
+                    otherCollisionSides = 0;
+            }
+        }
+
+    }
+
     private static class Obstacle {
 
         int id;
+        String name;
         ObstacleType type;
         Object element;
         ModelBox oldBox;
@@ -334,23 +489,40 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
         ModelBox nextBox;
         boolean collides;
         boolean crossable;
-        List<Obstacle> collidesWith = new ArrayList<>();
+        List<ObstacleCollInfo> collidesWith = new ArrayList<>();
         boolean adjustablePositioning = true;
         boolean motionless = false;
 
-        public Obstacle(ObstacleType type, Object element, ModelBox oldBox, ModelBox nextBox, boolean adjustablePositioning, boolean crossable, boolean motionless) {
+        public Obstacle(ObstacleType type, String name,Object element, ModelBox oldBox, ModelBox nextBox, boolean adjustablePositioning, boolean crossable, boolean motionless) {
             this.type = type;
+            this.name = name;
             this.element = element;
             this.oldBox = oldBox;
             this.nextBox = nextBox == null ? oldBox : nextBox;
+//            if(type==ObstacleType.SPRITE && oldBox.equals(nextBox)){
+//                System.out.println("Why");
+//            }
             this.adjustablePositioning = adjustablePositioning;
             this.crossable = crossable;
             this.motionless = motionless;
             this.originalNextBox = this.nextBox;
         }
 
+        public boolean isCollideWith(Obstacle other) {
+            for (ObstacleCollInfo obstacleCollInfo : collidesWith) {
+                if (obstacleCollInfo.other.equals(other)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public ModelBox getBoundingBox() {
             return oldBox.unionBox(nextBox);
+        }
+
+        public ModelBox getOriginalBoundingBox() {
+            return oldBox.unionBox(originalNextBox);
         }
     }
 

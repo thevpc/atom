@@ -67,14 +67,14 @@ public class SpritesInternalLayer extends DefaultLayer implements InteractiveLay
                 if(scene.isIsometric()){
                     if (!spriteView.getSpriteViewConstraints(sprite).isIsometric()) {
                         graphics.setTransform(context.getScreenTransform());
-                        spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics));
+                        spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics,spriteView));
                     } else {
                         graphics.setTransform(context.getBoardTransform());
-                        spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics));
+                        spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics,spriteView));
                     }
                 }else{
                     graphics.setTransform(context.getBoardTransform());
-                    spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics));
+                    spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics,spriteView));
                 }
                 //spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics));
 //            }
@@ -96,14 +96,14 @@ public class SpritesInternalLayer extends DefaultLayer implements InteractiveLay
             if(scene.isIsometric()){
                 if (!spriteView.getSpriteViewConstraints(sprite).isIsometric()) {
                     graphics.setTransform(context.getScreenTransform());
-                    spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics));
+                    spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics,spriteView));
                 } else {
                     graphics.setTransform(context.getBoardTransform());
-                    spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics));
+                    spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics,spriteView));
                 }
             }else{
                 graphics.setTransform(context.getBoardTransform());
-                spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics));
+                spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics,spriteView));
             }
             //spriteView.draw(new SpriteDrawingContext(sprite, scene, graphics));
 //            }

@@ -103,7 +103,22 @@ public class ModelBox implements Serializable {
         double x2 = Math.min(this.getMaxX(), src2.getMaxX());
         double y2 = Math.min(this.getMaxY(), src2.getMaxY());
         double z2 = Math.min(this.getMaxZ(), src2.getMaxZ());
-        return new ModelBox(x1, y1, z1, x2 - x1, y2 - y1, z2 - z1);
+        double xw = x2 - x1;
+        double yw = y2 - y1;
+        double zw = z2 - z1;
+        if(xw<0 || yw<0 || zw<=0){
+            if(xw<=0){
+                xw=0;
+            }
+            if(yw<=0){
+                yw=0;
+            }
+            if(zw<=0){
+                zw=0;
+            }
+//            System.out.println("Why....");
+        }
+        return new ModelBox(x1, y1, z1, xw, yw, zw);
     }
 
     public ModelBox unionBox(ModelBox src2) {

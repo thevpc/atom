@@ -21,6 +21,7 @@ public class DefaultSprite implements Sprite {
     private int z;
     private boolean selectable = true;
     private int playerId;
+    private int collisionSides;
     private double direction = 0;
     private ModelDimension size = new ModelDimension(0, 0, 0);
     private boolean crossable = false;
@@ -395,6 +396,18 @@ public class DefaultSprite implements Sprite {
         int old = this.layer;
         this.layer = layer;
         getPropertyChangeSupport().firePropertyChange("layer", old, layer);
+    }
+
+    @Override
+    public int getCollisionSides() {
+        return collisionSides;
+    }
+
+    @Override
+    public void setCollisionSides(int collisionSides) {
+        int old=this.collisionSides;
+        this.collisionSides = collisionSides;
+        getPropertyChangeSupport().firePropertyChange("collisionSides", old, collisionSides);
     }
 
     @Override

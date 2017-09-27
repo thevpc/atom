@@ -1,6 +1,5 @@
 package net.vpc.games.helloworld;
 
-import net.vpc.gaming.atom.annotations.AtomScene;
 import net.vpc.gaming.atom.annotations.AtomSceneEngine;
 
 /**
