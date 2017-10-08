@@ -37,11 +37,11 @@ public class ImageBoardLayer extends FlatBoardLayer{
     }
 
     public ImageBoardLayer(int zIndex, int rows, int cols, String imageMap) {
-        init(zIndex, AtomUtils.splitImage(AtomUtils.createStream(imageMap, getClass()), cols, rows));
+        init(zIndex, AtomUtils.splitImage(AtomUtils.createStream(imageMap, getClass()), cols, rows,0,0));
     }
 
     public ImageBoardLayer(int zIndex, boolean mapAligned, Class baseClass, int rows, int cols, String imageMap) {
-        init(zIndex, AtomUtils.splitImage(AtomUtils.createStream(imageMap, getClass()), cols, rows));
+        init(zIndex, AtomUtils.splitImage(AtomUtils.createStream(imageMap, getClass()), cols, rows,0,0));
     }
 
     public ImageBoardLayer(int zIndex, boolean mapAligned, String... images) {

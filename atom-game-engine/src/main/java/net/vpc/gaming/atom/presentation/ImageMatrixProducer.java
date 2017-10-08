@@ -15,7 +15,15 @@ public class ImageMatrixProducer implements ImageProducer {
     private Image[] fullImages;
 
     public ImageMatrixProducer(String imageUrl, int cols, int rows) {
-        this.fullImages = AtomUtils.splitImage(AtomUtils.createStream(imageUrl), cols, rows);
+        this.fullImages = AtomUtils.splitImage(AtomUtils.createStream(imageUrl), cols, rows,0,0);
+    }
+
+    public ImageMatrixProducer(String imageUrl, int cols, int rows,int xinset,int yinset) {
+        this.fullImages = AtomUtils.splitImage(AtomUtils.createStream(imageUrl), cols, rows,xinset,yinset);
+    }
+
+    public ImageMatrixProducer(String imageUrl, ImageMap map) {
+        this.fullImages = AtomUtils.splitImage(AtomUtils.loadBufferedImage(AtomUtils.createStream(imageUrl)), map);
     }
 
     @Override

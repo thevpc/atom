@@ -21,6 +21,7 @@ public interface Sprite extends Serializable {
 
     /**
      * collision sides are updated by atom whenever collision is detected for this sprite
+     *
      * @return
      */
     int getCollisionSides();
@@ -126,9 +127,9 @@ public interface Sprite extends Serializable {
 
     public double getDirection();
 
-    public void setDirection(Direction value);
-
     public void setDirection(double value);
+
+    public void setDirection(Direction value);
 
     public double getSpeed();
 
@@ -193,4 +194,8 @@ public interface Sprite extends Serializable {
     public void setVelocity(ModelVector velocityVector);
 
     public void copyFrom(Sprite sprite);
+
+    public int getMovementStyle();
+
+    public DefaultSprite setMovementStyle(int movementStyle);
 }

@@ -36,6 +36,7 @@ public class DefaultSprite implements Sprite {
     private SpriteWeapon[] weapons = new SpriteWeapon[0];
     private int sight = 1;
     private int style = 0;
+    private int movementStyle = MovementStyles.STOPPED;
     private HashMap<String, Object> properties;
     private transient SceneEngineModel sceneModel;
 
@@ -228,6 +229,17 @@ public class DefaultSprite implements Sprite {
         String old = this.name;
         this.name = name;
         getPropertyChangeSupport().firePropertyChange("name", old, name);
+    }
+
+    public int getMovementStyle() {
+        return movementStyle;
+    }
+
+    public DefaultSprite setMovementStyle(int movementStyle) {
+        int old=this.movementStyle;
+        this.movementStyle = movementStyle;
+        getPropertyChangeSupport().firePropertyChange("movementStyle", old, movementStyle);
+        return this;
     }
 
     public String getKind() {

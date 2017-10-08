@@ -208,7 +208,7 @@ public interface Scene {
 
     public List<String> getFocusableComponents();
 
-    public SceneComponent getComponent(String name);
+    public <T extends  SceneComponent> T getComponent(String name);
 
     public void removeComponent(String name);
 

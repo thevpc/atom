@@ -31,6 +31,16 @@ public class ModelPoint implements Serializable {
         this.z = z;
     }
 
+    public ModelPoint copyAndSetX(double x){
+        return new ModelPoint(x,y,z);
+    }
+    public ModelPoint copyAndSetY(double y){
+        return new ModelPoint(x,y,z);
+    }
+    public ModelPoint copyAndSetZ(double z){
+        return new ModelPoint(x,y,z);
+    }
+
     public double getX() {
         return x;
     }

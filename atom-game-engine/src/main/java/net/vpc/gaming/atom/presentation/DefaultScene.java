@@ -1612,12 +1612,12 @@ public class DefaultScene implements Scene {
         return found;
     }
 
-    public SceneComponent getComponent(String name) {
+    public <T extends  SceneComponent> T getComponent(String name) {
         SceneComponentLayout t = namedComponents.get(name);
         if (t == null) {
             throw new NoSuchElementException("Componnent not found " + name);
         }
-        return t.getComponent();
+        return (T) t.getComponent();
     }
 
     @Override

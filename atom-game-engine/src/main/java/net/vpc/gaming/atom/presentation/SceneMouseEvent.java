@@ -4,6 +4,7 @@
  */
 package net.vpc.gaming.atom.presentation;
 
+import net.vpc.gaming.atom.engine.SceneEngine;
 import net.vpc.gaming.atom.model.ModelPoint;
 import net.vpc.gaming.atom.model.Player;
 import net.vpc.gaming.atom.model.ViewPoint;
@@ -18,13 +19,13 @@ import java.awt.event.InputEvent;
  */
 public class SceneMouseEvent {
 
+    boolean popupTrigger;
     private int playerId;
     private long when;
     private int modifiers;
     private double x;
     private double y;
     private int clickCount;
-    boolean popupTrigger;
     private int button;
     private ModelPoint point;
     private int viewX;
@@ -56,6 +57,18 @@ public class SceneMouseEvent {
         this.controlPlayer = playerId < 0 ? null : scene.getSceneEngine().getPlayer(playerId);
     }
 
+    public SceneEngine getSceneEngine() {
+        return getScene().getSceneEngine();
+    }
+
+    public SceneEngine getGameEngine() {
+        return getSceneEngine().getGameEngine();
+    }
+
+    public Game getGame() {
+        return getScene().getGame();
+    }
+
     public Scene getScene() {
         return scene;
     }
@@ -77,6 +90,10 @@ public class SceneMouseEvent {
 //    }
     public int getPlayerId() {
         return playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
     public boolean isLeftMouseButton() {
@@ -156,10 +173,6 @@ public class SceneMouseEvent {
 
     public ModelPoint getPoint() {
         return point;
-    }
-
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
     }
 
     public ViewPoint getViewPoint() {

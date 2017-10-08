@@ -4,6 +4,7 @@
  */
 package net.vpc.gaming.atom.presentation;
 
+import net.vpc.gaming.atom.engine.SceneEngine;
 import net.vpc.gaming.atom.model.Player;
 import net.vpc.gaming.atom.presentation.layers.Layer;
 
@@ -1037,6 +1038,18 @@ public class SceneKeyEvent {
 
     public Scene getScene() {
         return scene;
+    }
+
+    public SceneEngine getSceneEngine() {
+        return getScene().getSceneEngine();
+    }
+
+    public SceneEngine getGameEngine() {
+        return getSceneEngine().getGameEngine();
+    }
+
+    public Game getGame() {
+        return getScene().getGame();
     }
 
     public int getPlayerId() {

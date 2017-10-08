@@ -115,6 +115,7 @@ public class DefaultGame implements Game {
     @Override
     public void addScene(Scene scene) {
         getGameEngine().addSceneEngine(getGameEngine().createSceneEngine(scene.getId()));
+        addScene(scene, scene.getId());
     }
 
     public Scene createScene() {

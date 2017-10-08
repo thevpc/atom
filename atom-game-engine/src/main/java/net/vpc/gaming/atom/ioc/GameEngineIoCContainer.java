@@ -1,9 +1,9 @@
 package net.vpc.gaming.atom.ioc;
 
-import net.vpc.common.vclasspath.AnnotationFilter;
-import net.vpc.common.vclasspath.AnnotationParser;
-import net.vpc.common.vclasspath.ClassPathUtils;
-import net.vpc.common.vclasspath.URLClassIterable;
+import net.vpc.common.classpath.AnnotationFilter;
+import net.vpc.common.classpath.AnnotationParser;
+import net.vpc.common.classpath.ClassPathUtils;
+import net.vpc.common.classpath.URLClassIterable;
 import net.vpc.gaming.atom.engine.GameEngine;
 import net.vpc.gaming.atom.presentation.Game;
 
@@ -32,38 +32,34 @@ public class GameEngineIoCContainer extends AbstractAtomIoCContainer {
     @Override
     public void start(){
         AnnotationFilter annotationFilter = new AnnotationFilter() {
-            @Override
-            public boolean isSupportedTypeDecoration() {
+
+            public boolean isSupportedTypeAnnotation() {
+                return true;
+            }
+
+            public boolean isSupportedMethodAnnotation() {
+                return true;
+            }
+
+            public boolean isSupportedFieldAnnotation() {
+                return true;
+            }
+
+            public boolean acceptTypeAnnotation(String name, String targetType, Class value) {
+                return true;
+            }
+
+            public boolean acceptMethodAnnotation(String name, String targetMethod, String targetType, Method value) {
                 return true;
             }
 
             @Override
-            public boolean isSupportedMethodDecoration() {
-                return true;
-            }
-
-            @Override
-            public boolean isSupportedFieldDecoration() {
-                return true;
-            }
-
-            @Override
-            public boolean acceptTypeDecoration(String name, String targetType, Class value) {
-                return true;
-            }
-
-            @Override
-            public boolean acceptMethodDecoration(String name, String targetMethod, String targetType, Method value) {
-                return true;
-            }
-
-            @Override
-            public boolean acceptFieldDecoration(String name, String targetField, String targetType, Field value) {
+            public boolean acceptFieldAnnotation(String name, String targetField, String targetType, Field value) {
                 return true;
             }
         };
         AtomAnnotationsProcessor annotationVisitor = new AtomAnnotationsProcessor(this);
-        URL[] urls = ClassPathUtils.resolveClassPathLibs();
+        URL[] urls = ClassPathUtils.resolveContextLibraries();
         URLClassIterable it = new URLClassIterable(
                 urls,
                 null, null

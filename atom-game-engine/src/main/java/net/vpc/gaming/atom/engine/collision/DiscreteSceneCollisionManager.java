@@ -326,6 +326,19 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
                                     0
                             );
                         }
+                        ModelBox obox = other.other.nextBox;
+                        if(Collision.isCollideNorth(i.collisionSides) && i.preferredPosition.getY() < obox.getMaxY()){
+                            i.preferredPosition=i.preferredPosition.copyAndSetY(obox.getMaxY());
+                        }
+                        if(Collision.isCollideSouth(i.collisionSides) && i.preferredPosition.getY()+h > obox.getMinY()){
+                            i.preferredPosition=i.preferredPosition.copyAndSetY(obox.getMinY()-h);
+                        }
+                        if(Collision.isCollideWest(i.collisionSides) && i.preferredPosition.getX() < obox.getMaxX()){
+                            i.preferredPosition=i.preferredPosition.copyAndSetX(obox.getMaxX());
+                        }
+                        if(Collision.isCollideEast(i.collisionSides) && i.preferredPosition.getX()+w > obox.getMinX()){
+                            i.preferredPosition=i.preferredPosition.copyAndSetX(obox.getMinX()-w);
+                        }
                     }
                     i.lastPosition = obstacle.oldBox.getLocation();
                     i.nextPosition = i.preferredPosition;//obstacle.originalNextBox.getLocation();
@@ -353,17 +366,16 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
 
             if (wy > hx) {
                 if (wy > -hx) {
-                    return Collision.SIDE_SOUTH;//Collision.SIDE_NORTH;
-                    /* collision at the top */
+                    return Collision.SIDE_NORTH;//Collision.SIDE_NORTH;
                 } else {
                     return Collision.SIDE_EAST;//Collision.SIDE_WEST;
                 }
-            } /* on the left */ else if (wy > -hx) {
-                return Collision.SIDE_WEST;//Collision.SIDE_EAST;
-            } /* on the right */ else {
-                return Collision.SIDE_NORTH;//Collision.SIDE_SOUTH;
+            } else if (wy > -hx) {
+                return Collision.SIDE_WEST;
+            } else {
+                return Collision.SIDE_SOUTH;
             }
-            /* at the bottom */
+
         }
         return 0;
     }
@@ -435,7 +447,7 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
         return true;
     }
 
-    private static enum ObstacleType {
+    private enum ObstacleType {
 
         SPRITE, TILE, BORDER
     }

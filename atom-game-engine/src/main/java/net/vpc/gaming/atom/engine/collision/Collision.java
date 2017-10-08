@@ -67,6 +67,18 @@ public abstract class Collision {
         return nextValidPosition;
     }
 
+    public static boolean isCollideNorth(int side) {
+        return (side & SIDE_NORTH) != 0;
+    }
+    public static boolean isCollideSouth(int side) {
+        return (side & SIDE_SOUTH) != 0;
+    }
+    public static boolean isCollideEast(int side) {
+        return (side & SIDE_EAST) != 0;
+    }
+    public static boolean isCollideWest(int side) {
+        return (side & SIDE_WEST) != 0;
+    }
     public static String getSideString(int side) {
         if (side == 0) {
             return "";

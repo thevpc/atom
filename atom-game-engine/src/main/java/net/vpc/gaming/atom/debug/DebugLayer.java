@@ -3,6 +3,7 @@
  * and open the template in the editor.
  */
 package net.vpc.gaming.atom.debug;
+import net.vpc.gaming.atom.engine.collision.Collision;
 import net.vpc.gaming.atom.model.*;
 import net.vpc.gaming.atom.engine.SpriteTask;
 import net.vpc.gaming.atom.engine.tasks.MotionSpriteTask;
@@ -139,7 +140,11 @@ public class DebugLayer extends FlatBoardLayer {
 //            final Rectangle r0 = screen.toView(rect);
 //            ViewBox zRect = new ViewBox(shapeBounds);
                 graphics.draw(shapeBounds);
-                graphics.drawString("x=" + decimalFormat.format(rect.getX()) + ",y=" + decimalFormat.format(rect.getY()), (int) (shapeBounds.getX()), (int) (shapeBounds.getY()));
+                String collisionSides = Collision.getSideString(sprite.getCollisionSides());
+                if(collisionSides.length()>0){
+                    collisionSides=",collision="+collisionSides;
+                }
+                graphics.drawString("x=" + decimalFormat.format(rect.getX()) + ",y=" + decimalFormat.format(rect.getY())+collisionSides, (int) (shapeBounds.getX()), (int) (shapeBounds.getY()));
             }
 
             graphics.setTransform(context.getBoardTransform());

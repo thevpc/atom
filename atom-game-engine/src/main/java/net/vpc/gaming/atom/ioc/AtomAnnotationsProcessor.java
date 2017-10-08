@@ -1,6 +1,6 @@
 package net.vpc.gaming.atom.ioc;
 
-import net.vpc.common.vclasspath.AnnotationVisitor;
+import net.vpc.common.classpath.AnnotationVisitor;
 import net.vpc.gaming.atom.annotations.*;
 import net.vpc.gaming.atom.presentation.*;
 
@@ -29,7 +29,7 @@ public class AtomAnnotationsProcessor implements AnnotationVisitor {
     }
 
     @Override
-    public void visitTypeAnnotation(Annotation annotation, final Class clazz) {
+    public void visitClassAnnotation(Annotation annotation, final Class clazz) {
         final Game game = getGame();
         if (annotation.annotationType().equals(AtomScene.class)) {
             final AtomScene s = (AtomScene) annotation;

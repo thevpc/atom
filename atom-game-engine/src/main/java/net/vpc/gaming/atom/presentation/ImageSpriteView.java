@@ -57,11 +57,11 @@ public class ImageSpriteView extends DefaultSpriteView {
     }
 
     public void addImages(String imageMap, int cols, int rows) {
-        addImages(AtomUtils.splitImage(imageMap, getClass(), cols, rows));
+        addImages(AtomUtils.splitImage(imageMap, getClass(), cols, rows,0,0));
     }
 
     public void addImages(Class baseClass, String imageMap, int cols, int rows) {
-        addImages(AtomUtils.splitImage(AtomUtils.createStream(imageMap, baseClass), cols, rows));
+        addImages(AtomUtils.splitImage(AtomUtils.createStream(imageMap, baseClass), cols, rows,0,0));
     }
 
     public void addImages(String... images) {

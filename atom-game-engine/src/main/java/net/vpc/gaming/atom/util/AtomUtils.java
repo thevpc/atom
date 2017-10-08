@@ -5,6 +5,7 @@
 package net.vpc.gaming.atom.util;
 
 import net.vpc.gaming.atom.debug.AtomDebug;
+import net.vpc.gaming.atom.presentation.ImageMap;
 import net.vpc.gaming.atom.presentation.ResizableImage;
 import net.vpc.gaming.atom.presentation.SequenceGenerator;
 import net.vpc.gaming.atom.presentation.components.Alignment;
@@ -29,6 +30,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.List;
+
 import net.vpc.gaming.atom.model.ModelBox;
 import net.vpc.gaming.atom.model.ModelPoint;
 import net.vpc.gaming.atom.model.ModelSegment;
@@ -205,16 +208,16 @@ public class AtomUtils {
         return t2;
     }
 
-    public static BufferedImage[] splitImage(String imageMap, Class baseType, int cols, int rows) {
-        return AtomUtils.splitImage(createStream(imageMap, baseType), cols, rows);
+    public static BufferedImage[] splitImage(String imageMap, Class baseType, int cols, int rows,int xinset,int yinset) {
+        return AtomUtils.splitImage(createStream(imageMap, baseType), cols, rows,xinset,yinset);
     }
 
-    public static BufferedImage[] splitImage(String imageMap, int cols, int rows) {
-        return splitImage(imageMap, null, cols, rows);
+    public static BufferedImage[] splitImage(String imageMap, int cols, int rows,int xinset,int yinset) {
+        return splitImage(imageMap, null, cols, rows,xinset,yinset);
     }
 
-    public static BufferedImage[] splitImage(InputStream fis, int cols, int rows) throws RuntimeIOException {
-        return splitImage(loadBufferedImage(fis), cols, rows);
+    public static BufferedImage[] splitImage(InputStream fis, int cols, int rows,int xinset,int yinset) throws RuntimeIOException {
+        return splitImage(loadBufferedImage(fis), cols, rows,xinset,yinset);
     }
 
     //    public static Image[] splitImage(Image image, int rows, int cols) throws IOException {
@@ -225,7 +228,7 @@ public class AtomUtils {
 //
 //    }
 //
-    public static BufferedImage[] splitImage(BufferedImage image, int cols, int rows) throws RuntimeIOException {
+    public static BufferedImage[] splitImage(BufferedImage image, int cols, int rows,int xinset,int yinset) throws RuntimeIOException {
 
         //BufferedImage image = ImageIO.read(fis); //reading the image file
         int chunks = rows * cols;
@@ -242,16 +245,36 @@ public class AtomUtils {
                 // draws the image chunk
                 Graphics2D gr = imgs[count++].createGraphics();
                 gr.drawImage(image, 0, 0, chunkWidth, chunkHeight,
-                        chunkWidth * x,
-                        chunkHeight * y,
-                        chunkWidth * x + chunkWidth,
-                        chunkHeight * y + chunkHeight,
+                        chunkWidth * x+xinset,
+                        chunkHeight * y+yinset,
+                        chunkWidth * x + chunkWidth-2*xinset,
+                        chunkHeight * y + chunkHeight-2*yinset,
                         null);
                 gr.dispose();
             }
         }
 //        showImagesFrame(imgs);
         return imgs;
+    }
+
+    public static BufferedImage[] splitImage(BufferedImage image, ImageMap map) throws RuntimeIOException {
+
+        //BufferedImage image = ImageIO.read(fis); //reading the image file
+        java.util.List<BufferedImage> images=new java.util.ArrayList();
+        List<ViewBox> extract = map.extract(image.getWidth(), image.getHeight());
+        for (ViewBox viewBox : extract) {
+            BufferedImage d=new BufferedImage(viewBox.getWidth(), viewBox.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D gr = d.createGraphics();
+            gr.drawImage(image, 0, 0, viewBox.getWidth(), viewBox.getHeight(),
+                    viewBox.getX(),
+                    viewBox.getY(),
+                    viewBox.getMaxX(),
+                    viewBox.getMaxY(),
+                    null);
+            gr.dispose();
+            images.add(d);
+        }
+        return images.toArray(new BufferedImage[images.size()]);
     }
 
     public static ResizableImage[][] splitResizableImageMatrix(BufferedImage image, int cols, int rows) throws RuntimeIOException {
@@ -266,8 +289,8 @@ public class AtomUtils {
         return r;
     }
 
-    public static ResizableImage[] splitResizableImage(BufferedImage image, int cols, int rows) throws RuntimeIOException {
-        BufferedImage[] bufferedImages = splitImage(image, cols, rows);
+    public static ResizableImage[] splitResizableImage(BufferedImage image, int cols, int rows,int xinset,int yinset) throws RuntimeIOException {
+        BufferedImage[] bufferedImages = splitImage(image, cols, rows,xinset,yinset);
         ResizableImage[] r = new ResizableImage[bufferedImages.length];
         for (int i = 0; i < r.length; i++) {
             r[i] = new ResizableImage(bufferedImages[i]);

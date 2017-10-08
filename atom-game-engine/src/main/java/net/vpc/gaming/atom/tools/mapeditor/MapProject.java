@@ -136,13 +136,13 @@ public class MapProject {
 
     public BufferedImage[] loadTileImages() {
         BufferedImage[] images;
-        images = AtomUtils.splitImage(AtomUtils.loadBufferedImage(imageFile), getCellColumnsPerImage() * getSceneEngineModel().getCellWidth(), getSceneEngineModel().getCellHeight() * getCellRowsPerImage());
+        images = AtomUtils.splitImage(AtomUtils.loadBufferedImage(imageFile), getCellColumnsPerImage() * getSceneEngineModel().getCellWidth(), getSceneEngineModel().getCellHeight() * getCellRowsPerImage(),0,0);
         return images;
     }
 
     public BufferedImage[] loadCellImages() {
         BufferedImage[] images;
-        images = AtomUtils.splitImage(AtomUtils.loadBufferedImage(imageFile), getCellColumnsPerImage(), getCellRowsPerImage());
+        images = AtomUtils.splitImage(AtomUtils.loadBufferedImage(imageFile), getCellColumnsPerImage(), getCellRowsPerImage(),0,0);
         return images;
     }
 }

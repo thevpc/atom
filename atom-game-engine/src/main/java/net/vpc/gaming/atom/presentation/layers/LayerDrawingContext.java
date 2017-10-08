@@ -5,6 +5,7 @@
 package net.vpc.gaming.atom.presentation.layers;
 
 import net.vpc.gaming.atom.engine.SceneEngine;
+import net.vpc.gaming.atom.presentation.Game;
 import net.vpc.gaming.atom.presentation.Scene;
 
 import java.awt.*;
@@ -48,6 +49,14 @@ public class LayerDrawingContext {
 
     public SceneEngine getSceneEngine() {
         return getScene().getSceneEngine();
+    }
+
+    public SceneEngine getGameEngine() {
+        return getSceneEngine().getGameEngine();
+    }
+
+    public Game getGame() {
+        return getScene().getGame();
     }
 
     public void setUserObject(String name, Object value) {

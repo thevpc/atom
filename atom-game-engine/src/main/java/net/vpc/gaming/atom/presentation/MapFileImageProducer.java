@@ -35,7 +35,7 @@ public class MapFileImageProducer implements ImageProducer {
 //            imageTileHeight = Integer.parseInt(p.getProperty("tileHeight"));
         int imageMapColumns = Integer.parseInt(p.getProperty("columns"));
         int imageMapRows = Integer.parseInt(p.getProperty("rows"));
-        this.fullImages = AtomUtils.splitImage(imageStream, imageMapColumns, imageMapRows);
+        this.fullImages = AtomUtils.splitImage(imageStream, imageMapColumns, imageMapRows,0,0);
     }
 
     @Override
