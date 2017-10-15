@@ -192,9 +192,9 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
                     boolean moved1 = !o1.oldBox.equals(o1.nextBox);
                     boolean moved2 = !o2.oldBox.equals(o2.nextBox);
                     if ( //at least one obs moved
-                            (moved1 || moved2)
+//                            (moved1 || moved2)&&
                                     //at least one obs moved
-                                    && o1.getBoundingBox().intersects(o2.getBoundingBox())) {
+                                    o1.getBoundingBox().intersects(o2.getBoundingBox())) {
                         if (moved1) {
                             obstacleChecks.add(s1, s2);
                         } else {
@@ -227,7 +227,7 @@ public class DiscreteSceneCollisionManager implements SceneCollisionManager {
 //                                    System.out.println("Why");
                                 }
                                 //reevaluate collision in the other side to help update next position or the second sprite
-                                if(!o1.motionless && !o2.motionless){
+                                 if(!o1.motionless && !o2.motionless){
                                     eval(o2,o1);
                                 }
                             }

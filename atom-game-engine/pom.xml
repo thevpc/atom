@@ -4,7 +4,7 @@
 
     <groupId>net.vpc.games</groupId>
     <artifactId>atom-game-engine</artifactId>
-    <version>1.5.4.0</version>
+    <version>1.5.4.1</version>
     <name>net.vpc.games.atom-game-engine</name>
     <packaging>jar</packaging>
 
@@ -113,4 +113,14 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>vpc</id>
+            <url>https://raw.github.com/thevpc/vpc-public-maven/master</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>

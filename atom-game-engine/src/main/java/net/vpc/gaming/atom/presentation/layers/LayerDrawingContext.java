@@ -4,6 +4,7 @@
  */
 package net.vpc.gaming.atom.presentation.layers;
 
+import net.vpc.gaming.atom.engine.GameEngine;
 import net.vpc.gaming.atom.engine.SceneEngine;
 import net.vpc.gaming.atom.presentation.Game;
 import net.vpc.gaming.atom.presentation.Scene;
@@ -51,7 +52,7 @@ public class LayerDrawingContext {
         return getScene().getSceneEngine();
     }
 
-    public SceneEngine getGameEngine() {
+    public GameEngine getGameEngine() {
         return getSceneEngine().getGameEngine();
     }
 
