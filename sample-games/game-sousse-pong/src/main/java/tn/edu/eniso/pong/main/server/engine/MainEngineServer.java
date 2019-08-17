@@ -6,6 +6,7 @@ package tn.edu.eniso.pong.main.server.engine;
 
 import net.vpc.gaming.atom.engine.SpriteTask;
 import net.vpc.gaming.atom.engine.tasks.MoveSpriteTask;
+import net.vpc.gaming.atom.model.MovementStyles;
 import net.vpc.gaming.atom.model.Orientation;
 import tn.edu.eniso.pong.hello.business.WelcomeEngine;
 import tn.edu.eniso.pong.hello.model.WelcomeModel;
@@ -56,9 +57,11 @@ public class MainEngineServer extends AbstractMainEngine implements DALServerLis
         ball.setDirection(Orientation.NORTH_EAST);
         setSpriteCollisionManager(ball, new BallCollisionManager());
         setSpriteTask(ball, new BallFollowPaddleSpriteTask(1));
+        ball.setMovementStyle(MovementStyles.STOPPED);
 
         for (Paddle paddle : findSprites(Paddle.class)) {
             setSpriteTask(paddle, null);
+            paddle.setMovementStyle(MovementStyles.STOPPED);
         }
         dal.start("localhost", 1050, this);
     }
@@ -101,6 +104,7 @@ public class MainEngineServer extends AbstractMainEngine implements DALServerLis
             SpriteTask task = getSpriteTask(paddle);
             if (task == null || !(task instanceof MoveSpriteTask)) {
                 setSpriteTask(paddle, new MoveSpriteTask());
+                paddle.setMovementStyle(MovementStyles.MOVING_SLOW);
             }
         }
     }
@@ -124,6 +128,7 @@ public class MainEngineServer extends AbstractMainEngine implements DALServerLis
                     BallFollowPaddleSpriteTask followBarTask = (BallFollowPaddleSpriteTask) task;
                     if (followBarTask.getPlayer() == playerId) {
                         setSpriteTask(ball, new MoveSpriteTask());
+                        ball.setMovementStyle(MovementStyles.MOVING_SLOW);
                     }
                 }
             }

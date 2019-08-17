@@ -74,7 +74,7 @@ public interface Sprite extends Serializable {
 
     public void setSize(ModelDimension dimension);
 
-    public void setSize(int width, int height);
+    public void setSize(double width, double height);
 
     public ModelBox getBounds();
 

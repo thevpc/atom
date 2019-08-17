@@ -12,7 +12,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="atom-game-engine" />
-    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-classpath:1.1" level="project" />
+    <orderEntry type="module" module-name="atom-game-engine" />
+    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-classpath:1.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
   </component>
 </module>

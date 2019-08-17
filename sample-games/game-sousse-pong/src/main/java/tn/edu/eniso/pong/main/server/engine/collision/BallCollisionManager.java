@@ -9,6 +9,7 @@ import net.vpc.gaming.atom.engine.collision.DefaultSpriteCollisionManager;
 import net.vpc.gaming.atom.engine.collision.SpriteCollision;
 import net.vpc.gaming.atom.model.DirectionTransform;
 import net.vpc.gaming.atom.model.ModelPoint;
+import net.vpc.gaming.atom.model.MovementStyles;
 import net.vpc.gaming.atom.model.Sprite;
 import tn.edu.eniso.pong.main.server.engine.tasks.BallFollowPaddleSpriteTask;
 import tn.edu.eniso.pong.main.shared.model.Paddle;
@@ -31,6 +32,7 @@ public class BallCollisionManager extends DefaultSpriteCollisionManager {
             paddle.addLife(-1);
             if (!paddle.isDead()) {
                 borderCollision.getSceneEngine().setSpriteTask(ball, new BallFollowPaddleSpriteTask(2));
+                ball.setMovementStyle(MovementStyles.MOVING_SLOW);
             }
         } else if (east || west) {
             ball.setDirection(DirectionTransform.VERTICAL_MIRROR);
@@ -41,6 +43,7 @@ public class BallCollisionManager extends DefaultSpriteCollisionManager {
                 paddle.addLife(-1);
                 if (!paddle.isDead()) {
                     borderCollision.getSceneEngine().setSpriteTask(ball, new BallFollowPaddleSpriteTask(1));
+                    ball.setMovementStyle(MovementStyles.MOVING_SLOW);
                 }
             }
         }

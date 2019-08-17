@@ -163,7 +163,7 @@ public class DefaultSprite implements Sprite {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
         setSize(new ModelDimension(width,height));
     }
 
