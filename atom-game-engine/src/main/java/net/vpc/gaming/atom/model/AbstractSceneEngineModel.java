@@ -7,6 +7,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.List;
+import net.vpc.gaming.atom.engine.SceneEngine;
+import net.vpc.gaming.atom.engine.SpriteTask;
+import net.vpc.gaming.atom.engine.collision.SpriteCollisionManager;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -22,6 +25,7 @@ public abstract class AbstractSceneEngineModel implements SceneEngineModel {
     private long frameOffset;
     private int spriteIndex;
     private int playerIndex;
+    private SceneEngine sceneEngine;
     private CellSprites[] tileSprites;
     private Map<Integer, Player> players = new LinkedHashMap<Integer, Player>();
     private PropertyChangeListener spriteChangedWrapper = new PropertyChangeListener() {
@@ -65,6 +69,18 @@ public abstract class AbstractSceneEngineModel implements SceneEngineModel {
         propertyChangeSupport = new PropertyChangeSupport(this);
     }
 
+    public SceneEngine getSceneEngine() {
+        return sceneEngine;
+    }
+
+    public void setSceneEngine(SceneEngine sceneEngine) {
+        this.sceneEngine = sceneEngine;
+        for (Sprite sprite : sprites.values()) {
+            sprite.setSceneEngine(sceneEngine);
+        }
+    }
+    
+
     public Sprite getSprite(int id) {
 //        synchronized (sprites) {
         return sprites.get(id);
@@ -99,7 +115,7 @@ public abstract class AbstractSceneEngineModel implements SceneEngineModel {
                 for (Tile cell : findTiles(s.getBounds())) {
                     tileSprites[cell.getId()].remove(s);
                 }
-                s.setSceneEngineModel(null);
+                s.setSceneEngine(null);
                 s.removePropertyChangeListener(spriteChangedWrapper);
                 s.removePropertyChangeListener("bounds", boundsListener);
 //                synchronized (listeners) {
@@ -168,9 +184,11 @@ public abstract class AbstractSceneEngineModel implements SceneEngineModel {
         if (spriteIndex < id) {
             spriteIndex = id;
         }
-        sprite.setSceneEngineModel(this);
+        SpriteTask oldTask = sprite.getTask();
+        SpriteCollisionManager oldCollMan = sprite.getCollisionManager();
         sprite.setId(id);
         sprites.put(id, sprite);
+        sprite.setSceneEngine(sceneEngine);
         CellSprites[] ts = getTileSprites();
         for (Tile tile : findTiles(sprite.getBounds())) {
             ts[tile.getId()].add(sprite);
@@ -179,7 +197,8 @@ public abstract class AbstractSceneEngineModel implements SceneEngineModel {
         sprite.addPropertyChangeListener(spriteChangedWrapper);
         sprite.removePropertyChangeListener("bounds", boundsListener);
         sprite.addPropertyChangeListener("bounds", boundsListener);
-
+        sceneEngine.setSpriteTask(sprite.getId(),oldTask);
+        sceneEngine.setSpriteCollisionManager(sprite.getId(),oldCollMan);
 //            synchronized (listeners) {
         for (SceneEngineModelListener listener : listeners) {
             listener.spriteAdded(this, sprite);
@@ -348,8 +367,16 @@ public abstract class AbstractSceneEngineModel implements SceneEngineModel {
         int gx0 = (int) Math.floor(rect.getX());
         int gy0 = (int) Math.floor(rect.getY());
 
-        int gx1 = (int) Math.floor((rect.getX() + rect.getWidth() /*- 0.001*/));
-        int gy1 = (int) Math.floor((rect.getY() + rect.getHeight() /*- 0.001*/));
+        double x1b = rect.getX() + rect.getWidth();
+        double y1b = rect.getY() + rect.getHeight();
+        int gx1 = (int) Math.floor(x1b);
+        int gy1 = (int) Math.floor(y1b);
+        if(gx1==x1b){
+            gx1--;
+        }
+        if(gy1==y1b){
+            gy1--;
+        }
         if ((gx0 < 0 && gx1 < 0) || (gx0 >= _columns && gx1 >= _columns)) {
             return Collections.EMPTY_LIST;
         }
@@ -443,10 +470,10 @@ public abstract class AbstractSceneEngineModel implements SceneEngineModel {
 
     @Override
     public void setSize(ModelDimension dimension) {
-        ModelDimension oldDimension = this.size;
-        if (!Objects.equals(oldDimension, dimension)) {
+        ModelDimension olModelDimension = this.size;
+        if (!Objects.equals(olModelDimension, dimension)) {
             setSizeImpl(dimension);
-            getPropertyChangeSupport().firePropertyChange("size", oldDimension, getSize());
+            getPropertyChangeSupport().firePropertyChange("size", olModelDimension, getSize());
         }
     }
 

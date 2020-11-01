@@ -27,6 +27,7 @@ public abstract class DefaultSpriteView implements SpriteView {
         return new ViewBox(getShape(sprite, scene).getBounds());
     }
 
+    @Override
     public Shape getShape(Sprite sprite, Scene scene) {
         SpriteViewConstraints c = getSpriteViewConstraints(sprite);
         ViewBox b = scene.getLayoutBox(scene.toViewBox(sprite), getConstraints().isIsometric(), c.getSceneLayoutType(), scene.getScreenAffineTransform());

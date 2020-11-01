@@ -68,17 +68,28 @@ public abstract class AbstractAtomIoCContainer implements AtomIoCContainer {
 
     @Override
     public Object create(Class cls,
-                         InstancePreparator t,
+                         InstancePreparator[] ts,
                          Map<Class, Object> vals) {
         Object o = null;
         try {
-            o = cls.newInstance();
+            o = cls.getConstructor().newInstance();
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
+        if(ts!=null){
+            for (InstancePreparator t : ts) {
+                if (t != null) {
+                    t.preInject(o,vals);
+                }
+            }
+        }
         doInjects(o, vals);
-        if (t != null) {
-            t.prepare(o);
+        if (ts != null) {
+            for (InstancePreparator t : ts) {
+                if (t != null) {
+                    t.postInject(o);
+                }
+            }
         }
         invokeMethodsByAnnotation(o, OnInit.class, new Object[0]);
         return o;

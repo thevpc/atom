@@ -2,3 +2,16 @@
 /sample-games/game-sousse-pong/target/
 /sample-games/game-hello-world/target/
 /.idea/
+/deprecated/canon/build/
+/deprecated/canon/dist/
+/deprecated/canon/nbproject/private/
+/sample-games/game-sousse-tanks/target/
+/sample-games/game-sousse-kombla/target/
+*.directory
+*.class
+Thumbs.db
+lsp/
+/sample-games/game-sousse-craft/target/
+/sample-games/game-sousse-palace/target/
+ser.txt
+/sample-games/game-sousse-palace/build/

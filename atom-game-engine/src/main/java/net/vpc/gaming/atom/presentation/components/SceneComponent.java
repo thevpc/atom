@@ -24,35 +24,35 @@ public interface SceneComponent {
 
     public void nextFrame();
 
-    public void addEventListener(SceneController listener);
+    public SceneComponent addEventListener(SceneController listener);
 
-    public void removeEventListener(SceneController listener);
+    public SceneComponent removeEventListener(SceneController listener);
 
     public ViewPoint getLocation();
 
-    public void setSize(ViewDimension size);
+    public SceneComponent setSize(ViewDimension size);
 
-    public void setLocation(ViewPoint position);
+    public SceneComponent setLocation(ViewPoint position);
 
-    public void setLocation(RatioPoint position);
+    public SceneComponent setLocation(RatioPoint position);
 
-    public void setSize(RatioDimension size);
+    public SceneComponent setSize(RatioDimension size);
 
     public ViewDimension getSize(ViewDimension size);
 
     public ViewBox getBounds();
 
-    public void setBounds(RatioViewBox bounds);
+    public SceneComponent setBounds(RatioViewBox bounds);
 
     public boolean isVisible();
 
-    public void setVisible(boolean visible);
+    public SceneComponent setVisible(boolean visible);
 
     public boolean isFocusable();
 
     public boolean hasFocus();
 
-    public void setFocused(boolean focused);
+    public SceneComponent setFocused(boolean focused);
 
     public SceneController getController();
 }

@@ -48,7 +48,7 @@ abstract class AbstractSceneEngineMethodAction implements PostponedAction {
         }
         final AtomSceneEngine sceneEngineAnn = method.getDeclaringClass().getAnnotation(AtomSceneEngine.class);
         if (sceneEngineAnn != null) {
-            run(atomAnnotationsProcessor.getGame().getGameEngine().getSceneEngine(sceneEngineAnn.id()));
+            run(atomAnnotationsProcessor.getGame().getGameEngine().getScene(sceneEngineAnn.id()));
         }
     }
 

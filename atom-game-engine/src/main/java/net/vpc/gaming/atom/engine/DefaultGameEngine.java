@@ -6,14 +6,10 @@ package net.vpc.gaming.atom.engine;
 
 import net.vpc.gaming.atom.ioc.AtomIoCContainer;
 import net.vpc.gaming.atom.ioc.GameEngineIoCContainer;
-import net.vpc.gaming.atom.ioc.GameIoCContainer;
-import net.vpc.gaming.atom.model.DefaultGameEngineModel;
-import net.vpc.gaming.atom.model.GameEngineModel;
-import net.vpc.gaming.atom.presentation.DefaultGame;
-import net.vpc.gaming.atom.presentation.Game;
+import net.vpc.gaming.atom.model.DefaultGameEngineProperties;
 
-import java.beans.PropertyChangeSupport;
 import java.util.*;
+import net.vpc.gaming.atom.model.GameEngineProperties;
 
 /**
  * Default GameEngine implementation.
@@ -28,23 +24,24 @@ public class DefaultGameEngine implements GameEngine {
     private List<GameEngineStateListener> stateListeners = new ArrayList<GameEngineStateListener>();
     private List<GameEngineChangeListener> changeListeners = new ArrayList<GameEngineChangeListener>();
     private GameEngineState engineState = GameEngineState.UNINITIALIZED;
-    private GameEngineModel gameEngineModel;
+    private GameEngineProperties properties;
     private AtomIoCContainer atomIoCContainer;
 
     /**
      * default constructor
      */
     public DefaultGameEngine() {
-        gameEngineModel = new DefaultGameEngineModel();
+        properties = new DefaultGameEngineProperties();
     }
 
-    public GameEngineModel getModel() {
-        return gameEngineModel;
+    public GameEngineProperties getProperties() {
+        return properties;
     }
 
-    public void setGameEngineModel(GameEngineModel gameModel) {
-        this.gameEngineModel = gameModel;
+    public void setProperties(GameEngineProperties properties) {
+        this.properties = properties;
     }
+    
 
     /**
      * {@inheritDoc }
@@ -77,7 +74,7 @@ public class DefaultGameEngine implements GameEngine {
     /**
      * {@inheritDoc }
      */
-    public void addSceneEngine(SceneEngine sceneEngine) {
+    public void addScene(SceneEngine sceneEngine) {
         String sceneId = sceneEngine.getId();
         SceneEngine s = scenes.get(sceneId);
         if (s != null) {
@@ -97,8 +94,8 @@ public class DefaultGameEngine implements GameEngine {
      * {@inheritDoc }
      */
     @Override
-    public void removeSceneEngine(Class<? extends SceneEngine> sceneType) {
-        removeSceneEngine(sceneType.getName());
+    public void removeScene(Class<? extends SceneEngine> sceneType) {
+        removeScene(sceneType.getName());
     }
 
     /**
@@ -113,7 +110,7 @@ public class DefaultGameEngine implements GameEngine {
      * {@inheritDoc }
      */
     @Override
-    public void removeSceneEngine(String sceneId) {
+    public void removeScene(String sceneId) {
         if (sceneId == null) {
             throw new NoSuchElementException("Scene not found");
         }
@@ -131,7 +128,7 @@ public class DefaultGameEngine implements GameEngine {
         }
     }
 
-    public boolean containsSceneEngine(String sceneId){
+    public boolean containsScene(String sceneId){
         return scenes.containsKey(sceneId);
     }
 
@@ -139,7 +136,7 @@ public class DefaultGameEngine implements GameEngine {
      * {@inheritDoc }
      */
     @Override
-    public SceneEngine getSceneEngine(String id) {
+    public SceneEngine getScene(String id) {
         SceneEngine newScene = scenes.get(id);
         if (newScene == null) {
             throw new NoSuchElementException("SceneEngine not found : "+id);
@@ -151,27 +148,27 @@ public class DefaultGameEngine implements GameEngine {
      * {@inheritDoc }
      */
     @Override
-    public SceneEngine[] getSceneEngines() {
-        return scenes.values().toArray(new SceneEngine[scenes.size()]);
+    public List<SceneEngine> getScenes() {
+        return new ArrayList<>(scenes.values());
     }
 
     /**
      * {@inheritDoc }
      */
     @Override
-    public SceneEngine getActiveSceneEngine() {
+    public SceneEngine getActiveScene() {
         if (activeSceneEngineId == null) {
             return null;
         }
-        return getSceneEngine(activeSceneEngineId);
+        return getScene(activeSceneEngineId);
     }
 
     /**
      * {@inheritDoc }
      */
     @Override
-    public <T extends SceneEngine> T getSceneEngine(Class<T> sceneType) {
-        return (T) getSceneEngine(sceneType.getName());
+    public <T extends SceneEngine> T getScene(Class<T> sceneType) {
+        return (T) getScene(sceneType.getName());
     }
 
     /**
@@ -211,7 +208,7 @@ public class DefaultGameEngine implements GameEngine {
      * if scene is not started will start it before activating it
      */
     private void tryActivateScene(SceneEngine scene) {
-        switch (getEngineState()) {
+        switch (getState()) {
             case UNINITIALIZED: {
                 //do nothing
                 break;
@@ -261,11 +258,20 @@ public class DefaultGameEngine implements GameEngine {
                 for (SceneEngine sceneEngine : _scenes) {
                     sceneEngine.start();
                 }
-
-                if(getDefaultActiveSceneEngineId()!=null){
-                    setActiveSceneEngine(getDefaultActiveSceneEngineId());
+                if(_scenes.isEmpty()){
+                    throw new IllegalStateException("There are no registered scenes.");
                 }
-                SceneEngine scene = getActiveSceneEngine();
+
+                if(getDefaultSceneId()!=null){
+                    setActiveSceneEngine(getDefaultSceneId());
+                }
+                SceneEngine scene = getActiveScene();
+                if(scene==null){
+                    if(getDefaultSceneId()==null){
+                        throw new IllegalStateException("Default Scene could not be resolved");
+                    }
+                    throw new IllegalStateException("Scene "+getDefaultSceneId()+" could not be resolved. Have you marked scenes with @AtomScene annotation?");
+                }
 
                 engineState = GameEngineState.STARTED;
 
@@ -292,7 +298,7 @@ public class DefaultGameEngine implements GameEngine {
                 for (GameEngineStateListener listener : stateListeners) {
                     listener.gameStopping(this);
                 }
-                SceneEngine a = getActiveSceneEngine();
+                SceneEngine a = getActiveScene();
                 if (a != null) {
                     switch (a.getSceneEngineState()) {
                         case ACTIVATED: {
@@ -329,7 +335,7 @@ public class DefaultGameEngine implements GameEngine {
                 for (GameEngineStateListener listener : stateListeners) {
                     listener.gamePausing(this);
                 }
-                SceneEngine activeSceneEngine = getActiveSceneEngine();
+                SceneEngine activeSceneEngine = getActiveScene();
                 if (activeSceneEngine != null) {
                     activeSceneEngine.pause();
                 }
@@ -357,7 +363,7 @@ public class DefaultGameEngine implements GameEngine {
                     listener.gameResuming(this);
                 }
 
-                SceneEngine activeSceneEngine = getActiveSceneEngine();
+                SceneEngine activeSceneEngine = getActiveScene();
                 if (activeSceneEngine != null) {
                     activeSceneEngine.resume();
                 }
@@ -385,7 +391,7 @@ public class DefaultGameEngine implements GameEngine {
             case STOPPED:
             case STARTED: {
                 engineState = GameEngineState.DISPOSING;
-                SceneEngine a = getActiveSceneEngine();
+                SceneEngine a = getActiveScene();
 
                 ArrayList<SceneEngine> _scenes = new ArrayList<SceneEngine>(scenes.values());
                 for (GameEngineStateListener listener : stateListeners) {
@@ -423,25 +429,21 @@ public class DefaultGameEngine implements GameEngine {
      * {@inheritDoc }
      */
     @Override
-    public GameEngineState getEngineState() {
+    public GameEngineState getState() {
         return engineState;
     }
 
-    public Game createGame() {
-        return new DefaultGame(this);
-    }
-
     @Override
-    public SceneEngine createSceneEngine(String sceneID) {
+    public SceneEngine createScene(String sceneID) {
         DefaultSceneEngine defaultSceneEngine = new DefaultSceneEngine();
         defaultSceneEngine.setId(sceneID);
         return defaultSceneEngine;
     }
 
     @Override
-    public SceneEngine addSceneEngine(String sceneID) {
-        SceneEngine sceneEngine = createSceneEngine(sceneID);
-        addSceneEngine(sceneEngine);
+    public SceneEngine addScene(String sceneID) {
+        SceneEngine sceneEngine = createScene(sceneID);
+        addScene(sceneEngine);
         return sceneEngine;
     }
 
@@ -459,11 +461,11 @@ public class DefaultGameEngine implements GameEngine {
         this.atomIoCContainer=container;
     }
 
-    public String getDefaultActiveSceneEngineId() {
+    public String getDefaultSceneId() {
         return defaultActiveSceneEngineId;
     }
 
-    public void setDefaultActiveSceneEngineId(String defaultActiveSceneEngineId) {
+    public void setDefaultSceneId(String defaultActiveSceneEngineId) {
         this.defaultActiveSceneEngineId = defaultActiveSceneEngineId;
     }
 

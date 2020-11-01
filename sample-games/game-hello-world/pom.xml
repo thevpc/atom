@@ -3,13 +3,15 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.vpc.games</groupId>
+    <groupId>net.vpc.games.atom.examples</groupId>
     <artifactId>game-hello-world</artifactId>
     <version>1.0.0</version>
-    <name>net.vpc.games.game-hello-world</name>
+    <name>net.vpc.games.atom.examples.game-hello-world</name>
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <repositories>
         <repository>
@@ -25,7 +27,7 @@
         <dependency>
             <groupId>net.vpc.games</groupId>
             <artifactId>atom-game-engine</artifactId>
-            <version>1.5.4.1</version>
+            <version>1.5.4.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -24,7 +24,7 @@ public class STextField extends DefaultSceneComponent {
 
     public STextField(String name, String value) {
         super(name);
-        getTextStyle(TextStyle.DEFAULT).setForeColor(Color.BLACK);
+        getTextStyle(SceneComponentState.DEFAULT).setForeColor(Color.BLACK);
         setFocusable(true);
         setVisible(true);
         this.text = value == null ? "" : value;
@@ -50,12 +50,12 @@ public class STextField extends DefaultSceneComponent {
         if (!isVisible()) {
             return;
         }
-        int status = 0;
+        SceneComponentState status = SceneComponentState.DEFAULT;
         if (hasFocus()) {
-            status |= TextStyle.FOCUSED;
+            status.add(SceneComponentState.FOCUSED);
         }
         if (!isEnabled()) {
-            status |= TextStyle.DISABLED;
+            status.add(SceneComponentState.DISABLED);
         }
         TextStyle style = styleMap.getTextStyle(status);
 
@@ -133,15 +133,17 @@ public class STextField extends DefaultSceneComponent {
         return columns;
     }
 
-    public void setColumns(int columns) {
+    public STextField setColumns(int columns) {
         this.columns = columns;
+        return this;
     }
 
-    public void setTextStyle(TextStyle style, int status) {
-        styleMap.setTextStyle(style, status);
+    public STextField setTextStyle(SceneComponentState status, TextStyle style) {
+        styleMap.setTextStyle(status, style);
+        return this;
     }
 
-    public TextStyle getTextStyle(int status) {
+    public TextStyle getTextStyle(SceneComponentState status) {
         return styleMap.getTextStyle(status);
     }
 }

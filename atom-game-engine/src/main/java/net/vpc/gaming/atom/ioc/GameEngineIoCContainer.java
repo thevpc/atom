@@ -5,7 +5,6 @@ import net.vpc.common.classpath.AnnotationParser;
 import net.vpc.common.classpath.ClassPathUtils;
 import net.vpc.common.classpath.URLClassIterable;
 import net.vpc.gaming.atom.engine.GameEngine;
-import net.vpc.gaming.atom.presentation.Game;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

@@ -76,7 +76,7 @@ public class ComponentsInternalLayer extends DefaultLayer implements Interactive
     private SceneComponentLayout findComponent(MouseEvent e) {
         return null;
 //        //if(is)
-////            DPoint p = getView().toModel(e.getPoint());
+////            ModelPoint p = getView().toModel(e.getPoint());
 //        Collection<Sprite> allPossible = getScene().findSprites(e.getPoint());
 //        allPossible.retainAll(spritesSet);
 //        int found = allPossible.size();

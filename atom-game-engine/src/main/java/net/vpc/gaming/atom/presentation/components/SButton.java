@@ -19,14 +19,19 @@ import java.util.ArrayList;
 public class SButton extends DefaultSceneComponent {
 
     private String text;
+    private boolean selected;
     private TextStyleMap styleMap = new TextStyleMap();
     private java.util.List<SceneComponentActionListener> listeners = new ArrayList<>();
 
+    public SButton(String name) {
+        this(name,name);
+    }
+
     public SButton(String name, String value) {
         super(name);
-        getTextStyle(TextStyle.DEFAULT).setForeColor(Color.BLACK);
-        getTextStyle(TextStyle.DEFAULT).setBorderArc(3);
-        getTextStyle(TextStyle.DEFAULT).setFillBackground(true);
+        getTextStyle(SceneComponentState.DEFAULT).setForeColor(Color.BLACK);
+        getTextStyle(SceneComponentState.DEFAULT).setBorderArc(3);
+        getTextStyle(SceneComponentState.DEFAULT).setFillBackground(true);
         this.text = value;
         setController(new DefaultSceneController() {
             @Override
@@ -40,8 +45,9 @@ public class SButton extends DefaultSceneComponent {
         return text;
     }
 
-    public void setText(String value) {
+    public SButton setText(String value) {
         this.text = value;
+        return this;
     }
 
     @Override
@@ -49,15 +55,27 @@ public class SButton extends DefaultSceneComponent {
         if (!isVisible()) {
             return;
         }
-        int status = 0;
+        SceneComponentState status = SceneComponentState.DEFAULT;
         if (hasFocus()) {
-            status |= TextStyle.FOCUSED;
+            status=status.add(SceneComponentState.FOCUSED);
         }
         if (!isEnabled()) {
-            status |= TextStyle.DISABLED;
+            status=status.add(SceneComponentState.DISABLED);
+        }
+        if (!isSelected()) {
+            status=status.add(SceneComponentState.SELECTED);
         }
         TextStyle style = styleMap.getTextStyle(status);
         AtomUtils.drawText(context, text, getX(), getY(), getWidth(), getHeight(), style, -1);
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public SButton setSelected(boolean selected) {
+        this.selected = selected;
+        return this;
     }
 
     protected void keyPressedImpl(SceneKeyEvent e) {
@@ -90,11 +108,12 @@ public class SButton extends DefaultSceneComponent {
         }
     }
 
-    public void setTextStyle(TextStyle style, int status) {
-        styleMap.setTextStyle(style, status);
+    public SButton setTextStyle(SceneComponentState status, TextStyle style) {
+        styleMap.setTextStyle(status, style);
+        return this;
     }
 
-    public TextStyle getTextStyle(int status) {
+    public TextStyle getTextStyle(SceneComponentState status) {
         return styleMap.getTextStyle(status);
     }
 }

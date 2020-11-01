@@ -9,10 +9,7 @@ import net.vpc.gaming.atom.model.DefaultSceneModelWriter;
 import net.vpc.gaming.atom.util.AtomUtils;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -114,6 +111,22 @@ public class MapProject {
         DefaultSceneModelWriter ww = new DefaultSceneModelWriter(getMapFile());
         ww.write(sceneEngineModel);
         ww.close();
+    }
+
+    public void load(InputStream is) throws IOException {
+        Properties p = new Properties();
+        Reader w = null;
+        try {
+            w = new InputStreamReader(is);
+            p.load(w);
+        } finally {
+            if (w != null) {
+                w.close();
+            }
+        }
+        cellRowsPerImage = Integer.parseInt(p.getProperty("rows"));
+        cellColumnsPerImage = Integer.parseInt(p.getProperty("columns"));
+        sceneEngineModel = new DefaultSceneEngineModel(mapFile);
     }
 
     public void load() throws IOException {

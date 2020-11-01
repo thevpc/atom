@@ -9,27 +9,31 @@ import net.vpc.gaming.atom.model.Sprite;
 import java.io.Serializable;
 
 /**
- * A Task is the "Business" part of a sprite that handles
- * the behavior of a sprite all over the time.
+ * A Task is the "Business" part of a sprite that handles the behavior of a
+ * sprite all over the time.
  * <p/>
- * Tasks have special method <code>nextFrame</code> that's invoked
- * every frame to update sprite model when time evolves
+ * Tasks have special method <code>nextFrame</code> that's invoked every frame
+ * to update sprite model when time evolves
  * <p/>
- * The Simplest Way to implement a SpriteTask is to extend <code>DefaultSpriteTask</code>.
+ * The Simplest Way to implement a SpriteTask is to extend
+ * <code>DefaultSpriteTask</code>.
  * <p/>
- * If the task should move the sprite consider implementing <code>MotionSpriteTask</code>.
+ * If the task should move the sprite consider implementing
+ * <code>MotionSpriteTask</code>.
  * <p>
  * Example :
  * </p>
  * <p/>
- * The Following is a simple Task that moves to the Right one Unit each frame step :
- * ie : The sprite will  perform an horizontal move to the EAST with the velocity 1/FPS
+ * The Following is a simple Task that moves to the Right one Unit each frame
+ * step : ie : The sprite will perform an horizontal move to the EAST with the
+ * velocity 1/FPS
  * <p/>
- * <pre>
+ * <
+ * pre>
  * public class MoveRightTask implements SpriteTask {
  *    public public boolean nextFrame(SceneEngine scene,Sprite sprite){
- *       DPoint p=getSprite().getLocation();
- *       sprite.setLocation(new DPoint(p.getX()+1,p.getY()));
+ *       ModelPoint p=getSprite().getLocation();
+ *       sprite.setLocation(new ModelPoint(p.getX()+1,p.getY()));
  *       return false;
  *    }
  * }

@@ -8,6 +8,7 @@ import net.vpc.gaming.atom.engine.SceneEngine;
 import net.vpc.gaming.atom.engine.SceneEngineChangeAdapter;
 import net.vpc.gaming.atom.engine.SceneEngineChangeListener;
 import net.vpc.gaming.atom.extension.DefaultSceneExtension;
+import net.vpc.gaming.atom.presentation.*;
 import net.vpc.gaming.atom.util.AtomUtils;
 
 import java.awt.*;
@@ -28,15 +29,6 @@ import net.vpc.gaming.atom.model.Sprite;
 import net.vpc.gaming.atom.model.Tile;
 import net.vpc.gaming.atom.model.ViewBox;
 import net.vpc.gaming.atom.model.ViewPoint;
-import net.vpc.gaming.atom.presentation.DefaultSceneController;
-import net.vpc.gaming.atom.presentation.ImageProducer;
-import net.vpc.gaming.atom.presentation.ResizableImage;
-import net.vpc.gaming.atom.presentation.Scene;
-import net.vpc.gaming.atom.presentation.SceneChangeAdapter;
-import net.vpc.gaming.atom.presentation.SceneChangeListener;
-import net.vpc.gaming.atom.presentation.SceneLayoutType;
-import net.vpc.gaming.atom.presentation.SceneMouseEvent;
-import net.vpc.gaming.atom.presentation.SpriteDrawingComparator;
 import net.vpc.gaming.atom.presentation.layers.BoardLayer;
 import net.vpc.gaming.atom.presentation.layers.BoardLayerDrawingContext;
 import net.vpc.gaming.atom.presentation.layers.DefaultLayer;
@@ -68,7 +60,7 @@ public class DefaultBoardTextureExtension extends DefaultSceneExtension {
             updateImages = true;
         }
     };
-    DefaultSceneController sceneEngineChangeListenerInstaller = new DefaultSceneController() {
+    SceneLifeCycleListener sceneEngineChangeListenerInstaller = new SceneLifeCycleListener() {
         @Override
         public void sceneInitialized(Scene scene) {
             scene.getSceneEngine().addSceneEngineChangeListener(sceneEngineChangeListener);
@@ -103,7 +95,7 @@ public class DefaultBoardTextureExtension extends DefaultSceneExtension {
     public void install(Scene scene) {
         this.scene = scene;
         scene.getModel().addPropertyChangeListener(updater);
-        scene.addSceneController(sceneEngineChangeListenerInstaller);
+        scene.addLifeCycleListener(sceneEngineChangeListenerInstaller);
         scene.addSceneChangeListener(sceneChangeListener);
         if (scene.getSceneEngine() != null) {
             scene.getSceneEngine().addSceneEngineChangeListener(sceneEngineChangeListener);
@@ -353,7 +345,7 @@ public class DefaultBoardTextureExtension extends DefaultSceneExtension {
             updateImages(context);
             Graphics2D graphics = context.getGraphics();
             Scene scene = context.getScene();
-            java.util.List<BigTile> cells = findBigTiles(scene.getPolygonAbsoluteCameraModel());
+            java.util.List<BigTile> cells = findBigTiles(scene.getCamera().getModelPolygon());
             Collections.sort(cells, getTilesComparator());
             List<TileInfo> upTiles = new ArrayList<>();
             context.setUserObject("DefaultBoardTextureExtension.TileInfos", upTiles);

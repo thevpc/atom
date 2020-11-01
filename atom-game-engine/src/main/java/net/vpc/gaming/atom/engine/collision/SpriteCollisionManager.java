@@ -23,28 +23,38 @@ import net.vpc.gaming.atom.model.Sprite;
  */
 public interface SpriteCollisionManager {
 
-    void install(SceneEngine sceneEngine, Sprite sprite);
+    default void install(SceneEngine sceneEngine, Sprite sprite){
 
-    void uninstall(SceneEngine sceneEngine, Sprite sprite);
+    }
+
+    default void uninstall(SceneEngine sceneEngine, Sprite sprite){
+
+    }
 
     /**
      * Called when Sprite moves outside the Game Area
      *
      * @param borderCollision collision info
      */
-    void collideWithBorder(BorderCollision borderCollision);
+    default void collideWithBorder(BorderCollision borderCollision){
+
+    }
 
     /**
      * Called when Sprite overlaps with another Sprite (while other.isCrossable()=false)
      *
      * @param spriteCollision collision info
      */
-    void collideWithSprite(SpriteCollision spriteCollision);
+    default void collideWithSprite(SpriteCollision spriteCollision){
+
+    }
 
     /**
      * Called when Sprite overlaps with a Wall Tile (tile.getWalls()!=Tile.NO_WALLS)
      *
      * @param tileCollision collision info
      */
-    void collideWithTile(TileCollision tileCollision);
+    default void collideWithTile(TileCollision tileCollision){
+
+    }
 }

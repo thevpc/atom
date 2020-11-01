@@ -121,7 +121,7 @@ public class GunWeapon implements SpriteWeapon {
         int damage = (int) Math.round(minDamage + Math.random() * (maxDamage - minDamage));
         Bullet bullet = new Bullet(damage, source.getPlayerId(), "bullet", source.getLocation(), targetPoint, bulletSpeed);
         currentBullets.add(bullet);
-        source.getSceneEngineModel().addSprite(bullet);
+        source.getSceneEngine().addSprite(bullet);
         if (bulletsCount != BULLETS_COUNT_ILLIMITED) {
             bulletsCount--;
             if (bulletsCount <= 0) {

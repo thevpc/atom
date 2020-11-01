@@ -77,7 +77,7 @@ public class GatherResourceSpriteTask implements MotionSpriteTask {
             return false;
         }
         if (moveToTask == null) {
-            moveToTask = new FindPathToSpriteSpriteTask(sprite.getSceneEngineModel().getSprite(resourceId), 2, true);
+            moveToTask = new FindPathToSpriteSpriteTask(sprite.getSceneEngine().getSprite(resourceId), 2, true);
         }
         ResourceCarrier w = (ResourceCarrier) sprite;
         ResourceRepository wDeposit = w.getResources();

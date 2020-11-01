@@ -11,9 +11,9 @@ package net.vpc.gaming.atom.util;
  */
 public final class MultiChronometer {
 
-    private long startTime;
-    private String[] labels;
-    private long[] times;
+    private final long startTime;
+    private final String[] labels;
+    private final long[] times;
     private int index;
 
     public MultiChronometer(int max) {

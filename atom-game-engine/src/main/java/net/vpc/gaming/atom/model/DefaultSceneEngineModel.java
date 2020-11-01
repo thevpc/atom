@@ -11,6 +11,7 @@ import net.vpc.gaming.atom.util.AtomUtils;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 
@@ -87,11 +88,24 @@ public class DefaultSceneEngineModel extends AbstractSceneEngineModel {
         setMap(cells, cellWidth, cellHeight);
     }
 
-    public DefaultSceneEngineModel(String mapUrlPrefix) {
-        this.mapUrlPrefix = mapUrlPrefix;
+    public DefaultSceneEngineModel(String streamURI) {
+        this.mapUrlPrefix = streamURI;
         DefaultSceneModelReader r = null;
         try {
-            r = new DefaultSceneModelReader(new InputStreamReader(AtomUtils.createStream(mapUrlPrefix + ".map", getClass())));
+            r = new DefaultSceneModelReader(new InputStreamReader(AtomUtils.createStream(streamURI, getClass())));
+            r.parse();
+            setMap(r.getMatrix(), r.getCells(), r.getTileColumnsPerCell(), r.getTileRowsPerCell());
+        } finally {
+            if (r != null) {
+                r.close();
+            }
+        }
+    }
+    public DefaultSceneEngineModel(InputStream is) {
+        this.mapUrlPrefix = "";
+        DefaultSceneModelReader r = null;
+        try {
+            r = new DefaultSceneModelReader(new InputStreamReader(is));
             r.parse();
             setMap(r.getMatrix(), r.getCells(), r.getTileColumnsPerCell(), r.getTileRowsPerCell());
         } finally {

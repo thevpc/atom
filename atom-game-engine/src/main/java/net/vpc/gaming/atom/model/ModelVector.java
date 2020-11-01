@@ -30,7 +30,7 @@ public class ModelVector {
     }
 
     public static ModelVector newCartesien(double x, double y, double z) {
-        return new ModelVector(x, y, 9);
+        return new ModelVector(x, y, 0);
     }
 
     private ModelVector(double x, double y, double z) {
@@ -111,6 +111,6 @@ public class ModelVector {
 
     @Override
     public String toString() {
-        return "DVector{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+        return "ModelVector{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
     }
 }

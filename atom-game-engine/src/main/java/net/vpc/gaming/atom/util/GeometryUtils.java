@@ -47,7 +47,7 @@ public class GeometryUtils {
         return new ModelPoint(nx, ny);
     }
 
-//    public static DPoint collide(DRectangle rect1,DPoint newPos, DRectangle rect2) {
+//    public static ModelPoint collide(DRectangle rect1,ModelPoint newPos, DRectangle rect2) {
 //        DRectangle rect1bis=new DRectangle(newPos, rect1.getSize());
 //        if(rect1bis.intersect(rect2).isEmpty()){
 //            return newPos;
@@ -204,7 +204,7 @@ public class GeometryUtils {
     /**
      * Find the point on the line p0,p1 [x,y,z] a given fraction from p0.
      * Fraction of 0.0 whould give back p0, 1.0 give back p1, 0.5 returns
-     * midpoint of line p0,p1 and so on. F
+     * miModelPoint of line p0,p1 and so on. F
      * raction can be >1 and it can be negative to return any point on the
      * line specified by p0,p1.
      *
@@ -481,7 +481,7 @@ public class GeometryUtils {
         double dx2 = px1 - x1;
         double dy2 = py1 - y1;
 
-        // Cross product of the vector from the endpoint of the line to the point
+        // Cross product of the vector from the enModelPoint of the line to the point
         double c1 = dx * dy1 - dy * dx1;
         double c2 = dx * dy2 - dy * dx2;
 
@@ -559,7 +559,7 @@ public class GeometryUtils {
                                                       int lx1, int ly1,
                                                       int x0, int y0,
                                                       int x1, int y1) {
-        // Is one of the line endpoints inside the rectangle
+        // Is one of the line enModelPoints inside the rectangle
         if (isPointInsideRectangle(x0, y0, x1, y1, lx0, ly0) ||
                 isPointInsideRectangle(x0, y0, x1, y1, lx1, ly1))
             return true;

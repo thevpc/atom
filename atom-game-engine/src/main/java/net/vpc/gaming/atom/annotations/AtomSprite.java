@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AtomSprite {
-    int x() default 0;
+    double x() default 0;
 
-    int y() default 0;
+    double y() default 0;
 
     int width() default 1;
 
@@ -29,7 +29,7 @@ public @interface AtomSprite {
 
     double speed() default 0;
 
-    String engine();
+    String scene();
 
     String kind() default "";
 

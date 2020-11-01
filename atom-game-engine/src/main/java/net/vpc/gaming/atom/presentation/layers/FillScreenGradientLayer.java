@@ -122,7 +122,7 @@ public class FillScreenGradientLayer extends DefaultLayer {
 
     public void draw(LayerDrawingContext context) {
         Graphics2D graphics = context.getGraphics();
-        ViewBox viewBox = context.getScene().getCameraScreen();
+        ViewBox viewBox = context.getScene().getCamera().getViewPort();
         int w = viewBox.getWidth();
         int h = viewBox.getHeight();
         Paint oldPaint = graphics.getPaint();
@@ -131,7 +131,7 @@ public class FillScreenGradientLayer extends DefaultLayer {
         int _x2 = (int) (x2 * w);
         int _y2 = (int) (y2 * h);
         graphics.setPaint(new GradientPaint(_x1, _y1, color1, _x2, _y2, color2));
-        ViewBox viewPort = getScene().getAbsoluteCamera();
+        ViewBox viewPort = getScene().getCamera().getViewBounds();
         int iwidth = viewPort.getWidth();
         int iheight = viewPort.getHeight();
         graphics.fillRect(0, 0, iwidth, iheight);

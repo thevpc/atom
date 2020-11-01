@@ -106,7 +106,7 @@ public class ImageScreenLayer extends DefaultLayer {
         Image defaultImage = getDefaultImage(index);
         if (isResizeImages()) {
             SceneModel m = scene.getModel();
-            ViewBox viewBox = scene.getCameraScreen();
+            ViewBox viewBox = scene.getCamera().getViewPort();
             ViewDimension mg = m.getSceneSize();
             int gw = isViewPortImage() ? viewBox.getWidth() : mg.getWidth();
             int gh = isViewPortImage() ? viewBox.getHeight() : mg.getHeight();

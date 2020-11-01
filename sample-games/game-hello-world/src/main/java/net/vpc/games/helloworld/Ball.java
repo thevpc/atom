@@ -15,13 +15,14 @@ import net.vpc.gaming.atom.presentation.Scene;
 @AtomSprite(
         name = "ball",
         kind = "ball",
-        engine = "hello",
+        scene = "hello",
         x=2,
         y=2,
         direction = Math.PI/4,
         speed = 0.2,
         task = MoveSpriteTask.class,
         collision = SimpleSpriteCollisionManager.class
+        
 )
 public class Ball {
     @Inject

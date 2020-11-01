@@ -5,10 +5,9 @@
 package net.vpc.gaming.atom.engine;
 
 import net.vpc.gaming.atom.ioc.AtomIoCContainer;
-import net.vpc.gaming.atom.model.GameEngineModel;
-import net.vpc.gaming.atom.presentation.Game;
+import net.vpc.gaming.atom.model.GameEngineProperties;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * GameEngine does all the business logic of the the game
@@ -16,7 +15,7 @@ import java.util.Map;
  * At every time only one Scene is active.
  * GameEngine behavior is described using a state (GameEngineState) that follows a state diagram.
  * GameEngine state is calculated according to invocations of the start,stop,pause,resume and dispose methods.
- * The simples way to create a GameEngine is to instantiate a DefaultGameEngine.
+ * The simplest way to create a GameEngine is to instantiate a DefaultGameEngine.
  * <p/>
  * In most cases GameEngine usage is as follows :
  * <p/>
@@ -28,7 +27,7 @@ import java.util.Map;
  *             //create a game sceneEngine instance
  *             DefaultGameEngine sceneEngine = new DefaultGameEngine();
  *             //add scene engines to the game sceneEngine, the first one added is set to active
- *             sceneEngine.addSceneEngine(new MySceneEngine());
+ *             sceneEngine.addScene(new MySceneEngine());
  *
  *             //create game display (a simple JFrame based implementation)
  *             DefaultGame game=new DefaultGame(sceneEngine);
@@ -102,13 +101,12 @@ public interface GameEngine {
     /**
      * The current sceneEngine state
      *
+     * @return EngineState
      * @see GameEngineState
      */
-    public GameEngineState getEngineState();
+    public GameEngineState getState();
 
-    public GameEngineModel getModel();
-
-    public void setGameEngineModel(GameEngineModel gameEngineModel);
+    public GameEngineProperties getProperties();
 
     /**
      * Add a <code>GameEngineStateListener</code> to the GameEngine
@@ -145,7 +143,7 @@ public interface GameEngine {
      * @param sceneEngine the scene sceneEngine to be added
      * @throws java.util.IllegalArgumentException raised if sceneId is already bound to another scene sceneEngine
      */
-    public void addSceneEngine(SceneEngine sceneEngine);
+    public void addScene(SceneEngine sceneEngine);
 
     /**
      * Remove a scene sceneEngine from the GameEngine.
@@ -153,7 +151,7 @@ public interface GameEngine {
      * @param sceneId the id of the scene to be removed
      * @throws java.util.NoSuchElementException raised if sceneId is null or does not denote a valid scene sceneEngine
      */
-    public void removeSceneEngine(String sceneId);
+    public void removeScene(String sceneId);
 
     /**
      * Remove a scene sceneEngine from the GameEngine.
@@ -162,7 +160,7 @@ public interface GameEngine {
      * @param sceneType the type of the scene to be removed
      * @throws java.util.NoSuchElementException raised if sceneId is null or does not denote a valid scene sceneEngine
      */
-    public void removeSceneEngine(Class<? extends SceneEngine> sceneType);
+    public void removeScene(Class<? extends SceneEngine> sceneType);
 
     /**
      * resolve SceneEngine by its Id
@@ -171,9 +169,14 @@ public interface GameEngine {
      * @return SceneEngine corresponding to the given <code>sceneId</code>
      * @throws java.util.NoSuchElementException raised if sceneId is null or does not denote a valid scene sceneEngine
      */
-    public SceneEngine getSceneEngine(String sceneId);
+    public SceneEngine getScene(String sceneId);
 
-    public boolean containsSceneEngine(String sceneId);
+    /**
+     * return true if the scene is registered
+     * @param sceneId to check for existence
+     * @return true if the scene is registered
+     */
+    public boolean containsScene(String sceneId);
 
     /**
      * @param <T>       a subclass of SceneEngine
@@ -181,14 +184,14 @@ public interface GameEngine {
      * @return corresponding to the the id <code>sceneType.getName()</code>
      * @throws java.util.NoSuchElementException raised if sceneId is null or does not denote a valid scene sceneEngine
      */
-    public <T extends SceneEngine> T getSceneEngine(Class<T> sceneType);
+    public <T extends SceneEngine> T getScene(Class<T> sceneType);
 
     /**
      * array of all declared scene engines
      *
      * @return array of all declared scene engines
      */
-    public SceneEngine[] getSceneEngines();
+    List<SceneEngine> getScenes();
 
     /**
      * Deactivate the current activated scene and Activate the scene with id <code>sceneId</code>.
@@ -205,11 +208,11 @@ public interface GameEngine {
     public void setActiveSceneEngine(String sceneId);
 
     /**
-     * Active scene sceneEngine if defined or null
+     * return active scene sceneEngine if defined or null
      *
      * @return active scene sceneEngine if defined or null
      */
-    public SceneEngine getActiveSceneEngine();
+    public SceneEngine getActiveScene();
 
     /**
      * same as <code>setActiveSceneEngine(sceneType.getName())</code>
@@ -219,19 +222,42 @@ public interface GameEngine {
      */
     public void setActiveSceneEngine(Class<? extends SceneEngine> sceneType);
 
-    public Game createGame();
+    /**
+     * create new scene engine
+     * @param sceneId scene engine Id
+     * @return new scene engine Id
+     */
+    public SceneEngine createScene(String sceneId);
 
-    public SceneEngine createSceneEngine(String sceneID);
+    /**
+     * add new scene engine named {@code sceneId}
+     * @param sceneId scene engine id
+     * @return new scene engine
+     */
+    public SceneEngine addScene(String sceneId);
 
-    public SceneEngine addSceneEngine(String sceneID);
-
+    /**
+     * return IoC container instance
+     * @return IoC container instance 
+     */
     public AtomIoCContainer getContainer();
 
+    /**
+     * set IoC container instance
+     * @param container IoC container instance
+     */
     public void setContainer(AtomIoCContainer container);
 
-    public String getDefaultActiveSceneEngineId();
+    /**
+     * default scene engine id
+     * @return default scene
+     */
+    public String getDefaultSceneId();
 
-    public void setDefaultActiveSceneEngineId(String defaultActiveSceneEngineId);
-
+    /**
+     * set default scene
+     * @param sceneEngineId default scene id 
+     */
+    public void setDefaultSceneId(String sceneEngineId);
 
 }

@@ -11,14 +11,14 @@ import java.util.*;
  */
 public class TextStyleMap {
 
-    private Map<Integer, TextStyle> textStyles = new HashMap<Integer, TextStyle>();
+    private Map<SceneComponentState, TextStyle> textStyles = new HashMap<SceneComponentState, TextStyle>();
 
-    public void setTextStyle(TextStyle style, int status) {
+    public void setTextStyle(SceneComponentState status, TextStyle style) {
         textStyles.put(status, new TextStyle(style.getName(), style));
         rebuildStyles();
     }
 
-    public TextStyle getTextStyle(int status) {
+    public TextStyle getTextStyle(SceneComponentState status) {
         TextStyle defaultStyle = textStyles.get(status);
         if (defaultStyle == null) {
             defaultStyle = new TextStyle(createName(status));
@@ -28,72 +28,25 @@ public class TextStyleMap {
         return defaultStyle;
     }
 
-    private String createName(int status) {
-        StringBuilder s = new StringBuilder();
-        if ((status & TextStyle.DISABLED) != 0) {
-            status &= ~TextStyle.DISABLED;
-            if (s.length() > 0) {
-                s.append("_");
-            }
-            s.append("DISABLED");
-        }
-        if ((status & TextStyle.FOCUSED) != 0) {
-            status &= ~TextStyle.FOCUSED;
-            if (s.length() > 0) {
-                s.append("_");
-            }
-            s.append("FOCUSED");
-        }
-        if ((status & TextStyle.SELECTED) != 0) {
-            status &= ~TextStyle.SELECTED;
-            if (s.length() > 0) {
-                s.append("_");
-            }
-            s.append("SELECTED");
-        }
-        if ((status & TextStyle.HOVER) != 0) {
-            status &= ~TextStyle.HOVER;
-            if (s.length() > 0) {
-                s.append("_");
-            }
-            s.append("HOVER");
-        }
-        if (status == 0) {
-            if (s.length() == 0) {
-                return "DEFAULT";
-            } else {
-                return s.toString();
-            }
-        } else {
-            if (s.length() > 0) {
-                s.append(",");
-            }
-            s.append(String.valueOf(status));
-            return s.toString();
-        }
+    private String createName(SceneComponentState status) {
+        return status.toString();
     }
 
     private void rebuildStyles() {
-        TextStyle defaultStyle = getTextStyle(0);
-        for (Map.Entry<Integer, TextStyle> entry : textStyles.entrySet()) {
+        TextStyle defaultStyle = getTextStyle(SceneComponentState.DEFAULT);
+        for (Map.Entry<SceneComponentState, TextStyle> entry : textStyles.entrySet()) {
             entry.getValue().setBaseStyles(new ArrayList<TextStyle>());
         }
-        for (Map.Entry<Integer, TextStyle> entry : textStyles.entrySet()) {
-            int status = entry.getKey();
+        for (Map.Entry<SceneComponentState, TextStyle> entry : textStyles.entrySet()) {
+            SceneComponentState status = entry.getKey();
             TextStyle style = entry.getValue();
-            if (status == 0) {
+            if (status == SceneComponentState.DEFAULT) {
                 //do nothing
             } else {
-                TreeMap<Integer, TextStyle> bases = new TreeMap<Integer, TextStyle>(new Comparator<Integer>() {
-                    public int compare(Integer o1, Integer o2) {
-                        return o2.compareTo(o1);
-                    }
-                });
-                for (Map.Entry<Integer, TextStyle> entry2 : textStyles.entrySet()) {
-                    int status2 = entry2.getKey();
-                    if (status2 == 0 || (status2 < status && ((status & status2) != 0))) {
-                        bases.put(status2, entry2.getValue());
-                    }
+                TreeMap<SceneComponentState, TextStyle> bases = new TreeMap<SceneComponentState, TextStyle>();
+                for (Map.Entry<SceneComponentState, TextStyle> entry2 : textStyles.entrySet()) {
+                    SceneComponentState status2 = entry2.getKey();
+                    bases.put(status2, entry2.getValue());
                 }
                 style.setBaseStyles(new ArrayList<TextStyle>(bases.values()));
             }

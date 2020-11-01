@@ -22,6 +22,7 @@ public class DefaultSceneComponent implements SceneComponent {
     private boolean enabled = true;
     private SceneController controller;
     private String name;
+    private Alignment alignment = Alignment.CENTER;
 
     public DefaultSceneComponent() {
 
@@ -35,24 +36,27 @@ public class DefaultSceneComponent implements SceneComponent {
         return focusable;
     }
 
-    public void setFocusable(boolean focusable) {
+    public SceneComponent setFocusable(boolean focusable) {
         this.focusable = focusable;
+        return this;
     }
 
     public boolean hasFocus() {
         return focused;
     }
 
-    public void setFocused(boolean focused) {
+    public SceneComponent setFocused(boolean focused) {
         this.focused = focused;
+        return this;
     }
 
     public boolean isVisible() {
         return visible;
     }
 
-    public void setVisible(boolean visible) {
+    public SceneComponent setVisible(boolean visible) {
         this.visible = visible;
+        return this;
     }
 
     public ViewDimension getSize() {
@@ -60,12 +64,13 @@ public class DefaultSceneComponent implements SceneComponent {
     }
 
     @Override
-    public void setSize(RatioDimension size) {
-        ViewDimension screen = scene.getAbsoluteCameraSize();
+    public SceneComponent setSize(RatioDimension size) {
+        ViewDimension screen = scene.getCamera().getViewDimension();
         setSize(new ViewDimension(
                 (int) (screen.getWidth() * size.getWidth()),
                 (int) (screen.getHeight() * size.getHeight())
         ));
+        return this;
     }
 
     @Override
@@ -74,8 +79,8 @@ public class DefaultSceneComponent implements SceneComponent {
     }
 
     @Override
-    public void setBounds(RatioViewBox bounds) {
-        ViewDimension screen = scene.getAbsoluteCameraSize();
+    public SceneComponent setBounds(RatioViewBox bounds) {
+        ViewDimension screen = scene.getCamera().getViewDimension();
         int w = screen.getWidth();
         int h = screen.getHeight();
         ViewBox b = new ViewBox(
@@ -86,15 +91,18 @@ public class DefaultSceneComponent implements SceneComponent {
 
         );
         setBounds(b);
+        return this;
     }
 
-    public void setBounds(ViewBox r) {
+    public SceneComponent setBounds(ViewBox r) {
         setLocation(new ViewPoint(r.getX(), r.getY()));
         setSize(new ViewDimension(r.getWidth(), r.getHeight(), r.getAltitude()));
+        return this;
     }
 
-    public void setSize(ViewDimension size) {
+    public SceneComponent setSize(ViewDimension size) {
         this.size = size;
+        return this;
     }
 
     @Override
@@ -102,24 +110,27 @@ public class DefaultSceneComponent implements SceneComponent {
         return size;
     }
 
-    public void addEventListener(SceneController listener) {
+    public SceneComponent addEventListener(SceneController listener) {
         //
+        return this;
     }
 
     public ViewPoint getLocation() {
         return location;
     }
 
-    public void setLocation(ViewPoint position) {
+    public SceneComponent setLocation(ViewPoint position) {
         this.location = position;
+        return this;
     }
 
-    public void setLocation(RatioPoint position) {
-        ViewDimension screen = scene.getAbsoluteCameraSize();
+    public SceneComponent setLocation(RatioPoint position) {
+        ViewDimension screen = scene.getCamera().getViewDimension();
         setLocation(new ViewPoint(
                 (int) (screen.getWidth() * position.getX()),
                 (int) (screen.getHeight() * position.getY())
         ));
+        return this;
     }
 
     public void draw(LayerDrawingContext par1) {
@@ -130,8 +141,9 @@ public class DefaultSceneComponent implements SceneComponent {
         //do nothing
     }
 
-    public void removeEventListener(SceneController listener) {
+    public SceneComponent removeEventListener(SceneController listener) {
         //do nothing
+        return this;
     }
 
     public Scene getScene() {
@@ -166,8 +178,9 @@ public class DefaultSceneComponent implements SceneComponent {
         return controller;
     }
 
-    public void setController(SceneController controller) {
+    public SceneComponent setController(SceneController controller) {
         this.controller = controller;
+        return this;
     }
 
     public String getName() {
@@ -199,7 +212,17 @@ public class DefaultSceneComponent implements SceneComponent {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public SceneComponent setEnabled(boolean enabled) {
         this.enabled = enabled;
+        return this;
+    }
+
+    public Alignment getAlignment() {
+        return alignment;
+    }
+
+    public DefaultSceneComponent setAlignment(Alignment alignment) {
+        this.alignment = alignment;
+        return this;
     }
 }

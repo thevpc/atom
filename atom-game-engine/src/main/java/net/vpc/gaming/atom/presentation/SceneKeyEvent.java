@@ -11,6 +11,7 @@ import net.vpc.gaming.atom.presentation.layers.Layer;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import net.vpc.gaming.atom.engine.GameEngine;
 
 /**
  * Event fired on key events
@@ -18,6 +19,7 @@ import java.util.Arrays;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  */
 public class SceneKeyEvent {
+
     /**
      * The first number in the range of ids used for key events.
      */
@@ -29,28 +31,26 @@ public class SceneKeyEvent {
     public static final int KEY_LAST = KeyEvent.KEY_LAST;
 
     /**
-     * The "key typed" event.  This event is generated when a character is
-     * entered.  In the simplest case, it is produced by a single key press.
-     * Often, however, characters are produced by series of key presses, and
-     * the mapping from key pressed events to key typed events may be
-     * many-to-one or many-to-many.
+     * The "key typed" event. This event is generated when a character is
+     * entered. In the simplest case, it is produced by a single key press.
+     * Often, however, characters are produced by series of key presses, and the
+     * mapping from key pressed events to key typed events may be many-to-one or
+     * many-to-many.
      */
     public static final int KEY_TYPED = KeyEvent.KEY_TYPED;
 
     /**
-     * The "key pressed" event. This event is generated when a key
-     * is pushed down.
+     * The "key pressed" event. This event is generated when a key is pushed
+     * down.
      */
     public static final int KEY_PRESSED = KeyEvent.KEY_PRESSED; //Event.KEY_PRESS
 
     /**
-     * The "key released" event. This event is generated when a key
-     * is let up.
+     * The "key released" event. This event is generated when a key is let up.
      */
     public static final int KEY_RELEASED = KeyEvent.KEY_RELEASED; //Event.KEY_RELEASE
 
     /* Virtual key codes. */
-
     public static final int VK_ENTER = KeyEvent.VK_ENTER;
     public static final int VK_BACK_SPACE = KeyEvent.VK_BACK_SPACE;
     public static final int VK_TAB = '\t';
@@ -218,7 +218,8 @@ public class SceneKeyEvent {
     public static final int VK_SUBTRACT = 0x6D;
     public static final int VK_DECIMAL = 0x6E;
     public static final int VK_DIVIDE = 0x6F;
-    public static final int VK_DELETE = 0x7F; /* ASCII DEL */
+    public static final int VK_DELETE = 0x7F;
+    /* ASCII DEL */
     public static final int VK_NUM_LOCK = 0x90;
     public static final int VK_SCROLL_LOCK = 0x91;
 
@@ -588,8 +589,8 @@ public class SceneKeyEvent {
     public static final int VK_UNDERSCORE = 0x020B;
 
     /**
-     * Constant for the Microsoft Windows "Windows" key.
-     * It is used for both the left and right version of the key.
+     * Constant for the Microsoft Windows "Windows" key. It is used for both the
+     * left and right version of the key.
      *
      * @see #getKeyLocation()
      * @since 1.5
@@ -605,7 +606,7 @@ public class SceneKeyEvent {
 
     /* for input method support on Asian Keyboards */
 
-    /* not clear what this means - listed in Microsoft Windows API */
+ /* not clear what this means - listed in Microsoft Windows API */
     public static final int VK_FINAL = 0x0018;
 
     /**
@@ -710,8 +711,8 @@ public class SceneKeyEvent {
     public static final int VK_CODE_INPUT = 0x0102;
 
     /**
-     * Constant for the Japanese-Katakana function key.
-     * This key switches to a Japanese input method and selects its Katakana input mode.
+     * Constant for the Japanese-Katakana function key. This key switches to a
+     * Japanese input method and selects its Katakana input mode.
      *
      * @since 1.2
      */
@@ -719,8 +720,8 @@ public class SceneKeyEvent {
     public static final int VK_JAPANESE_KATAKANA = 0x0103;
 
     /**
-     * Constant for the Japanese-Hiragana function key.
-     * This key switches to a Japanese input method and selects its Hiragana input mode.
+     * Constant for the Japanese-Hiragana function key. This key switches to a
+     * Japanese input method and selects its Hiragana input mode.
      *
      * @since 1.2
      */
@@ -728,8 +729,8 @@ public class SceneKeyEvent {
     public static final int VK_JAPANESE_HIRAGANA = 0x0104;
 
     /**
-     * Constant for the Japanese-Roman function key.
-     * This key switches to a Japanese input method and selects its Roman-Direct input mode.
+     * Constant for the Japanese-Roman function key. This key switches to a
+     * Japanese input method and selects its Roman-Direct input mode.
      *
      * @since 1.2
      */
@@ -737,8 +738,8 @@ public class SceneKeyEvent {
     public static final int VK_JAPANESE_ROMAN = 0x0105;
 
     /**
-     * Constant for the locking Kana function key.
-     * This key locks the keyboard into a Kana layout.
+     * Constant for the locking Kana function key. This key locks the keyboard
+     * into a Kana layout.
      *
      * @since 1.3
      */
@@ -809,87 +810,83 @@ public class SceneKeyEvent {
     public static final int VK_BEGIN = 0xFF58;
 
     /**
-     * This value is used to indicate that the keyCode is unknown.
-     * KEY_TYPED events do not have a keyCode value; this value
-     * is used instead.
+     * This value is used to indicate that the keyCode is unknown. KEY_TYPED
+     * events do not have a keyCode value; this value is used instead.
      */
     public static final int VK_UNDEFINED = 0x0;
 
     /**
-     * KEY_PRESSED and KEY_RELEASED events which do not map to a
-     * valid Unicode character use this for the keyChar value.
+     * KEY_PRESSED and KEY_RELEASED events which do not map to a valid Unicode
+     * character use this for the keyChar value.
      */
     public static final char CHAR_UNDEFINED = 0xFFFF;
 
     /**
-     * A constant indicating that the keyLocation is indeterminate
-     * or not relevant.
-     * <code>KEY_TYPED</code> events do not have a keyLocation; this value
-     * is used instead.
+     * A constant indicating that the keyLocation is indeterminate or not
+     * relevant. <code>KEY_TYPED</code> events do not have a keyLocation; this
+     * value is used instead.
      *
      * @since 1.4
      */
     public static final int KEY_LOCATION_UNKNOWN = 0;
 
     /**
-     * A constant indicating that the key pressed or released
-     * is not distinguished as the left or right version of a key,
-     * and did not originate on the numeric keypad (or did not
-     * originate with a virtual key corresponding to the numeric
-     * keypad).
+     * A constant indicating that the key pressed or released is not
+     * distinguished as the left or right version of a key, and did not
+     * originate on the numeric keypad (or did not originate with a virtual key
+     * corresponding to the numeric keypad).
      *
      * @since 1.4
      */
     public static final int KEY_LOCATION_STANDARD = 1;
 
     /**
-     * A constant indicating that the key pressed or released is in
-     * the left key location (there is more than one possible location
-     * for this key).  Example: the left shift key.
+     * A constant indicating that the key pressed or released is in the left key
+     * location (there is more than one possible location for this key).
+     * Example: the left shift key.
      *
      * @since 1.4
      */
     public static final int KEY_LOCATION_LEFT = 2;
 
     /**
-     * A constant indicating that the key pressed or released is in
-     * the right key location (there is more than one possible location
-     * for this key).  Example: the right shift key.
+     * A constant indicating that the key pressed or released is in the right
+     * key location (there is more than one possible location for this key).
+     * Example: the right shift key.
      *
      * @since 1.4
      */
     public static final int KEY_LOCATION_RIGHT = 3;
 
     /**
-     * A constant indicating that the key event originated on the
-     * numeric keypad or with a virtual key corresponding to the
-     * numeric keypad.
+     * A constant indicating that the key event originated on the numeric keypad
+     * or with a virtual key corresponding to the numeric keypad.
      *
      * @since 1.4
      */
     public static final int KEY_LOCATION_NUMPAD = 4;
 
     /**
-     * The Shift key modifier constant.
-     * It is recommended that SHIFT_DOWN_MASK be used instead.
+     * The Shift key modifier constant. It is recommended that SHIFT_DOWN_MASK
+     * be used instead.
      */
     public static final int SHIFT_MASK = Event.SHIFT_MASK;
 
     /**
-     * The Control key modifier constant.
-     * It is recommended that CTRL_DOWN_MASK be used instead.
+     * The Control key modifier constant. It is recommended that CTRL_DOWN_MASK
+     * be used instead.
      */
     public static final int CTRL_MASK = Event.CTRL_MASK;
 
     /**
-     * The Meta key modifier constant.
-     * It is recommended that META_DOWN_MASK be used instead.
+     * The Meta key modifier constant. It is recommended that META_DOWN_MASK be
+     * used instead.
      */
     public static final int META_MASK = Event.META_MASK;
 
     /**
-     * The Alt key modifier constant.
-     * It is recommended that ALT_DOWN_MASK be used instead.
+     * The Alt key modifier constant. It is recommended that ALT_DOWN_MASK be
+     * used instead.
      */
     public static final int ALT_MASK = Event.ALT_MASK;
 
@@ -899,22 +896,22 @@ public class SceneKeyEvent {
     public static final int ALT_GRAPH_MASK = 1 << 5;
 
     /**
-     * The Mouse Button1 modifier constant.
-     * It is recommended that BUTTON1_DOWN_MASK be used instead.
+     * The Mouse Button1 modifier constant. It is recommended that
+     * BUTTON1_DOWN_MASK be used instead.
      */
     public static final int BUTTON1_MASK = 1 << 4;
 
     /**
-     * The Mouse Button2 modifier constant.
-     * It is recommended that BUTTON2_DOWN_MASK be used instead.
-     * Note that BUTTON2_MASK has the same value as ALT_MASK.
+     * The Mouse Button2 modifier constant. It is recommended that
+     * BUTTON2_DOWN_MASK be used instead. Note that BUTTON2_MASK has the same
+     * value as ALT_MASK.
      */
     public static final int BUTTON2_MASK = Event.ALT_MASK;
 
     /**
-     * The Mouse Button3 modifier constant.
-     * It is recommended that BUTTON3_DOWN_MASK be used instead.
-     * Note that BUTTON3_MASK has the same value as META_MASK.
+     * The Mouse Button3 modifier constant. It is recommended that
+     * BUTTON3_DOWN_MASK be used instead. Note that BUTTON3_MASK has the same
+     * value as META_MASK.
      */
     public static final int BUTTON3_MASK = Event.META_MASK;
 
@@ -975,25 +972,25 @@ public class SceneKeyEvent {
     public static final int ALT_GRAPH_DOWN_MASK = 1 << 13;
 
     private static final int[] BUTTON_DOWN_MASK = new int[]{BUTTON1_DOWN_MASK,
-            BUTTON2_DOWN_MASK,
-            BUTTON3_DOWN_MASK,
-            1 << 14, //4th phisical button (this is not a wheel!)
-            1 << 15, //(this is not a wheel!)
-            1 << 16,
-            1 << 17,
-            1 << 18,
-            1 << 19,
-            1 << 20,
-            1 << 21,
-            1 << 22,
-            1 << 23,
-            1 << 24,
-            1 << 25,
-            1 << 26,
-            1 << 27,
-            1 << 28,
-            1 << 29,
-            1 << 30};
+        BUTTON2_DOWN_MASK,
+        BUTTON3_DOWN_MASK,
+        1 << 14, //4th phisical button (this is not a wheel!)
+        1 << 15, //(this is not a wheel!)
+        1 << 16,
+        1 << 17,
+        1 << 18,
+        1 << 19,
+        1 << 20,
+        1 << 21,
+        1 << 22,
+        1 << 23,
+        1 << 24,
+        1 << 25,
+        1 << 26,
+        1 << 27,
+        1 << 28,
+        1 << 29,
+        1 << 30};
 
     private int playerId;
     private Player controlPlayer;
@@ -1044,7 +1041,7 @@ public class SceneKeyEvent {
         return getScene().getSceneEngine();
     }
 
-    public SceneEngine getGameEngine() {
+    public GameEngine getGameEngine() {
         return getSceneEngine().getGameEngine();
     }
 
@@ -1167,15 +1164,15 @@ public class SceneKeyEvent {
         return KeyEvent.getKeyModifiersText(modifiers);
     }
 
-    public static String getKeyText(int ... keyCodes) {
-        StringBuilder b=new StringBuilder();
+    public static String getKeyText(int... keyCodes) {
+        StringBuilder b = new StringBuilder();
         for (int keyCode : keyCodes) {
-            if(b.length()>0){
+            if (b.length() > 0) {
                 b.append(",");
             }
             b.append(getKeyText(keyCode));
         }
-        return "["+b+"]";
+        return "[" + b + "]";
     }
 
     public static String getKeyText(int keyCode) {
@@ -1220,19 +1217,19 @@ public class SceneKeyEvent {
 
     @Override
     public String toString() {
-        return "SceneKeyEvent{" +
-                "playerId=" + playerId +
-                ", controlPlayer=" + controlPlayer +
-                ", when=" + when +
-                ", modifiers=" + modifiers +
-                ", keyCode=" + getKeyText(keyCode) +
-                ", keyChar=" + keyChar +
-                ", keyLocation=" + keyLocation +
-                ", consumed=" + consumed +
-                ", scene=" + scene +
-                ", layer=" + layer +
-                ", disabled=" + disabled +
-                ", keyCodes=" + getKeyText(keyCodes) +
-                '}';
+        return "SceneKeyEvent{"
+                + "playerId=" + playerId
+                + ", controlPlayer=" + controlPlayer
+                + ", when=" + when
+                + ", modifiers=" + modifiers
+                + ", keyCode=" + getKeyText(keyCode)
+                + ", keyChar=" + keyChar
+                + ", keyLocation=" + keyLocation
+                + ", consumed=" + consumed
+                + ", scene=" + scene
+                + ", layer=" + layer
+                + ", disabled=" + disabled
+                + ", keyCodes=" + getKeyText(keyCodes)
+                + '}';
     }
 }

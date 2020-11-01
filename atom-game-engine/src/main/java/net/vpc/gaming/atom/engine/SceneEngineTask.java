@@ -18,8 +18,8 @@ package net.vpc.gaming.atom.engine;
  * public class GravityTask implements SceneEngineTask {
  *    public public void nextFrame(SceneEngine scene){
  *       Person s=scene.findSprite(Person.class);
- *       DPoint p=s.getLocation();
- *       s.setLocation(new DPoint(p.getX(),p.getY()-1));
+ *       ModelPoint p=s.getLocation();
+ *       s.setLocation(new ModelPoint(p.getX(),p.getY()-1));
  *    }
  * }
  * </pre>

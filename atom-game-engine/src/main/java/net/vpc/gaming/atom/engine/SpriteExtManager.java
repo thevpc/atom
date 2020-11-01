@@ -75,12 +75,7 @@ public class SpriteExtManager<T> {
         HashMap<Class, Object> map = new HashMap<>();
         map.put(SceneEngine.class,engine);
         map.put(GameEngine.class,engine.getGameEngine());
-        return (T) container.create(type, new InstancePreparator() {
-            @Override
-            public void prepare(Object o) {
-
-            }
-        }, map);
+        return (T) container.create(type, null, map);
     }
 
 
@@ -95,12 +90,7 @@ public class SpriteExtManager<T> {
             HashMap<Class, Object> map = new HashMap<>();
             map.put(SceneEngine.class,engine);
             map.put(GameEngine.class,engine.getGameEngine());
-            return (T) container.create(t2, new InstancePreparator() {
-                @Override
-                public void prepare(Object o) {
-
-                }
-            }, map);
+            return (T) container.create(t2, null, map);
         }
 
         t = extInstByKind.get(s.getKind());
@@ -112,12 +102,7 @@ public class SpriteExtManager<T> {
             HashMap<Class, Object> map = new HashMap<>();
             map.put(SceneEngine.class,engine);
             map.put(GameEngine.class,engine.getGameEngine());
-            return (T) container.create(t2, new InstancePreparator() {
-                @Override
-                public void prepare(Object o) {
-
-                }
-            }, map);
+            return (T) container.create(t2, null, map);
         }
         return null;
     }

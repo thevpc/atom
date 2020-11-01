@@ -4,9 +4,7 @@
  */
 package net.vpc.gaming.atom.engine;
 import net.vpc.gaming.atom.engine.collision.SceneCollisionManager;
-import net.vpc.gaming.atom.*;
 import net.vpc.gaming.atom.model.*;
-import net.vpc.gaming.atom.presentation.*;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;

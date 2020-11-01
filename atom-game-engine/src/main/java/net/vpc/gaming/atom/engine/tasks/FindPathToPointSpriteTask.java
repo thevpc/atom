@@ -48,30 +48,30 @@ public class FindPathToPointSpriteTask implements MotionSpriteTask {
     public boolean nextFrame(SceneEngine scene, Sprite sprite) {
         boolean terminated = false;
         if (target != null) {
-            ModelPoint endPoint;
+            ModelPoint enModelPoint;
             if (!center) {
-                endPoint = target;
+                enModelPoint = target;
             } else {
-                endPoint = new ModelPoint(target.getX() - sprite.getWidth() / 2, target.getY() - sprite.getHeight() / 2, target.getZ() - sprite.getAltitude() / 2);
+                enModelPoint = new ModelPoint(target.getX() - sprite.getWidth() / 2, target.getY() - sprite.getHeight() / 2, target.getZ() - sprite.getAltitude() / 2);
             }
             final ModelPoint startPoint = sprite.getLocation();
-            if (!startPoint.equals(endPoint)) {
+            if (!startPoint.equals(enModelPoint)) {
                 if (currentPathCalculationCacheIndex <= 0) {
                     currentPathCalculationCacheIndex = pathCalculationCacheTime;
 //                    TransitionStrategy transitionStrategy = new TransitionStrategyN(scene, sprite, transitionsCount, maxMovesSight);
                     TransitionStrategy transitionStrategy = new TransitionStrategy8(scene, sprite, maxMovesSight);
-                    path = pathFinder.findPath(startPoint, endPoint, transitionStrategy);
+                    path = pathFinder.findPath(startPoint, enModelPoint, transitionStrategy);
                 }
                 boolean consumePath = false;
                 if (path.length > 1) {
                     ModelPoint stepPoint = path[1];
                     if (minDistance <= 0 || Double.isNaN(minDistance) || stepPoint.distance(startPoint) < minDistance) {
-                        if (stepPoint.equals(endPoint)) {
-//                            sprite.setDirection(stepPoint.getAngleTo(endPoint));
+                        if (stepPoint.equals(enModelPoint)) {
+//                            sprite.setDirection(stepPoint.getAngleTo(enModelPoint));
                             consumePath = true;
                         } else {
                             double oldDirection = sprite.getDirection();
-                            double nextDirection = stepPoint.getAngleTo(endPoint);
+                            double nextDirection = stepPoint.getAngleTo(enModelPoint);
                             double as = sprite.getAngularSpeed();
                             if (as <= 0 || as >= Math.PI) {
                                 sprite.setDirection(nextDirection);

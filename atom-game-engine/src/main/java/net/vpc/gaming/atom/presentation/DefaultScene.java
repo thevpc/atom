@@ -18,7 +18,6 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -32,8 +31,6 @@ import net.vpc.gaming.atom.model.ModelDimension;
 import net.vpc.gaming.atom.model.ModelPoint;
 import net.vpc.gaming.atom.model.Player;
 import net.vpc.gaming.atom.model.RatioViewBox;
-import net.vpc.gaming.atom.model.RatioDimension;
-import net.vpc.gaming.atom.model.RatioPoint;
 import net.vpc.gaming.atom.model.SceneEngineModel;
 import net.vpc.gaming.atom.model.SceneModel;
 import net.vpc.gaming.atom.model.Sprite;
@@ -75,7 +72,8 @@ public class DefaultScene implements Scene {
     private EventsDispatcherLayer fallbackLayer = new EventsDispatcherLayer();
     private int namedComponentsNameHelper = 0;
     private LinkedHashMap<String, SceneComponentLayout> namedComponents = new LinkedHashMap<String, SceneComponentLayout>();
-    private java.util.List<SceneController> listeners = new ArrayList<SceneController>();
+    private java.util.List<SceneController> sceneControllers = new ArrayList<SceneController>();
+    private java.util.List<SceneLifeCycleListener> lifecycleListeners = new ArrayList<SceneLifeCycleListener>();
     private Map<Class, Object> viewForModelType = new HashMap<Class, Object>();
     private Map<Class<? extends Sprite>, SpriteView> spriteViewForModel = new HashMap<Class<? extends Sprite>, SpriteView>();
     private Map<String, SpriteView> spriteViewForModelKind = new HashMap<String, SpriteView>();
@@ -84,14 +82,13 @@ public class DefaultScene implements Scene {
     private AffineTransform screenAffineTransform;
     private AffineTransform boardAffineTransform;
     private BufferedImage frameImage;
-    private ModelBox cameraModel = null;
     private NativeInputListener nativeInputListener = new NativeInputListener();
     private SceneComponentPainter component = new SceneComponentPainter();
     private FrameBuilder frameBuilder = new FrameBuilder();
     private PropertyChangeSupport propertyChangeSupport;
     private ImageProducer imageProducer;
     private boolean started = false;
-    private Sprite cameraLockToSprite;
+    private SceneCamera camera;
     private List<SceneListener> sceneListeners = new ArrayList<>();
     private PropertyChangeListener modelListenerBridge = new PropertyChangeListener() {
         @Override
@@ -99,14 +96,7 @@ public class DefaultScene implements Scene {
             propertyChangeSupport.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
         }
     };
-    SceneEngineFrameListener cameraLockToSpriteListener = new SceneEngineFrameListener() {
-        @Override
-        public void modelUpdated(SceneEngine sceneEngine, SceneEngineModel model) {
-            if (cameraLockToSprite != null) {
-                moveCameraTo(cameraLockToSprite);
-            }
-        }
-    };
+
 //    private Comparator<Tile> rowTilesComparator = new Comparator<Tile>() {
 //        @Override
 //        public int compare(Tile o1, Tile o2) {
@@ -126,6 +116,14 @@ public class DefaultScene implements Scene {
 
     public DefaultScene(int tileSize) {
         this("", new ViewDimension(tileSize, tileSize, tileSize));
+    }
+
+    public DefaultScene(int xtileSize,int ytileSize) {
+        this("", new ViewDimension(xtileSize, ytileSize, xtileSize));
+    }
+
+    public DefaultScene(int xtileSize,int ytileSize,int ztileSize) {
+        this("", new ViewDimension(xtileSize, ytileSize, ztileSize));
     }
 
     public DefaultScene() {
@@ -160,13 +158,6 @@ public class DefaultScene implements Scene {
 
         sceneModel.setTileSize(tileSize);
         sceneModel.setSceneSize(sceneModel.getTileSize());
-        PropertyChangeListener resetCameraModel = new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                cameraModel = null;
-            }
-        };
-        sceneModel.addPropertyChangeListener("isometricView", resetCameraModel);
         sceneModel.addPropertyChangeListener("tileSize", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -181,14 +172,12 @@ public class DefaultScene implements Scene {
 //                )));
             }
         });
-        sceneModel.addPropertyChangeListener("screenSize", resetCameraModel);
-        sceneModel.addPropertyChangeListener("camera", resetCameraModel);
-        packToViewPort();
 
         component.addMouseMotionListener(nativeInputListener);
         component.addMouseListener(nativeInputListener);
         component.addKeyListener(nativeInputListener);
-
+        this.camera = new DefaultSceneCamera(this);
+        packToViewPort();
     }
 
     public void setTileSize(int size) {
@@ -309,7 +298,7 @@ public class DefaultScene implements Scene {
 
     private MouseEvent toIsometricMouseEvent(MouseEvent e) {
         if (isIsometric()) {
-            ViewBox vp = getAbsoluteCamera();
+            ViewBox vp = getCamera().getViewBounds();
             vp = new ViewBox(0, 0, vp.getWidth(), vp.getHeight());
             int x = e.getX();
             int y = e.getY();
@@ -324,7 +313,7 @@ public class DefaultScene implements Scene {
     }
 
     private void packToViewPort() {
-        ViewBox vp = getAbsoluteCamera();
+        ViewBox vp = getCamera().getViewBounds();
         component.setPreferredSize(new Dimension(vp.getWidth(), vp.getHeight()));
         component.setMinimumSize(new Dimension(vp.getWidth(), vp.getHeight()));
     }
@@ -345,12 +334,6 @@ public class DefaultScene implements Scene {
                 updateSceneSize();
             }
         });
-        sceneEngine.addPropertyChangeListener("camera", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                cameraModel = null;
-            }
-        });
         updateSceneSize();
         propertyChangeSupport.firePropertyChange("model", null, sceneModel);
         propertyChangeSupport.firePropertyChange("sceneEngine", null, sceneEngine);
@@ -368,7 +351,7 @@ public class DefaultScene implements Scene {
         if (!installedExtensions.contains(FogOfWarSceneExtension.class)) {
             installExtension(new FogOfWarSceneExtension());
         }
-        for (SceneController listener : listeners) {
+        for (SceneLifeCycleListener listener : getLifecycleListeners()) {
             listener.sceneInitialized(this);
         }
     }
@@ -379,8 +362,8 @@ public class DefaultScene implements Scene {
             throw new IllegalArgumentException("Scene already started");
         }
         this.started = true;
-        for (SceneController sceneEventListener : listeners.toArray(new SceneController[listeners.size()])) {
-            sceneEventListener.sceneStarted(this);
+        for (SceneLifeCycleListener listener : getLifecycleListeners()) {
+            listener.sceneStarted(this);
         }
         sceneStarted();
     }
@@ -391,8 +374,8 @@ public class DefaultScene implements Scene {
             throw new IllegalArgumentException("Scene already stopped");
         }
         this.started = false;
-        for (SceneController sceneEventListener : listeners) {
-            sceneEventListener.sceneStopped(this);
+        for (SceneLifeCycleListener listener : getLifecycleListeners()) {
+            listener.sceneStopped(this);
         }
         sceneStopped();
     }
@@ -439,8 +422,8 @@ public class DefaultScene implements Scene {
 
     protected void frameStep() {
         update();
-        for (SceneController sceneController : listeners) {
-            sceneController.nexFrame(this);
+        for (SceneLifeCycleListener listener : getLifecycleListeners()) {
+            listener.nexFrame(this);
         }
         buildFrameLayers();
         for (Layer gameLayer : backScreenLayers) {
@@ -459,12 +442,32 @@ public class DefaultScene implements Scene {
         component.repaint();
     }
 
-    public void addSceneController(SceneController listener) {
-        listeners.add(listener);
+    public void addController(SceneController listener) {
+        sceneControllers.add(listener);
     }
 
-    public void removeSceneController(SceneController listener) {
-        listeners.remove(listener);
+    public void removeController(SceneController listener) {
+        sceneControllers.remove(listener);
+    }
+
+    @Override
+    public SceneController[] getSceneControllers() {
+        return sceneControllers.toArray(new SceneController[0]);
+    }
+
+    @Override
+    public void addLifeCycleListener(SceneLifeCycleListener listener) {
+        lifecycleListeners.add(listener);
+    }
+
+    @Override
+    public void removeLifeCycleListener(SceneLifeCycleListener listener) {
+        lifecycleListeners.remove(listener);
+    }
+
+    @Override
+    public SceneLifeCycleListener[] getLifecycleListeners() {
+        return lifecycleListeners.toArray(new SceneLifeCycleListener[0]);
     }
 
     public void buildFrameLayers() {
@@ -568,7 +571,7 @@ public class DefaultScene implements Scene {
 //        System.out.println("last Frame :DRAW_IMAGE_DRAW_COUNT="+AGEDebug.DRAW_IMAGE_DRAW_COUNT+" ; DRAW_IMAGE_RESCALE_COUNT="+AGEDebug.DRAW_IMAGE_RESCALE_COUNT);
         AtomDebug.DRAW_IMAGE_DRAW_COUNT = 0;
         AtomDebug.DRAW_IMAGE_RESCALE_COUNT = 0;
-        ViewBox vp = getCameraScreen();
+        ViewBox vp = getCamera().getViewPort();
         BufferedImage _frameImage = new BufferedImage(vp.getWidth(), vp.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = _frameImage.createGraphics();
         AffineTransform sat = getScreenAffineTransform();
@@ -867,10 +870,6 @@ public class DefaultScene implements Scene {
 //    }
 
 
-    @Override
-    public ViewBox getCameraScreen() {
-        return getAbsoluteCamera().getDimensionBox();
-    }
 
     @Override
     public ViewBox getSceneScreen() {
@@ -878,92 +877,19 @@ public class DefaultScene implements Scene {
     }
 
     @Override
-    public ViewDimension getAbsoluteCameraSize() {
-        return getAbsoluteCamera().getSize();
-    }
-
-    @Override
-    public void setCameraSize(RatioDimension ratioDimension) {
-        ViewDimension md = getSceneSize();
-        RatioViewBox c = getCamera();
-        if (c == null) {
-            setCamera(
-                    new RatioViewBox(
-                            0, 0, 0,
-                            ratioDimension.getWidth(), ratioDimension.getHeight(), ratioDimension.getAltitude()
-                    )
-            );
-        } else {
-            setCamera(
-                    validateRatioViewBox(new RatioViewBox(
-                            c.getX(), c.getY(), c.getZ(),
-                            ratioDimension.getWidth(), ratioDimension.getHeight(), ratioDimension.getAltitude()
-                    )));
-        }
-    }
-
-    @Override
     public ViewDimension getSceneSize() {
         return getModel().getSceneSize();
     }
 
-    @Override
-    public RatioViewBox getCamera() {
-        return getModel().getCamera();
-    }
 
-    @Override
-    public ViewBox getAbsoluteCamera() {
-        RatioViewBox camera = getModel().getCamera();
-        ViewBox sceneScreen = getSceneScreen();
-        return new ViewBox(
-                (int) (sceneScreen.getX() + camera.getX() * sceneScreen.getWidth()),
-                (int) (sceneScreen.getY() + camera.getY() * sceneScreen.getHeight()),
-                (int) (sceneScreen.getZ() + camera.getZ() * sceneScreen.getAltitude()),
-                (int) (camera.getWidth() * sceneScreen.getWidth()),
-                (int) (camera.getHeight() * sceneScreen.getHeight()),
-                (int) (camera.getAltitude() * sceneScreen.getAltitude())
-        );
-    }
-
-    @Override
-    public void setAbsoluteCameraSize(ViewDimension rect) {
-        ViewBox c = getAbsoluteCamera();
-        setAbsoluteCamera(new ViewBox(
-                c.getX(),
-                c.getY(),
-                c.getZ(),
-                rect.getWidth(),
-                rect.getHeight(),
-                rect.getAltitude()
-        ));
-    }
-
-    public void setAbsoluteCamera(ViewBox rect) {
-        ViewBox s = getSceneScreen();
-        RatioViewBox r = new RatioViewBox(
-                (float)((double)rect.getX() / s.getWidth()),
-                (float)((double)rect.getY() / s.getHeight()),
-                (float)((double)rect.getZ() / s.getAltitude()),
-                (float)((double)rect.getWidth() / s.getWidth()),
-                (float)((double)rect.getHeight() / s.getHeight()),
-                (float)((double)rect.getAltitude() / s.getAltitude())
-        );
-        setCamera(r);
-    }
-
-    public void setCamera(RatioViewBox rect) {
-        //validateRatioViewBox(rect)
-        getModel().setCamera(rect);
-    }
 
     @Override
     public java.util.List<Tile> findDisplayTiles() {
         if (isIsometric()) {
-            return getSceneEngine().findTiles(getPolygonAbsoluteCameraModel());
+            return getSceneEngine().findTiles(getCamera().getModelPolygon());
         } else {
             //this is faster
-            return getSceneEngine().findTiles(getAbsoluteCameraModelBox());
+            return getSceneEngine().findTiles(getCamera().getModelBounds());
         }
     }
 
@@ -996,88 +922,6 @@ public class DefaultScene implements Scene {
     }
 
     @Override
-    public Path2D getPolygonAbsoluteCameraModel() {
-        ViewBox v = getAbsoluteCamera();
-        SceneModel m = getModel();
-        ViewDimension td = m.getTileSize();
-        double w = v.getWidth();
-        double h = v.getHeight();
-        double x = v.getX();
-        double y = v.getY();
-        double tw = td.getWidth();
-        double th = td.getHeight();
-        ModelBox cam = new ModelBox(
-                x / tw,
-                y / th,
-                w / tw,
-                h / th);
-        return toPath2D(cam);
-    }
-
-    @Override
-    public Path2D getPolygonAbsoluteCamera() {
-        ViewBox cam = getAbsoluteCamera();
-        ViewDimension s = getSceneSize();
-        if (isIsometric()) {
-            ViewBox screen = new ViewBox(-cam.getMinX(), -cam.getMinY(), s.getWidth(), s.getHeight());
-            AffineTransform doIso = AtomUtils.createIsometricTransformInverse(cam);
-            Path2D p = new Path2D.Double(doIso.createTransformedShape(cam.getDimensionBox().toRectangleDouble()));
-            Area a = new Area(p);
-            a.intersect(new Area(new Path2D.Double(screen.toRectangleDouble())));
-            return new Path2D.Double(a);
-        } else {
-            return new Path2D.Double(cam.getDimensionBox().toRectangleDouble());
-        }
-    }
-
-    @Override
-    public ModelBox getAbsoluteCameraModelBox() {
-        Rectangle2D r = getPolygonAbsoluteCameraModel().getBounds2D();
-        ModelBox mb = new ModelBox(
-                r.getMinX(),
-                r.getMinY(),
-                r.getWidth(),
-                r.getHeight());
-        cameraModel = mb;
-        return cameraModel;
-    }
-
-    @Override
-    public void setCameraLocation(RatioPoint ratioPoint) {
-        ViewDimension gm = getSceneSize();
-        setAbsoluteCameraLocation(new ViewPoint(
-                (int) (gm.getWidth() * ratioPoint.getX()),
-                (int) (gm.getHeight() * ratioPoint.getY()),
-                (int) (gm.getAltitude() * ratioPoint.getZ())));
-    }
-
-    @Override
-    public void setCameraLocation(ModelPoint modelLocation) {
-        setAbsoluteCameraLocation(toViewPoint(modelLocation));
-    }
-
-    @Override
-    public void setAbsoluteCameraLocation(ViewPoint point) {
-        ViewBox v = getAbsoluteCamera();
-        moveAbsoluteCameraBy(point.getX() - v.getX(), point.getY() - v.getY());
-    }
-
-    @Override
-    public void setCameraLocation(Sprite sprite) {
-        ModelBox sbounds = sprite.getBounds();
-        SceneModel m = getModel();
-        ViewDimension td = m.getTileSize();
-        ViewBox srect = new ViewBox(
-                (int) (sbounds.getX() * td.getWidth()),
-                (int) (sbounds.getY() * td.getHeight()),
-                (int) (sbounds.getWidth() * td.getWidth()),
-                (int) (sbounds.getHeight() * td.getHeight()));
-        ViewBox vp = getAbsoluteCamera();
-        ViewBox vp2 = validateViewBox(new ViewBox(srect.getX() - vp.getWidth() / 2, srect.getY() - vp.getHeight() / 2, vp.getWidth(), vp.getHeight()));
-        setAbsoluteCamera(vp2);
-    }
-
-    @Override
     public ViewBox toViewBox(Sprite sprite) {
         return toViewBox(sprite.getBounds());
     }
@@ -1089,7 +933,7 @@ public class DefaultScene implements Scene {
 
     @Override
     public ViewBox toViewBox(ModelBox modelBox) {
-        ViewBox viewRectangle = getAbsoluteCamera();
+        ViewBox viewRectangle = getCamera().getViewBounds();
         SceneModel m = getModel();
         ViewDimension tileDimension = m.getTileSize();
         return new ViewBox(
@@ -1103,7 +947,7 @@ public class DefaultScene implements Scene {
 
     public ViewPoint toIsometricViewPoint(ViewPoint point) {
         if (isIsometric()) {
-            ViewBox vp = getAbsoluteCamera();
+            ViewBox vp = getCamera().getViewBounds();
             vp = new ViewBox(0, 0, vp.getWidth(), vp.getHeight());
             int x = point.getX();
             int y = point.getY();
@@ -1118,7 +962,7 @@ public class DefaultScene implements Scene {
     }
 
     public ViewPoint toViewPoint(ModelPoint point) {
-        ViewBox viewRectangle = getAbsoluteCamera();
+        ViewBox viewRectangle = getCamera().getViewBounds();
         SceneModel sceneModel1 = getModel();
         ViewDimension tileDimension = sceneModel1.getTileSize();
         return new ViewPoint(
@@ -1128,7 +972,7 @@ public class DefaultScene implements Scene {
     }
 
     public ModelBox toModelBox(ViewBox rectangle) {
-        ViewBox vp = getAbsoluteCamera();
+        ViewBox vp = getCamera().getViewBounds();
         int x0 = rectangle.getX();
         int y0 = rectangle.getY();
         int w0 = rectangle.getWidth();
@@ -1142,7 +986,7 @@ public class DefaultScene implements Scene {
     }
 
     public ModelPoint toModelPoint(ViewPoint point) {
-        ViewBox vp = getAbsoluteCamera();
+        ViewBox vp = getCamera().getViewBounds();
         int x0 = point.getX();
         int y0 = point.getY();
         ViewDimension tileSize = getModel().getTileSize();
@@ -1153,7 +997,7 @@ public class DefaultScene implements Scene {
 
     @Override
     public List<Sprite> findDisplaySprites() {
-        return getSceneEngine().findSprites(getAbsoluteCameraModelBox());
+        return getSceneEngine().findSprites(getCamera().getModelBounds());
     }
 
     @Override
@@ -1203,7 +1047,7 @@ public class DefaultScene implements Scene {
 
     @Override
     public boolean isWithinScreen(ViewBox bounds) {
-        ViewBox vp = getAbsoluteCamera();
+        ViewBox vp = getCamera().getViewBounds();
         if (isIsometric()) {
             vp = new ViewBox(0, 0, vp.getWidth(), vp.getHeight());
             AffineTransform isometricTransform = AtomUtils.createIsometricTransform(vp);
@@ -1234,7 +1078,7 @@ public class DefaultScene implements Scene {
     @Override
     public boolean isWithinScreen(Sprite sprite) {
         Shape shape = getSpriteView(sprite).getShape(sprite, this);
-        ViewBox vp = getAbsoluteCamera();
+        ViewBox vp = getCamera().getViewBounds();
         if (isIsometric()) {
             vp = new ViewBox(0, 0, vp.getWidth(), vp.getHeight());
             AffineTransform isometricTransform = AtomUtils.createIsometricTransform(vp);
@@ -1263,11 +1107,7 @@ public class DefaultScene implements Scene {
 //        int viewDy = (int) (modelDy * getTileHeight());
 //        return scrollViewPort(viewDx, viewDy);
 //    }
-    public boolean moveCameraTo(Sprite sprite) {
-        setCameraLocation(sprite);
-        return true;
-//        return moveViewPort(vpdx, vpdy);
-    }
+
 
     protected ViewBox validateViewBox(ViewBox r) {
         int x = r.getX();
@@ -1319,16 +1159,6 @@ public class DefaultScene implements Scene {
         return new RatioViewBox(x, y, z, width, height, altitude);
     }
 
-    @Override
-    public boolean moveAbsoluteCameraBy(int dx, int dy) {
-        ViewBox v = getAbsoluteCamera();
-        ViewBox rectangle = new ViewBox(v.getX() + dx, v.getY() + dy, v.getWidth(), v.getHeight());
-        if (!getSceneScreen().intersects(rectangle)) {
-            return false;
-        }
-        setAbsoluteCamera(rectangle);
-        return true;
-    }
 
     /**
      * returns the box needed for drawing a sprite. The drawing takes into
@@ -1341,7 +1171,7 @@ public class DefaultScene implements Scene {
      */
     public ViewBox getScreenSpriteBounds(ViewBox spriteTilesBox, boolean tilesAligned, AffineTransform screenTransform) {
 
-        ViewBox vp = getCameraScreen();
+        ViewBox vp = getCamera().getViewPort();
         AffineTransform t0 = getScreenAffineTransform();
 
         AffineTransform mapTransform = null;
@@ -1374,7 +1204,7 @@ public class DefaultScene implements Scene {
     @Override
     public ViewBox getLayoutBox(ViewBox viewBox, boolean isometricShape, SceneLayoutType boundsType, AffineTransform screenTransform) {
 
-        ViewBox vp = getCameraScreen();
+        ViewBox vp = getCamera().getViewPort();
         AffineTransform t0 = getScreenAffineTransform();
 
         AffineTransform mapTransform = null;
@@ -1937,8 +1767,8 @@ public class DefaultScene implements Scene {
             for (int i = interactiveLayers.length - 1; i >= 0; i--) {
                 SceneKeyEvent gEvent = evalKeyEvent(interactiveLayers[i], eventExt, eventType);
                 if (gEvent != null) {
-                    if (listeners.size() > 0) {
-                        java.util.List<SceneController> ok = new ArrayList<SceneController>(listeners);
+                    if (sceneControllers.size() > 0) {
+                        java.util.List<SceneController> ok = new ArrayList<SceneController>(sceneControllers);
                         sceneEngine.invokeLater(new KeyEventRunnable(gEvent, eventType, ok, namedComponents));
                     }
                     return;
@@ -1950,8 +1780,8 @@ public class DefaultScene implements Scene {
             for (int i = interactiveLayers.length - 1; i >= 0; i--) {
                 SceneMouseEvent gEvent = evalMouseEvent(interactiveLayers[i], event, eventType);
                 if (gEvent != null) {
-                    if (listeners.size() > 0) {
-                        java.util.List<SceneController> ok = new ArrayList<SceneController>(listeners);
+                    if (sceneControllers.size() > 0) {
+                        java.util.List<SceneController> ok = new ArrayList<SceneController>(sceneControllers);
                         sceneEngine.invokeLater(new MouseEventRunnable(gEvent, eventType, ok));
                     }
                     return;
@@ -2043,17 +1873,6 @@ public class DefaultScene implements Scene {
         }
     }
 
-    public void lockCamera(Sprite s) {
-        this.cameraLockToSprite = validateSprite(s);
-        getSceneEngine().removeSceneFrameListener(cameraLockToSpriteListener);
-        getSceneEngine().addSceneFrameListener(cameraLockToSpriteListener);
-    }
-
-    public void unlockCamera() {
-        this.cameraLockToSprite = null;
-        getSceneEngine().removeSceneFrameListener(cameraLockToSpriteListener);
-    }
-
 
     private Sprite validateSprite(Sprite s) {
         if (s == null) {
@@ -2085,6 +1904,12 @@ public class DefaultScene implements Scene {
         return getSceneEngine().getSprite(id);
     }
 
+    @Override
+    public void setControlPlayer(int id) {
+        resetControlPlayers();
+        addControlPlayer(id);
+    }
+    
     @Override
     public void addControlPlayer(int id) {
         getModel().addControlPlayer(id);
@@ -2150,5 +1975,10 @@ public class DefaultScene implements Scene {
     @Override
     public void setCompanionObject(Object companionObject) {
         this.companionObject = companionObject;
+    }
+
+    @Override
+    public SceneCamera getCamera() {
+        return camera;
     }
 }

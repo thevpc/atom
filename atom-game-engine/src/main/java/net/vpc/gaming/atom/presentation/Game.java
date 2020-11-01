@@ -3,11 +3,12 @@ package net.vpc.gaming.atom.presentation;
 import net.vpc.gaming.atom.engine.GameEngine;
 import net.vpc.gaming.atom.engine.SceneEngine;
 import net.vpc.gaming.atom.ioc.AtomIoCContainer;
-import net.vpc.gaming.atom.model.GameModel;
 
 import java.awt.*;
+import net.vpc.gaming.atom.model.GameProperties;
 
 /**
+ * 
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 5 dec. 2006 11:13:50
  */
@@ -17,13 +18,9 @@ public interface Game {
 
     public void setSceneFactory(SceneFactory sceneFactory);
 
-    void showScene(String sceneID);
+    public GameProperties getProperties();
 
-    void showScene(Class<? extends SceneEngine> sceneType);
-
-    public GameModel getModel();
-
-    public void setModel(GameModel gameEngineModel);
+    public void setModel(GameProperties gameEngineModel);
 
     public GameEngine getGameEngine();
 
@@ -41,11 +38,13 @@ public interface Game {
 
     public Scene createScene();
 
+    public java.util.List<Scene> getScenes();
+
     public Scene getScene(String sceneId);
 
     public SceneEngine getSceneEngine(String sceneEngineId);
 
-    public java.util.List<Scene> findScenesBySceneEnginId(String sceneEnginId);
+    public java.util.List<Scene> findScenesBySceneEngineId(String sceneEnginId);
 
     public Scene addScene(SceneEngine sceneEngine);
 

@@ -4,9 +4,9 @@
  */
 package net.vpc.gaming.atom.extension.heatmap;
 
+import net.vpc.gaming.atom.engine.SceneEngine;
 import net.vpc.gaming.atom.model.ModelBox;
 import net.vpc.gaming.atom.model.Player;
-import net.vpc.gaming.atom.model.SceneEngineModel;
 import net.vpc.gaming.atom.model.Sprite;
 import net.vpc.gaming.atom.model.Tile;
 
@@ -56,7 +56,7 @@ public class HeatMapBuilder {
     }
 
     private double[][] buildHeatMap0(Sprite sprite, double[][] heatMap) {
-        SceneEngineModel gameModel = sprite.getSceneEngineModel();
+        SceneEngine gameModel = sprite.getSceneEngine();
         Tile[][] matrix = gameModel.getTileMatrix();
         int cols = (int) gameModel.getSize().getWidth();
         int rows = (int) gameModel.getSize().getHeight();

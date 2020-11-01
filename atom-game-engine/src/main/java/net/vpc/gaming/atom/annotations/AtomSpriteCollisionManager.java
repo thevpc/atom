@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AtomSpriteCollisionManager {
-    String engine() ;
+    String engine() default "";
     String kind() ;
     Scope scope() default Scope.PROTOTYPE;
 }

@@ -3,6 +3,7 @@ package net.vpc.gaming.atom.presentation;
 import net.vpc.gaming.atom.model.ModelPoint;
 import net.vpc.gaming.atom.model.Sprite;
 import net.vpc.gaming.atom.model.ViewBox;
+import net.vpc.gaming.atom.model.ViewPoint;
 import net.vpc.gaming.atom.util.AtomUtils;
 
 import java.awt.*;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 public class ImageSpriteView extends DefaultSpriteView {
 
     private ResizableImage[] images;
-    private ModelPoint margin;
+    private ViewPoint margin;
     private int framesPerImage = 1;
     private SpriteViewImageSelector imageSelector = FrameAnimatedImageSelector.INSTANCE;
 
@@ -40,11 +41,11 @@ public class ImageSpriteView extends DefaultSpriteView {
         setImages(images);
     }
 
-    public ModelPoint getMargin() {
+    public ViewPoint getMargin() {
         return margin;
     }
 
-    public void setMargin(ModelPoint margin) {
+    public void setMargin(ViewPoint margin) {
         this.margin = margin;
     }
 

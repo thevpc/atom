@@ -10,7 +10,6 @@ import net.vpc.gaming.atom.presentation.DefaultSceneComponent;
 import net.vpc.gaming.atom.presentation.layers.LayerDrawingContext;
 import net.vpc.gaming.atom.util.AtomUtils;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -19,7 +18,6 @@ import java.awt.*;
 public class SImage extends DefaultSceneComponent {
 
     private Image image;
-    private int alignement = SwingConstants.CENTER;
 
     public SImage(String name, String image, Class baseType) {
         this(name, AtomUtils.createImage(image, baseType));
@@ -34,27 +32,21 @@ public class SImage extends DefaultSceneComponent {
         this.image = image;
     }
 
-    public int getVerticalAlignement() {
-        return alignement;
-    }
 
-    public void setAlignement(int verticalAlignement) {
-        this.alignement = verticalAlignement;
-    }
 
     @Override
     public void draw(LayerDrawingContext context) {
         if (!isVisible()) {
             return;
         }
-        switch (getVerticalAlignement()) {
-            case SwingConstants.CENTER: {
+        switch (getAlignment()) {
+            case CENTER: {
                 ViewPoint p = AtomUtils.getCenterdPosition(image.getWidth(null), image.getHeight(null), getBounds());
                 AtomDebug.DRAW_IMAGE_DRAW_COUNT++;
                 context.getGraphics().drawImage(image, p.getX(), p.getY(), null);
                 break;
             }
-            case SwingConstants.NORTH_WEST: {
+            case NORTH_WEST: {
                 AtomDebug.DRAW_IMAGE_DRAW_COUNT++;
                 context.getGraphics().drawImage(image, getX(), getY(), null);
                 break;

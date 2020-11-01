@@ -1,0 +1,67 @@
+#pragma prefix "tn.rnu.enit.ateliercorba"
+
+module jcanon{
+
+   struct CorbaCanon{
+        long player;
+        long score;
+        long x;
+        long y;
+        long life;
+        long mood;
+   };
+
+   enum CorbaPlaneStatus{ALIVE,FALLING};
+   enum CorbaPlaneBombType{SIMPLE};
+   enum CorbaPlaneType{ONE,TWO};
+   enum CorbaGameStatus{GAME_INIT,GAME_STARTED,GAME_OVER};
+
+   struct CorbaPlane{
+        long x;
+        long y;
+        CorbaPlaneType type;
+        CorbaPlaneStatus status;
+        long mood;
+   };
+
+   struct CorbaPlaneBomb{
+        long x;
+        long y;
+        CorbaPlaneBombType type;
+        long mood;
+   };
+
+   struct CorbaPlaneGuift{
+        long x;
+        long y;
+        CorbaPlaneBombType type;
+        long mood;
+   };
+
+   struct CorbaFire{
+        long player;
+        long x;
+        long y;
+        long mood;
+   };
+
+   struct CorbaGame{
+     CorbaGameStatus gameStatus;
+     sequence<CorbaCanon> canons;
+     sequence<CorbaPlane> planes;
+     sequence<CorbaFire> fires;
+     sequence<CorbaPlaneBomb> bombs;
+   };
+
+   interface JCanonClient{
+        oneway void modelChanged(in CorbaGame model);
+   };
+
+   interface JCanonServer{
+      long connect(in JCanonClient client);
+      oneway void playerHitFire(in long player);
+      oneway void playerMoveLeft(in long player);
+      oneway void playerMoveRight(in long player);
+   };
+
+};

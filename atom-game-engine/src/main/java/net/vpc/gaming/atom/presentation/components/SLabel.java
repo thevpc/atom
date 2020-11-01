@@ -27,7 +27,7 @@ public class SLabel extends DefaultSceneComponent {
     public SLabel(String name, String value) {
         super(name);
         this.text = value;
-        getTextStyle(TextStyle.DEFAULT).setForeColor(Color.BLACK);
+        getTextStyle(SceneComponentState.DEFAULT).setForeColor(Color.BLACK);
         setController(new DefaultSceneController() {
             @Override
             public void keyPressed(SceneKeyEvent e) {
@@ -40,8 +40,9 @@ public class SLabel extends DefaultSceneComponent {
         return text;
     }
 
-    public void setText(String value) {
+    public SLabel setText(String value) {
         this.text = value;
+        return this;
     }
 
     @Override
@@ -49,12 +50,12 @@ public class SLabel extends DefaultSceneComponent {
         if (!isVisible()) {
             return;
         }
-        int status = 0;
+        SceneComponentState status = SceneComponentState.DEFAULT;
         if (hasFocus()) {
-            status |= TextStyle.FOCUSED;
+            status.add(SceneComponentState.FOCUSED);
         }
         if (!isEnabled()) {
-            status |= TextStyle.DISABLED;
+            status.add(SceneComponentState.DISABLED);
         }
         TextStyle style = styleMap.getTextStyle(status);
         AtomUtils.drawText(context, text, getX(), getY(), getWidth(), getHeight(), style, -1);
@@ -70,11 +71,12 @@ public class SLabel extends DefaultSceneComponent {
         }
     }
 
-    public void setTextStyle(TextStyle style, int status) {
-        styleMap.setTextStyle(style, status);
+    public SLabel setTextStyle(SceneComponentState status, TextStyle style) {
+        styleMap.setTextStyle(status, style);
+        return this;
     }
 
-    public TextStyle getTextStyle(int status) {
+    public TextStyle getTextStyle(SceneComponentState status) {
         return styleMap.getTextStyle(status);
     }
 }

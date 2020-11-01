@@ -13,13 +13,13 @@ import java.lang.annotation.Target;
 public @interface AtomSceneEngine {
     String id() default "";
 
-    double width() default 1;
+    double columns() default -1;
 
-    double height() default 1;
+    double rows() default -1;
 
-    double altitude() default 1;
+    double stacks() default -1;
 
-    int fps() default 25;
+    int fps() default -1;
 
     boolean welcome() default false;
 }

@@ -9,7 +9,7 @@ import net.vpc.gaming.atom.presentation.LocationIndicatorView;
 import net.vpc.gaming.atom.presentation.Scene;
 import net.vpc.gaming.atom.presentation.SpriteView;
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Created by vpc on 10/7/16.
@@ -47,37 +47,50 @@ class AtomSpriteViewCreationAction implements PostponedAction {
 
     @Override
     public void run() {
-        for (String sceneId : AtomAnnotationsProcessor.split(s.scene())) {
-            final Scene scene = game.getScene(sceneId);
-            InstancePreparator prep = new InstancePreparator() {
-                @Override
-                public void prepare(Object o) {
-
-                }
-            };
-            SpriteView spriteView = null;
-            Object instance = null;
-            HashMap<Class, Object> injects = new HashMap<>();
-            injects.put(Game.class, game);
-            injects.put(GameEngine.class, game.getGameEngine());
-            injects.put(Scene.class, scene);
-            injects.put(SceneEngine.class, scene.getSceneEngine());
-
-            if (SpriteView.class.isAssignableFrom(clazz)) {
-                spriteView = (SpriteView) atomAnnotationsProcessor.container.create(clazz, prep, injects);
-                instance = spriteView;
-            } else {
-                spriteView = new LocationIndicatorView();
-                injects.put(SpriteView.class, spriteView);
-                instance = atomAnnotationsProcessor.container.create(clazz, null, injects);
-                prep.prepare(spriteView);
+        for (String sceneId : AtomAnnotationsProcessor.splitOrAddEmpty(s.scene())) {
+            final List<Scene> scenes = sceneId.isEmpty() ? game.getScenes() : Arrays.asList(game.getScene(sceneId));
+            for (Scene scene : scenes) {
+                runOneScene(scene);
             }
-            scene.setSpriteView(s.kind(), spriteView);
-            atomAnnotationsProcessor.container.register(
-                    sceneId+"/"+instance.getClass().getName()
-                    , "SpriteView", instance);
-            atomAnnotationsProcessor.container.invokeMethodsByAnnotation(instance, OnInstall.class, new Object[0]);
         }
+    }
 
+    private void runOneScene(Scene scene) {
+        InstancePreparator prep = new InstancePreparator() {
+            @Override
+            public void postInject(Object o) {
+
+            }
+        };
+        SpriteView spriteView = null;
+        Object instance = null;
+        HashMap<Class, Object> injects = new HashMap<>();
+        injects.put(Game.class, game);
+        injects.put(GameEngine.class, game.getGameEngine());
+        injects.put(Scene.class, scene);
+        injects.put(SceneEngine.class, scene.getSceneEngine());
+
+        if (SpriteView.class.isAssignableFrom(clazz)) {
+            spriteView = (SpriteView) atomAnnotationsProcessor.container.create(clazz, new InstancePreparator[]{
+                    new InstancePreparator() {
+                        @Override
+                        public void preInject(Object o, Map<Class, Object> injects) {
+                            injects.put(SpriteView.class,o);
+                        }
+                    },
+                    prep
+            }, injects);
+            instance = spriteView;
+        } else {
+            spriteView = new LocationIndicatorView();
+            injects.put(SpriteView.class, spriteView);
+            instance = atomAnnotationsProcessor.container.create(clazz, null, injects);
+            prep.postInject(spriteView);
+        }
+        scene.setSpriteView(s.kind(), spriteView);
+        atomAnnotationsProcessor.container.register(
+                scene.getId() +"/"+instance.getClass().getName()
+                , "SpriteView", instance);
+        atomAnnotationsProcessor.container.invokeMethodsByAnnotation(instance, OnInstall.class, new Object[0]);
     }
 }

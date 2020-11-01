@@ -22,52 +22,70 @@ public interface SceneController {
     public static final int MOUSE_DRAGGED = 1 << 9;
     public static final int MOUSE_MOVED = 1 << 10;
 
-    public boolean acceptEvent(int event);
+    default boolean acceptEvent(int event){
+        return true;
+    }
 
     /**
      * Invoked when a key has been typed. See the class description for
      * {@link SceneKeyEvent} for a definition of a key typed event.
      */
-    public void keyTyped(SceneKeyEvent e);
+    default void keyTyped(SceneKeyEvent e){
+
+    }
 
     /**
      * Invoked when a key has been pressed. See the class description for
      * {@link SceneKeyEvent} for a definition of a key pressed event.
      */
-    public void keyPressed(SceneKeyEvent e);
+    default void keyPressed(SceneKeyEvent e){
+
+    }
 
 
     /**
      * Invoked when a key has been released. See the class description for
      * {@link SceneKeyEvent} for a definition of a key released event.
      */
-    public void keyReleased(SceneKeyEvent e);
+    default void keyReleased(SceneKeyEvent e){
+
+    }
 
     /**
      * Invoked when the mouse button has been clicked (pressed and released) on
      * a component.
      */
-    public void mouseClicked(SceneMouseEvent e);
+    default void mouseClicked(SceneMouseEvent e){
+
+    }
 
     /**
      * Invoked when a mouse button has been pressed on a component.
      */
-    public void mousePressed(SceneMouseEvent e);
+    default void mousePressed(SceneMouseEvent e){
+
+    }
 
     /**
      * Invoked when a mouse button has been released on a component.
      */
-    public void mouseReleased(SceneMouseEvent e);
+    default void mouseReleased(SceneMouseEvent e){
+
+    }
 
     /**
      * Invoked when the mouse enters a component.
      */
-    public void mouseEntered(SceneMouseEvent e);
+    default void mouseEntered(SceneMouseEvent e){
+
+    }
 
     /**
      * Invoked when the mouse exits a component.
      */
-    public void mouseExited(SceneMouseEvent e);
+    default void mouseExited(SceneMouseEvent e){
+
+    }
 
     /**
      * Invoked when a mouse button is pressed on a component and then dragged.
@@ -80,19 +98,15 @@ public interface SceneController {
      * <code>MOUSE_DRAGGED</code> events may not be delivered during a native
      * Drag&Drop operation.
      */
-    public void mouseDragged(SceneMouseEvent e);
+    default void mouseDragged(SceneMouseEvent e){
+
+    }
 
     /**
      * Invoked when the mouse cursor has been moved onto a component but no
      * buttons have been pushed.
      */
-    public void mouseMoved(SceneMouseEvent e);
+    default void mouseMoved(SceneMouseEvent e){
 
-    public void sceneInitialized(Scene scene);
-
-    public void sceneStarted(Scene scene);
-
-    public void sceneStopped(Scene scene);
-
-    public void nexFrame(Scene scene);
+    }
 }

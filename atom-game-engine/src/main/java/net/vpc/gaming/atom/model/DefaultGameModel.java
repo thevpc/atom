@@ -13,7 +13,7 @@ import java.util.Map;
  * Time: 4:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DefaultGameModel implements GameModel {
+public class DefaultGameModel implements GameProperties {
     protected PropertyChangeSupport propertyChangeSupport;
     protected Map<String, Object> properties;
 
@@ -21,7 +21,7 @@ public class DefaultGameModel implements GameModel {
         propertyChangeSupport = new PropertyChangeSupport(this);
     }
 
-    public Map<String, Object> getProperties() {
+    public Map<String, Object> toMap() {
         //return new LinkedHashMap<String,Object>(properties);
         return properties != null ? new LinkedHashMap<String, Object>(properties) : new HashMap<String, Object>(1);
     }

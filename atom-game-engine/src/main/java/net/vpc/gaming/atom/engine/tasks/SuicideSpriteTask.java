@@ -23,7 +23,7 @@ public class SuicideSpriteTask implements SpriteTask {
 
     public SuicideSpriteTask(int suicideVelocity) {
         if (suicideVelocity <= 0) {
-            throw new IllegalArgumentException("Suicide belocity must be positive");
+            throw new IllegalArgumentException("Suicide velocity must be positive");
         }
         this.suicideVelocity = suicideVelocity;
     }

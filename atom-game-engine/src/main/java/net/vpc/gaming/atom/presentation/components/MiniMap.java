@@ -46,24 +46,27 @@ public class MiniMap extends DefaultSceneComponent {
         return borderColor;
     }
 
-    public void setBorderColor(Color borderColor) {
+    public MiniMap setBorderColor(Color borderColor) {
         this.borderColor = borderColor;
+        return this;
     }
 
     public Color getBackgroundColor() {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(Color backgroundColor) {
+    public MiniMap setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
+        return this;
     }
 
     public Color getCameraColor() {
         return cameraColor;
     }
 
-    public void setCameraColor(Color cameraColor) {
+    public MiniMap setCameraColor(Color cameraColor) {
         this.cameraColor = cameraColor;
+        return this;
     }
 
     @Override
@@ -134,8 +137,8 @@ public class MiniMap extends DefaultSceneComponent {
             }
         }
         if (cameraColor != null) {
-            ViewBox vp = scene.getAbsoluteCamera();
-            Path2D polygonCamera = scene.getPolygonAbsoluteCamera();
+            ViewBox vp = scene.getCamera().getViewBounds();
+            Path2D polygonCamera = scene.getCamera().getViewPolygon();
             ViewDimension m = scene.getModel().getTileSize();
             ViewPoint zeroPoint = scene.toViewPoint(new ModelPoint(0, 0));
             //AffineTransform s = AffineTransform.getScaleInstance();

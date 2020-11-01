@@ -99,33 +99,4 @@ public class DefaultSceneController implements SceneController {
     public void mouseMoved(SceneMouseEvent e) {
     }
 
-    /**
-     * {@inheritDoc} Does nothing
-     */
-    @Override
-    public void sceneInitialized(Scene scene) {
-
-    }
-
-    /**
-     * {@inheritDoc} Does nothing
-     */
-    @Override
-    public void sceneStarted(Scene scene) {
-    }
-
-    /**
-     * {@inheritDoc} Does nothing
-     */
-    @Override
-    public void sceneStopped(Scene scene) {
-
-    }
-
-    /**
-     * {@inheritDoc} Does nothing
-     */
-    @Override
-    public void nexFrame(Scene scene) {
-    }
 }

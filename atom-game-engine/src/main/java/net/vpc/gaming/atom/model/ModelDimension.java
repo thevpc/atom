@@ -75,7 +75,7 @@ public class ModelDimension implements Serializable {
 
     @Override
     public String toString() {
-        return "DDimension{" + "width=" + width + ", height=" + height + ", altitude=" + altitude + '}';
+        return "ModelDimension{" + "width=" + width + ", height=" + height + ", altitude=" + altitude + '}';
     }
 
 }

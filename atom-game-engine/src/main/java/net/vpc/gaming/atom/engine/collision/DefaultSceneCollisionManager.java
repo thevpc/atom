@@ -304,8 +304,8 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
             }
             double[][] d = getMovingRectangleIntersection(new ModelBox(colliderOldLocation, colliderBounds.getSize()), colliderVelocity, collidedBounds, 0.1, intersectionThreshold);
 
-//            DVector colliderVelocity2 = DVector.newCartesien(0, 0.40000000000000036);
-//            DPoint colliderOldLocation2 = new DPoint(8, 9.8);
+//            ModelVector colliderVelocity2 = ModelVector.newCartesien(0, 0.40000000000000036);
+//            ModelPoint colliderOldLocation2 = new ModelPoint(8, 9.8);
 //            DRectangle collidedBounds2 = new DRectangle(8, 12, 1, 1);
 //            double[][] d2 = getMovingRectangleIntersection(new DRectangle(colliderOldLocation2, colliderBounds.getSize()), colliderVelocity2, collidedBounds2, 0.1, 0.1);
 
@@ -763,8 +763,8 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
 
 
 //    public static void main(String[] args) {
-//        DVector colliderVelocity2 = DVector.newCartesien(0, 0.40000000000000036);
-//        DPoint colliderOldLocation2 = new DPoint(8, 9.8);
+//        ModelVector colliderVelocity2 = ModelVector.newCartesien(0, 0.40000000000000036);
+//        ModelPoint colliderOldLocation2 = new ModelPoint(8, 9.8);
 //        DRectangle collidedBounds2 = new DRectangle(8, 12, 1, 1);
 //        double[][] d2 = getMovingRectangleIntersection(new DRectangle(colliderOldLocation2, collidedBounds2.getSize()), colliderVelocity2, collidedBounds2, 0.1, 0.1);
 //        System.out.println(Arrays.deepToString(d2));
@@ -775,19 +775,19 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
 //
 //        DefaultSprite obstacle = new DefaultSprite();
 //        obstacle.setName("obstacle");
-//        obstacle.setSize(new DDimension(2, 1));
-//        obstacle.setLocation(new DPoint(1, 2));
+//        obstacle.setSize(new ModelDimension(2, 1));
+//        obstacle.setLocation(new ModelPoint(1, 2));
 //
 //        DefaultSprite sprite = new DefaultSprite();
 //        sprite.setName("sprite");
-//        sprite.setSize(new DDimension(1, 1));
-//        sprite.setLocation(new DPoint(1, 0));
+//        sprite.setSize(new ModelDimension(1, 1));
+//        sprite.setLocation(new ModelPoint(1, 0));
 //
-//        DPoint next = new DPoint(1.5, 1.5);
+//        ModelPoint next = new ModelPoint(1.5, 1.5);
 //
 //        DRectangle r1 = obstacle.getBounds();
-//        DRectangle r2 = new DRectangle(new DPoint(1, 1.5), sprite.getSize());
-//        DVector move = DVector.newCartesien(next.getX() - sprite.getX(), next.getY() - sprite.getY());
+//        DRectangle r2 = new DRectangle(new ModelPoint(1, 1.5), sprite.getSize());
+//        ModelVector move = ModelVector.newCartesien(next.getX() - sprite.getX(), next.getY() - sprite.getY());
 //        System.out.println("move " + move);
 //        double[][] gg = getMovingRectangleIntersection(sprite.getBounds(), move, obstacle.getBounds(), 0.1, 0.1);
 //        System.out.println(Arrays.deepToString(gg));
@@ -799,7 +799,7 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
 //        model.addSprite(sprite);
 //
 //        DefaultSceneCollisionManager c = new DefaultSceneCollisionManager();
-////        DPoint newPosition = new DPoint(2,1);
+////        ModelPoint newPosition = new ModelPoint(2,1);
 //        Collision[] collisions = c.detectCollisions(sceneEngine, sprite, sprite.getLocation(), next, false, false, true);
 //        for (Collision collision : collisions) {
 //            System.out.println(collision);

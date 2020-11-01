@@ -28,7 +28,7 @@ public class FillScreenColorLayer extends DefaultLayer {
         Graphics2D graphics = context.getGraphics();
 
         graphics.setColor(color);
-        ViewBox viewPort = getScene().getAbsoluteCamera();
+        ViewBox viewPort = getScene().getCamera().getViewBounds();
         int iwidth = viewPort.getWidth();
         int iheight = viewPort.getHeight();
         graphics.fillRect(0, 0, iwidth, iheight);

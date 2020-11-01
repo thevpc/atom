@@ -8,7 +8,7 @@ import net.vpc.gaming.atom.debug.AtomDebug;
 import net.vpc.gaming.atom.presentation.ImageMap;
 import net.vpc.gaming.atom.presentation.ResizableImage;
 import net.vpc.gaming.atom.presentation.SequenceGenerator;
-import net.vpc.gaming.atom.presentation.components.Alignment;
+import net.vpc.gaming.atom.presentation.Alignment;
 import net.vpc.gaming.atom.presentation.components.TextStyle;
 import net.vpc.gaming.atom.presentation.layers.LayerDrawingContext;
 
@@ -637,7 +637,7 @@ public class AtomUtils {
         ModelPoint center = s1.getCenter();
         return new ViewPoint(center.getIntX(), center.getIntY());
 //        DSegment s2 = new DSegment(p2, p4);
-//        DPoint c = s1.intersect(s2);
+//        ModelPoint c = s1.intersect(s2);
 
 //        return new Point(c.getIntX(), c.getIntY());
     }

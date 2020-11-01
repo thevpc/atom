@@ -23,7 +23,7 @@ public class JumpSpriteTask implements MotionSpriteTask {
     private double gravity = 0.004;
     //    private double speed = 0;
     private ModelVector velocity;
-//    private DVector gravity = DVector.newCartesien(0, .3);
+//    private ModelVector gravity = ModelVector.newCartesien(0, .3);
 
     public JumpSpriteTask(double startAngle) {
         this.startAngle = startAngle;

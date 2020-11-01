@@ -18,7 +18,7 @@ public abstract class FlatBoardLayer extends DefaultLayer implements BoardLayer 
 
     @Override
     public void initDrawTiles(BoardLayerDrawingContext context) {
-        ViewBox vp = context.getScene().getCameraScreen();
+        ViewBox vp = context.getScene().getCamera().getViewPort();
         _frameImage = new BufferedImage(vp.getWidth(), vp.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = _frameImage.createGraphics();
         draw(context);

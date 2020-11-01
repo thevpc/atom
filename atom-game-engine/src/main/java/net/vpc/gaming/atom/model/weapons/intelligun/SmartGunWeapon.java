@@ -36,10 +36,10 @@ public class SmartGunWeapon implements SpriteWeapon {
     }
 
     public DamageEffects fire(final Sprite source, ModelPoint target) {
-        for (Sprite other : source.getSceneEngineModel().findSprites(target)) {
+        for (Sprite other : source.getSceneEngine().findSprites(target)) {
             if (other.getPlayerId() != source.getPlayerId()) {
                 SmartBullet b = new SmartBullet(source.getPlayerId(), "bullet", source.getLocation(), other);
-                source.getSceneEngineModel().addSprite(b);
+                source.getSceneEngine().addSprite(b);
                 break;
             }
         }

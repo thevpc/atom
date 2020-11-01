@@ -41,6 +41,14 @@ public interface Scene {
 
     public <T extends SceneModel> T getModel();
 
+    SceneController[] getSceneControllers();
+
+    void addLifeCycleListener(SceneLifeCycleListener listener);
+
+    void removeLifeCycleListener(SceneLifeCycleListener listener);
+
+    SceneLifeCycleListener[] getLifecycleListeners();
+
     public Game getGame();
 
     public <T extends GameEngine> T getGameEngine();
@@ -71,9 +79,9 @@ public interface Scene {
 
     public boolean containsSceneChangeListener(SceneChangeListener listener);
 
-    public void addSceneController(SceneController listener);
+    public void addController(SceneController listener);
 
-    public void removeSceneController(SceneController listener);
+    public void removeController(SceneController listener);
 
     public <T extends Layer> T getLayer(Class<T> type);
 
@@ -154,35 +162,6 @@ public interface Scene {
 
     public Path2D toPath2D(ModelBox modelBox);
 
-    public void setCameraLocation(ModelPoint modelLocation);
-
-    public void setAbsoluteCameraLocation(ViewPoint viewLocation);
-
-    public void setCameraLocation(RatioPoint ratioPoint);
-
-    public void setCameraLocation(Sprite sprite);
-
-    public boolean moveAbsoluteCameraBy(int viewDx, int viewDy);
-
-    public boolean moveCameraTo(Sprite sprite);
-
-    public Path2D getPolygonAbsoluteCameraModel();
-
-    public Path2D getPolygonAbsoluteCamera();
-
-    public RatioViewBox getCamera();
-
-    public ViewBox getAbsoluteCamera();
-
-    public void setAbsoluteCameraSize(ViewDimension rect);
-
-    public void setAbsoluteCamera(ViewBox rect);
-
-    public void setCamera(RatioViewBox ratioViewBox);
-
-    public ModelBox getAbsoluteCameraModelBox();
-
-    public void setCameraSize(RatioDimension size);
 
     /**
      * toView(sprite.getBound()) return visible rectangle
@@ -192,13 +171,10 @@ public interface Scene {
     public ViewBox toViewBox(Tile tile);
 
     //    public ViewBox getBounds();
-    public ViewBox getCameraScreen();
 
     public ViewBox getSceneScreen();
 
     public ViewDimension getSceneSize();
-
-    public ViewDimension getAbsoluteCameraSize();
 
     public String getNextFocusComponent(String componentName);
 
@@ -246,10 +222,6 @@ public interface Scene {
 
     void removePropertyChangeListener(String property, PropertyChangeListener listener);
 
-    public void lockCamera(Sprite s);
-
-    public void unlockCamera();
-
     public Player getPlayer(int id);
 
     public List<Player> getPlayers();
@@ -278,4 +250,8 @@ public interface Scene {
     public void addSceneListener(SceneListener sceneListener);
 
     public void removeSceneListener(SceneListener sceneListener);
+
+    void setControlPlayer(int id);
+
+    SceneCamera getCamera();
 }

@@ -137,7 +137,7 @@ public abstract class DefaultLayer implements Layer {
 
     protected SceneMouseEvent toSceneMouseEvent(MouseEvent e, Object object) {
         Scene s = getScene();
-        ViewBox rect = s.getAbsoluteCamera();
+        ViewBox rect = s.getCamera().getViewBounds();
         int viewX = e.getX();
         int viewY = e.getY();
         SceneModel sceneModel = s.getModel();

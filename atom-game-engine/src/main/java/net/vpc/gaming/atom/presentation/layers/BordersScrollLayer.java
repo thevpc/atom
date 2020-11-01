@@ -79,38 +79,38 @@ public class BordersScrollLayer extends DefaultLayer implements InteractiveLayer
         if (view.isIsometric()) {
             switch (scroll) {
                 case NORTH_WEST: {
-                    ViewBox v = view.getAbsoluteCamera();
+                    ViewBox v = view.getCamera().getViewBounds();
                     return new ViewBox(0, margin, 0, margin, v.getHeight() - 2 * margin, 0);
                 }
                 case SOUTH_EAST: {
-                    ViewBox v = view.getAbsoluteCamera();
+                    ViewBox v = view.getCamera().getViewBounds();
                     return new ViewBox(v.getWidth() - margin, margin, 0, margin, v.getHeight() - 2 * margin, 0);
                 }
                 case NORTH_EAST: {
-                    ViewBox v = view.getAbsoluteCamera();
+                    ViewBox v = view.getCamera().getViewBounds();
                     return new ViewBox(margin, 0, 0, v.getWidth() - 2 * margin, margin, 0);
                 }
                 case SOUTH_WEST: {
-                    ViewBox v = view.getAbsoluteCamera();
+                    ViewBox v = view.getCamera().getViewBounds();
                     return new ViewBox(margin, v.getHeight() - margin, 0, v.getWidth() - 2 * margin, margin, 0);
                 }
             }
         } else {
             switch (scroll) {
                 case WEST: {
-                    ViewBox v = view.getAbsoluteCamera();
+                    ViewBox v = view.getCamera().getViewBounds();
                     return new ViewBox(0, margin, 0, margin, v.getHeight() - 2 * margin, 0);
                 }
                 case EAST: {
-                    ViewBox v = view.getAbsoluteCamera();
+                    ViewBox v = view.getCamera().getViewBounds();
                     return new ViewBox(v.getWidth() - margin, margin, 0, margin, v.getHeight() - 2 * margin, 0);
                 }
                 case NORTH: {
-                    ViewBox v = view.getAbsoluteCamera();
+                    ViewBox v = view.getCamera().getViewBounds();
                     return new ViewBox(margin, 0, 0, v.getWidth() - 2 * margin, margin, 0);
                 }
                 case SOUTH: {
-                    ViewBox v = view.getAbsoluteCamera();
+                    ViewBox v = view.getCamera().getViewBounds();
                     return new ViewBox(margin, v.getHeight() - margin, 0, v.getWidth() - 2 * margin, margin, 0);
                 }
             }
@@ -173,7 +173,7 @@ public class BordersScrollLayer extends DefaultLayer implements InteractiveLayer
             }
         }
         //dy = -dy; // drawing axis is inverted (y>0 for south)
-        if (!scene.moveAbsoluteCameraBy((int) (dx * w), (int) (dy * h))) {
+        if (!scene.getCamera().moveBy(new ViewPoint((int) (dx * w), (int) (dy * h)))) {
             setScroll(null);
         }
     }

@@ -125,6 +125,15 @@ public class AtomAnnotationsProcessor implements AnnotationVisitor {
         ));
     }
 
+    public static Set<String> splitOrAddEmpty(String name) {
+        Set<String> u = split(name);
+        if(u.isEmpty()){
+            u = new HashSet<>();
+            u.add("");
+        }
+        return u;
+    }
+
     public static Set<String> split(String name) {
         HashSet<String> all = new HashSet<>();
         for (String s : name.split(" +|,")) {

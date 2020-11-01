@@ -1,8 +1,5 @@
 package net.vpc.gaming.atom.ioc;
 
-import net.vpc.gaming.atom.engine.GameEngine;
-import net.vpc.gaming.atom.presentation.Game;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +31,7 @@ public interface AtomIoCContainer {
     void register(String id, Class cls, Object instance);
 
     Object create(Class cls,
-                  InstancePreparator t,
+                  InstancePreparator[] ts,
                   Map<Class, Object> vals);
 
     Set<Class> getInjectedTypes(Class cls);

@@ -11,6 +11,7 @@ import net.vpc.gaming.atom.model.Player;
 import net.vpc.gaming.atom.model.SceneEngineModel;
 import net.vpc.gaming.atom.model.Tile;
 import net.vpc.gaming.atom.model.ViewBox;
+import net.vpc.gaming.atom.presentation.*;
 import net.vpc.gaming.atom.presentation.layers.FlatBoardLayer;
 import net.vpc.gaming.atom.presentation.layers.LayerDrawingContext;
 
@@ -18,11 +19,6 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import net.vpc.gaming.atom.presentation.DefaultSceneController;
-import net.vpc.gaming.atom.presentation.ImageProducer;
-import net.vpc.gaming.atom.presentation.Scene;
-import net.vpc.gaming.atom.presentation.SceneChangeAdapter;
-import net.vpc.gaming.atom.presentation.SceneChangeListener;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -48,7 +44,7 @@ public class FogOfWarSceneExtension extends DefaultSceneExtension {
             //mapInfo = null;
         }
     };
-    DefaultSceneController sceneEngineChangeListenerInstaller = new DefaultSceneController() {
+    SceneLifeCycleListener sceneEngineChangeListenerInstaller = new SceneLifeCycleListener() {
         @Override
         public void sceneInitialized(Scene scene) {
             scene.getSceneEngine().addSceneEngineChangeListener(sceneEngineChangeListener);
@@ -61,7 +57,7 @@ public class FogOfWarSceneExtension extends DefaultSceneExtension {
     public void install(Scene scene) {
         this.scene = scene;
         scene.getModel().addPropertyChangeListener(updater);
-        scene.addSceneController(sceneEngineChangeListenerInstaller);
+        scene.addLifeCycleListener(sceneEngineChangeListenerInstaller);
         scene.addSceneChangeListener(sceneChangeListener);
         if (scene.getSceneEngine() != null) {
             scene.getSceneEngine().addSceneEngineChangeListener(sceneEngineChangeListener);

@@ -8,6 +8,7 @@ import net.vpc.gaming.atom.model.ModelDimension;
 import net.vpc.gaming.atom.presentation.Game;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by vpc on 10/7/16.
@@ -46,27 +47,39 @@ class AtomSceneEngineCreationAction implements PostponedAction {
         final String finalSceneEngineId = sceneEngineId;
         InstancePreparator prep = new InstancePreparator() {
             @Override
-            public void prepare(Object o) {
+            public void postInject(Object o) {
                 SceneEngine sceneEngine = (SceneEngine) o;
                 sceneEngine.setId(finalSceneEngineId);
-                sceneEngine.getModel().setSize(new ModelDimension(
-                        s.width(),
-                        s.height(),
-                        s.altitude()
-                ));
-                sceneEngine.setFps(s.fps());
+                if(s.columns()>0) {
+                    sceneEngine.getModel().setSize(new ModelDimension(
+                            s.columns(),
+                            s.rows()<=0?s.columns():s.rows(),
+                            s.stacks()<=0?1:s.stacks()
+                    ));
+                }
+                if(s.fps()>0) {
+                    sceneEngine.setFps(s.fps());
+                }
             }
         };
         if (SceneEngine.class.isAssignableFrom(clazz)) {
             HashMap<Class, Object> injects = new HashMap<>();
             injects.put(Game.class, game);
             injects.put(GameEngine.class, game.getGameEngine());
-            SceneEngine sceneEngine = (SceneEngine) atomAnnotationsProcessor.container.create(clazz, prep, injects);
+            SceneEngine sceneEngine = (SceneEngine) atomAnnotationsProcessor.container.create(clazz, new InstancePreparator[]{
+                    new InstancePreparator() {
+                        @Override
+                        public void preInject(Object o, Map<Class, Object> injects) {
+                            injects.put(SceneEngine.class,o);
+                        }
+                    },
+                    prep
+            }, injects);
             game.addSceneEngine(sceneEngine);
             instance = sceneEngine;
         } else {
-            SceneEngine sceneEngine = game.getGameEngine().createSceneEngine(sceneEngineId);
-            prep.prepare(sceneEngine);
+            SceneEngine sceneEngine = game.getGameEngine().createScene(sceneEngineId);
+            prep.postInject(sceneEngine);
 
             game.addSceneEngine(sceneEngine);
 
@@ -80,7 +93,7 @@ class AtomSceneEngineCreationAction implements PostponedAction {
         atomAnnotationsProcessor.container.register(sceneEngineId, "SceneEngine", instance);
         atomAnnotationsProcessor.container.invokeMethodsByAnnotation(instance, OnInstall.class, new Object[0]);
         if(s.welcome()){
-            game.getGameEngine().setDefaultActiveSceneEngineId(sceneEngineId);
+            game.getGameEngine().setDefaultSceneId(sceneEngineId);
         }
     }
 }

@@ -7,10 +7,8 @@ import net.vpc.gaming.atom.engine.SceneEngine;
 import net.vpc.gaming.atom.ioc.AtomIoCContainer;
 import net.vpc.gaming.atom.ioc.GameIoCContainer;
 import net.vpc.gaming.atom.model.DefaultGameModel;
-import net.vpc.gaming.atom.model.GameModel;
 import net.vpc.gaming.atom.model.ViewBox;
 import net.vpc.gaming.atom.model.ViewDimension;
-import net.vpc.gaming.atom.util.AtomUtils;
 import net.vpc.gaming.atom.util.RepeatingReleasedEventsFixer;
 
 import javax.swing.*;
@@ -20,6 +18,10 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
+
+import net.vpc.gaming.atom.annotations.AtomSceneEngine;
+import net.vpc.gaming.atom.model.GameProperties;
+import net.vpc.gaming.atom.util.AtomUtils;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -32,7 +34,7 @@ public class DefaultGame implements Game {
     private JFrame window;
     private String currentSceneEngineId;
     private Scene currentScene;
-    private GameModel gameModel;
+    private GameProperties gameModel;
     //private PropertyChangeSupport pcs;
 //    private boolean started;
     private SceneFactory sceneFactory = new DefaultSceneFactory();
@@ -59,23 +61,26 @@ public class DefaultGame implements Game {
             this.gameEngine.addStateListener(gameEngineStateListener);
             this.gameEngine.addChangeListener(gameEngineChangeListener);
         }
-        container=new GameIoCContainer(this);
+        container = new GameIoCContainer(this);
+        setIcon("/net/vpc/gaming/atom/atom-color.png",DefaultGame.class);
     }
 
     @Override
-    public GameModel getModel() {
+    public GameProperties getProperties() {
         return gameModel;
     }
 
     @Override
-    public void setModel(GameModel gameModel) {
+    public void setModel(GameProperties gameModel) {
         this.gameModel = gameModel;
     }
 
+    @Override
     public GameEngine getGameEngine() {
         return gameEngine;
     }
 
+    @Override
     public void setGameEngine(GameEngine gameEngine) {
         GameEngine old = this.gameEngine;
         if (old != null) {
@@ -89,35 +94,57 @@ public class DefaultGame implements Game {
         }
     }
 
+    @Override
     public SceneFactory getSceneFactory() {
         return sceneFactory;
     }
 
+    @Override
     public void setSceneFactory(SceneFactory sceneViewFactory) {
         this.sceneFactory = sceneViewFactory;
     }
 
-    public void addScene(Scene scene, String sceneID) {
-        SceneEngine engine = getGameEngine().getSceneEngine(sceneID);
+    @Override
+    public void addScene(Scene scene, String sceneEnginId) {
+        if (sceneEnginId == null) {
+            sceneEnginId = scene.getId();
+        }
+        Scene old = loadedScenes.get(scene.getId());
+        if (old != null) {
+            return;
+        }
+        SceneEngine engine = getGameEngine().getScene(sceneEnginId);
         scene.init(engine, this);
-        loadedScenes.put(sceneID, scene);
+        loadedScenes.put(sceneEnginId, scene);
     }
 
+    @Override
     public void addScene(Scene scene, Class<? extends SceneEngine> sceneType) {
-        addScene(scene, sceneType.getName());
+        String sceneId = sceneType.getName();
+        AtomSceneEngine a = sceneType.getAnnotation(AtomSceneEngine.class);
+        if (a != null && a.id().length() > 0) {
+            sceneId = a.id();
+        }
+        if (!getGameEngine().containsScene(sceneId)) {
+            SceneEngine b = (SceneEngine) getContainer().getBean(sceneType);
+            getGameEngine().addScene(b);
+        }
+        addScene(scene, sceneId);
     }
 
+    @Override
     public void addScene(Scene scene, SceneEngine sceneEngine) {
-        getGameEngine().addSceneEngine(sceneEngine);
+        getGameEngine().addScene(sceneEngine);
         addScene(scene, sceneEngine.getId());
     }
 
     @Override
     public void addScene(Scene scene) {
-        getGameEngine().addSceneEngine(getGameEngine().createSceneEngine(scene.getId()));
+        getGameEngine().addScene(getGameEngine().createScene(scene.getId()));
         addScene(scene, scene.getId());
     }
 
+    @Override
     public Scene createScene() {
         return new DefaultScene(new ViewDimension(1, 1, 1));
     }
@@ -131,23 +158,24 @@ public class DefaultGame implements Game {
 
     @Override
     public void addSceneEngine(SceneEngine sceneEngine) {
-        getGameEngine().addSceneEngine(sceneEngine);
+        getGameEngine().addScene(sceneEngine);
     }
 
     @Override
     public Scene addScene(String sceneId) {
         Scene scene = createScene();
-        SceneEngine sceneEngine = getGameEngine().createSceneEngine(sceneId);
-        getGameEngine().addSceneEngine(sceneEngine);
+        SceneEngine sceneEngine = getGameEngine().createScene(sceneId);
+        getGameEngine().addScene(sceneEngine);
         addScene(scene, sceneEngine.getId());
         return scene;
     }
 
     @Override
     public SceneEngine addSceneEngine(String sceneID) {
-        return getGameEngine().addSceneEngine(sceneID);
+        return getGameEngine().addScene(sceneID);
     }
 
+    @Override
     public Scene getScene(String sceneId) {
         Scene v = loadedScenes.get(sceneId);
         if (v == null) {
@@ -162,31 +190,35 @@ public class DefaultGame implements Game {
 
     @Override
     public SceneEngine getSceneEngine(String sceneEngineId) {
-        return getGameEngine().getSceneEngine(sceneEngineId);
+        return getGameEngine().getScene(sceneEngineId);
     }
 
     @Override
-    public List<Scene> findScenesBySceneEnginId(String sceneEnginId) {
-        java.util.List<Scene> all=new ArrayList<>();
+    public List<Scene> getScenes() {
+        return new ArrayList<>(loadedScenes.values());
+    }
+
+    @Override
+    public List<Scene> findScenesBySceneEngineId(String sceneEnginId) {
+        java.util.List<Scene> all = new ArrayList<>();
         for (Map.Entry<String, Scene> e : loadedScenes.entrySet()) {
             String id = e.getValue().getSceneEngine().getId();
-            if(id.equals(sceneEnginId)){
+            if (id.equals(sceneEnginId)) {
                 all.add(e.getValue());
             }
         }
         return all;
     }
 
-    @Override
-    public void showScene(Class<? extends SceneEngine> sceneType) {
-        showScene(sceneType.getName());
-    }
+//    @Override
+//    public void showScene(Class<? extends SceneEngine> sceneType) {
+//        showScene(sceneType.getName());
+//    }
+//    @Override
+    public void updateSceneShowing(/*String sceneID*/) {
+        SceneEngine sceneEngine = gameEngine.getActiveScene();
 
-    @Override
-    public void showScene(String sceneID) {
-        SceneEngine sceneEngine = gameEngine.getSceneEngine(sceneID);
-
-        Scene scene = getScene(sceneID);
+        Scene scene = getScene(sceneEngine.getId());
 
         Scene oldScreen = this.currentScene;
         if (this.currentScene != null) {
@@ -198,7 +230,7 @@ public class DefaultGame implements Game {
             this.currentScene.stop();
         }
         this.currentScene = scene;
-        this.currentSceneEngineId = sceneID;
+        this.currentSceneEngineId = scene.getSceneEngine().getId();
         scene.start();
         sceneEngine.addPropertyChangeListener("size", sceneEngineModelChangeListener);
         scene.addPropertyChangeListener("title", sceneEngineModelChangeListener);
@@ -225,7 +257,7 @@ public class DefaultGame implements Game {
             window.setIconImage(null);
             window.setTitle(currentScene.getTitle());
             window.setIconImage(getIcon());
-            ViewBox vp = currentScene.getAbsoluteCamera();
+            ViewBox vp = currentScene.getCamera().getViewBounds();
             window.setSize(vp.getWidth(), vp.getHeight() + 30);
         }
     }
@@ -248,15 +280,12 @@ public class DefaultGame implements Game {
                 updateWindow();
             } else {
                 try {
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        @Override
-                        public void run() {
-                            window = new JFrame();
-                            window.setLayout(new BorderLayout());
-                            window.setSize(600, 400);
-                            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                            updateWindow();
-                        }
+                    SwingUtilities.invokeAndWait(() -> {
+                        window = new JFrame();
+                        window.setLayout(new BorderLayout());
+                        window.setSize(600, 400);
+                        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        updateWindow();
                     });
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
@@ -275,9 +304,10 @@ public class DefaultGame implements Game {
         return window;
     }
 
+    @Override
     public void start() {
         if (gameEngine != null) {
-            switch (gameEngine.getEngineState()) {
+            switch (gameEngine.getState()) {
                 case UNINITIALIZED: {
                     gameEngine.start();
                     break;
@@ -308,10 +338,10 @@ public class DefaultGame implements Game {
         }
         JFrame f = getWindow();
         String c0 = currentSceneEngineId;
-        SceneEngine se = gameEngine.getActiveSceneEngine();
+        SceneEngine se = gameEngine.getActiveScene();
         String c = se == null ? null : se.getId();
         if (!Objects.equals(c0, c)) {
-            showScene(c);
+            updateSceneShowing();
         }
         f.setVisible(true);
     }
@@ -327,8 +357,6 @@ public class DefaultGame implements Game {
     public void setIcon(Image image) {
         this.image = image;
     }
-
-    ;
 
     public void setIcon(String image, Class baseClass) {
         if (image == null) {
@@ -363,9 +391,10 @@ public class DefaultGame implements Game {
         @Override
         public void activeSceneChanged(SceneEngine oldEngine, SceneEngine newEngine) {
             if (gameEngine != null) {
-                switch (gameEngine.getEngineState()) {
+                switch (gameEngine.getState()) {
                     case STARTED: {
-                        showScene(newEngine == null ? null : newEngine.getId());
+                        //newEngine == null ? null : newEngine.getId()
+                        updateSceneShowing();
                         break;
                     }
                 }

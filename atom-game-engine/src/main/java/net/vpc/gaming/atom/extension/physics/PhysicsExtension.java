@@ -29,7 +29,7 @@ public class PhysicsExtension extends DefaultSceneEngineExtension
     }
 
     public PhysicsExtension(double gy, IterableSpritesFilter filter) {
-        this(ModelVector.newCartesien(0, gy), filter);
+        this(ModelVector.newCartesien(0, gy,0), filter);
     }
 
     public PhysicsExtension(ModelVector gravity) {
@@ -80,7 +80,7 @@ public class PhysicsExtension extends DefaultSceneEngineExtension
     private void apply(Sprite sprite) {
         ModelVector velocity = sprite.getVelocity();
         velocity = velocity.add(gravity);
-//        velocity=DVector.newCartesien(velocity.getX()*0.95, velocity.getY());
+//        velocity=ModelVector.newCartesien(velocity.getX()*0.95, velocity.getY());
         sprite.setVelocity(velocity.add(gravity));
         //sprite.setLocation(sprite.getLocation().translate(gravity));
     }

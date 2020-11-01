@@ -86,7 +86,7 @@ public class SceneMouseEvent {
 //        this.clickCount = clickCount;
 //        this.popupTrigger = popupTrigger;
 //        this.button = button;
-//        this.point = new DPoint(x, y);
+//        this.point = new ModelPoint(x, y);
 //    }
     public int getPlayerId() {
         return playerId;

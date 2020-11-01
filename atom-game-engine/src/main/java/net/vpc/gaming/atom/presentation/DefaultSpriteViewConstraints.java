@@ -18,6 +18,7 @@ public class DefaultSpriteViewConstraints implements SpriteViewConstraints {
     public DefaultSpriteViewConstraints() {
     }
 
+    @Override
     public boolean isIsometric() {
         return isometric;
     }
@@ -26,6 +27,7 @@ public class DefaultSpriteViewConstraints implements SpriteViewConstraints {
         this.isometric = isometric;
     }
 
+    @Override
     public SceneLayoutType getSceneLayoutType() {
         return sceneLayoutType;
     }
@@ -34,6 +36,7 @@ public class DefaultSpriteViewConstraints implements SpriteViewConstraints {
         this.sceneLayoutType = sceneLayoutType;
     }
 
+    @Override
     public ViewPoint getMargin() {
         return margin;
     }

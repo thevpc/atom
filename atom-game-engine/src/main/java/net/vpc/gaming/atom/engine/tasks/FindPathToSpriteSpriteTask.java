@@ -57,7 +57,7 @@ public class FindPathToSpriteSpriteTask implements MotionSpriteTask {
             moveTask.setMinDistance(minDistance);
             moveTask.setTarget(targetSprite.getLocation());
             if (moveTask.nextFrame(scene, sprite)) {
-                moving = sprite != null && sprite.getSceneEngineModel().getSprite(targetSpriteId) != null;
+                moving = sprite != null && sprite.getSceneEngine().getSprite(targetSpriteId) != null;
                 return true;
             }
         }

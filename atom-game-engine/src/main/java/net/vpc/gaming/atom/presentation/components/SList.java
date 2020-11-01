@@ -34,7 +34,7 @@ public class SList extends DefaultSceneComponent {
 
     public SList(String name) {
         super(name);
-        getTextStyle(TextStyle.DEFAULT).setForeColor(Color.BLACK);
+        getTextStyle(SceneComponentState.DEFAULT).setForeColor(Color.BLACK);
         setFocusable(true);
         setController(new DefaultSceneController() {
             @Override
@@ -138,15 +138,15 @@ public class SList extends DefaultSceneComponent {
                     int x1 = getX();
                     int y1 = getY();
                     y1 += +i * (height1 + spacing);
-                    int status = 0;
+                    SceneComponentState status = SceneComponentState.DEFAULT;
                     if (hasFocus()) {
-                        status |= TextStyle.FOCUSED;
+                        status.add(SceneComponentState.FOCUSED);
                     }
                     if (!isEnabled()) {
-                        status |= TextStyle.DISABLED;
+                        status.add(SceneComponentState.DISABLED);
                     }
                     if (selected) {
-                        status |= TextStyle.SELECTED;
+                        status.add(SceneComponentState.SELECTED);
                     }
                     TextStyle style = styleMap.getTextStyle(status);
                     AtomUtils.drawText(context, text, x1, y1, width1, height1, style, -1);
@@ -163,15 +163,15 @@ public class SList extends DefaultSceneComponent {
                     int x1 = getX();
                     int y1 = getY();
                     x1 += +i * (width1 + spacing);
-                    int status = 0;
+                    SceneComponentState status = SceneComponentState.DEFAULT;
                     if (hasFocus()) {
-                        status |= TextStyle.FOCUSED;
+                        status.add(SceneComponentState.FOCUSED);
                     }
                     if (!isEnabled()) {
-                        status |= TextStyle.DISABLED;
+                        status.add(SceneComponentState.DISABLED);
                     }
                     if (selected) {
-                        status |= TextStyle.SELECTED;
+                        status.add(SceneComponentState.SELECTED);
                     }
                     TextStyle style = styleMap.getTextStyle(status);
                     AtomUtils.drawText(context, text, x1, y1, width1, height1, style, -1);
@@ -186,15 +186,15 @@ public class SList extends DefaultSceneComponent {
                 int height1 = getHeight();
                 int x1 = getX();
                 int y1 = getY();
-                int status = 0;
+                SceneComponentState status = SceneComponentState.DEFAULT;
                 if (hasFocus()) {
-                    status |= TextStyle.FOCUSED;
+                    status.add(SceneComponentState.FOCUSED);
                 }
                 if (!isEnabled()) {
-                    status |= TextStyle.DISABLED;
+                    status.add(SceneComponentState.DISABLED);
                 }
                 if (selected) {
-                    status |= TextStyle.SELECTED;
+                    status.add(SceneComponentState.SELECTED);
                 }
                 TextStyle style = styleMap.getTextStyle(status);
                 AtomUtils.drawText(context, text, x1, y1, width1, height1, style, -1);
@@ -291,11 +291,12 @@ public class SList extends DefaultSceneComponent {
         }
     }
 
-    public void setTextStyle(TextStyle style, int status) {
-        styleMap.setTextStyle(style, status);
+    public SList setTextStyle(SceneComponentState status, TextStyle style) {
+        styleMap.setTextStyle(status, style);
+        return this;
     }
 
-    public TextStyle getTextStyle(int status) {
+    public TextStyle getTextStyle(SceneComponentState status) {
         return styleMap.getTextStyle(status);
     }
 }

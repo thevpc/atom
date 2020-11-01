@@ -4,6 +4,7 @@
  */
 package net.vpc.gaming.atom.presentation.components;
 
+import net.vpc.gaming.atom.presentation.Alignment;
 import net.vpc.gaming.atom.presentation.SequenceGenerator;
 
 import java.awt.*;
@@ -16,11 +17,6 @@ import java.util.List;
  */
 public class TextStyle {
 
-    public static final int DEFAULT = 0;
-    public static final int DISABLED = 1;
-    public static final int FOCUSED = 2;
-    public static final int SELECTED = 4;
-    public static final int HOVER = 8;
     private List<TextStyle> baseStyles = new ArrayList<TextStyle>();
     private String name;
     private Font font;
@@ -57,7 +53,7 @@ public class TextStyle {
         setAll(other);
     }
 
-    public void setAll(TextStyle other) {
+    public TextStyle setAll(TextStyle other) {
         if (other != null) {
             setFont(other.font);
             setForeColor(other.foreColor);
@@ -76,14 +72,16 @@ public class TextStyle {
             setCursorColor(other.cursorColor);
             setBorderArc(other.borderArc);
         }
+        return this;
     }
 
     public List<TextStyle> getBaseStyles() {
         return baseStyles;
     }
 
-    public void setBaseStyles(List<TextStyle> baseStyles) {
+    public TextStyle setBaseStyles(List<TextStyle> baseStyles) {
         this.baseStyles = baseStyles;
+        return this;
     }
 
     private <T> T getInheritedProperty(String name) {
@@ -122,7 +120,7 @@ public class TextStyle {
             case "name": {
                 return (T) name;
             }
-            case "alignment": {
+            case "horizontalAlignment": {
                 return (T) alignment;
             }
             case "backgroundColor": {
@@ -178,40 +176,45 @@ public class TextStyle {
         return getInheritedProperty("font");
     }
 
-    public void setFont(Font font) {
+    public TextStyle setFont(Font font) {
         this.font = font;
+        return this;
     }
 
     public Color getForeColor() {
         return getInheritedProperty("foreColor");
     }
 
-    public void setForeColor(Color foreColor) {
+    public TextStyle setForeColor(Color foreColor) {
         this.foreColor = foreColor;
+        return this;
     }
 
     public Color getBackgroundColor() {
         return getInheritedProperty("backgroundColor");
     }
 
-    public void setBackgroundColor(Color backgroundColor) {
+    public TextStyle setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
+        return this;
     }
 
     public Color getBackgroundColor2() {
         return getInheritedProperty("backgroundColor2");
     }
 
-    public void setBackgroundColor2(Color backgroundColor2) {
+    public TextStyle setBackgroundColor2(Color backgroundColor2) {
         this.backgroundColor2 = backgroundColor2;
+        return this;
     }
 
     public Integer getBlinkForegroundPeriod() {
         return getInheritedProperty("blinkForegroundPeriod");
     }
 
-    public void setBlinkForegroundPeriod(Integer blinkPeriod) {
+    public TextStyle setBlinkForegroundPeriod(Integer blinkPeriod) {
         this.blinkForegroundPeriod = blinkPeriod;
+        return this;
     }
 
     public SequenceGenerator getBlinkForegroundHelper() {
@@ -240,8 +243,9 @@ public class TextStyle {
         return blinkBackgroundPeriod;
     }
 
-    public void setBlinkBackgroundPeriod(Integer blinkPeriod) {
+    public TextStyle setBlinkBackgroundPeriod(Integer blinkPeriod) {
         this.blinkBackgroundPeriod = blinkPeriod;
+        return this;
     }
 
     public SequenceGenerator getBlinkBackgroundHelper() {
@@ -263,15 +267,17 @@ public class TextStyle {
         return getInheritedProperty("blinkBorderPeriod");
     }
 
-    public void setBlinkPeriod(Integer blinkPeriod) {
+    public TextStyle setBlinkPeriod(Integer blinkPeriod) {
         setBlinkBackgroundPeriod(blinkPeriod);
         setBlinkBorderPeriod(blinkPeriod);
         setBlinkForegroundPeriod(blinkPeriod);
         setBlinkCursorPeriod(blinkPeriod);
+        return this;
     }
 
-    public void setBlinkBorderPeriod(Integer blinkPeriod) {
+    public TextStyle setBlinkBorderPeriod(Integer blinkPeriod) {
         this.blinkBorderPeriod = blinkPeriod;
+        return this;
     }
 
     public SequenceGenerator getBlinkBorderHelper() {
@@ -293,72 +299,81 @@ public class TextStyle {
         return getInheritedProperty("alignment");
     }
 
-    public void setAlignment(Alignment alignment) {
+    public TextStyle setAlignment(Alignment alignment) {
         this.alignment = alignment;
+        return this;
     }
 
     public Integer getBorderWidth() {
         return getInheritedProperty("borderWidth");
     }
 
-    public void setBorderWidth(Integer borderWidth) {
+    public TextStyle setBorderWidth(Integer borderWidth) {
         this.borderWidth = borderWidth;
+        return this;
     }
 
     public Color getBorderColor() {
         return getInheritedProperty("borderColor");
     }
 
-    public void setBorderColor(Color borderColor) {
+    public TextStyle setBorderColor(Color borderColor) {
         this.borderColor = borderColor;
+        return this;
     }
 
     public Integer getBorderArc() {
         return getInheritedProperty("borderArc");
     }
 
-    public void setBorderArc(Integer borderArc) {
+    public TextStyle setBorderArc(Integer borderArc) {
         this.borderArc = borderArc;
+        return this;
     }
 
     public Integer getInsetX() {
         return getInheritedProperty("insetX");
     }
 
-    public void setInsetX(Integer insetX) {
+    public TextStyle setInsetX(Integer insetX) {
         this.insetX = insetX;
+        return this;
     }
 
     public Integer getInsetY() {
         return getInheritedProperty("insetY");
     }
 
-    public void setInsetY(Integer insetY) {
+    public TextStyle setInsetY(Integer insetY) {
         this.insetY = insetY;
+        return this;
     }
 
     public Boolean getFillBackground() {
         return getInheritedProperty("fillBackground");
     }
 
-    public void setFillBackground(Boolean fillBackground) {
+    public TextStyle setFillBackground(Boolean fillBackground) {
         this.fillBackground = fillBackground;
+        return this;
     }
 
     public Color getCursorColor() {
         return getInheritedProperty("cursorColor");
     }
 
-    public void setCursorColor(Color cursorColor) {
+    public TextStyle setCursorColor(Color cursorColor) {
         this.cursorColor = cursorColor;
+        return this;
     }
 
     public Integer getBlinkCursorPeriod() {
         return getInheritedProperty("blinkCursorPeriod");
     }
 
-    public void setBlinkCursorPeriod(Integer blinkCursorPeriod) {
+    public TextStyle setBlinkCursorPeriod(Integer blinkCursorPeriod) {
         this.blinkCursorPeriod = blinkCursorPeriod;
+        return this;
     }
 
     public SequenceGenerator getBlinkCursorHelper() {
@@ -380,8 +395,9 @@ public class TextStyle {
         return name;
     }
 
-    public void setName(String name) {
+    public TextStyle setName(String name) {
         this.name = name;
+        return this;
     }
 
     @Override

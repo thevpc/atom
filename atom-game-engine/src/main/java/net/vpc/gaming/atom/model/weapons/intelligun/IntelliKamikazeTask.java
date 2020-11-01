@@ -8,7 +8,7 @@ package net.vpc.gaming.atom.model.weapons.intelligun;
 //
 //import net.vpc.gaming.boardgame.business.SpriteTask;
 //import net.vpc.gaming.boardgame.model.Sprite;
-//import net.vpc.gaming.util.DPoint;
+//import net.vpc.gaming.util.ModelPoint;
 //import net.vpc.gaming.util.Geom2DUtils;
 //
 ///**
@@ -24,7 +24,7 @@ package net.vpc.gaming.atom.model.weapons.intelligun;
 //    }
 //
 //    public void taskStep(Sprite sprite) {
-//        DPoint stepPoint = Geom2DUtils.nextLinePoint(sprite.getPosition(), target.getPosition(), sprite.getMovementSpeed());
+//        ModelPoint stepPoint = Geom2DUtils.nextLinePoint(sprite.getPosition(), target.getPosition(), sprite.getMovementSpeed());
 //        sprite.setPosition(stepPoint);
 //        for (Sprite otherSprite : sprite.getModel().findSprites(stepPoint)) {
 //            if (otherSprite.getPlayerId() != sprite.getPlayerId()) {

@@ -15,15 +15,20 @@ import net.vpc.gaming.atom.model.ModelPoint;
 public interface MotionSpriteTask extends SpriteTask {
 
     /**
-     * return the next points defining the path that would be followed by the sprite
-     * May return null if there is no guess of next path
+     * return the next points defining the path that would be followed by the
+     * sprite May return null if there is no guess of next path
      *
-     * @return expected path for sprite travel (meaningful for move tasks mainly)
+     * @return expected path for sprite travel (meaningful for move tasks
+     * mainly)
      */
-    public ModelPoint[] getMovePath();
+    default ModelPoint[] getMovePath() {
+        return null;
+    }
 
     /**
      * @return true if the sprite is actually moving
      */
-    public boolean isMoving();
+    default boolean isMoving() {
+        return true;
+    }
 }

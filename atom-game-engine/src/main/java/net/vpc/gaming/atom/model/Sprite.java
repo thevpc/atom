@@ -5,6 +5,9 @@ import net.vpc.gaming.atom.presentation.layers.Layer;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.Map;
+import net.vpc.gaming.atom.engine.SceneEngine;
+import net.vpc.gaming.atom.engine.SpriteTask;
+import net.vpc.gaming.atom.engine.collision.SpriteCollisionManager;
 
 /**
  * A Sprite is a two-dimensional animation that is integrated into a larger
@@ -19,42 +22,51 @@ public interface Sprite extends Serializable {
     public static final int SPRITES_LAYER = Layer.SPRITES_LAYER;
     public static final int OUT_OF_RANGE = -1;
 
+    SpriteTask getTask();
+
     /**
-     * collision sides are updated by atom whenever collision is detected for this sprite
+     * collision sides are updated by atom whenever collision is detected for
+     * this sprite
      *
      * @return
      */
     int getCollisionSides();
 
-    void setCollisionSides(int sides);
+    Sprite setCollisionSides(int sides);
 
     int getLayer();
 
-    public void setLayer(int layer);
+    public Sprite setLayer(int layer);
 
     SpriteArmor[] getArmors();
 
-    void setArmors(SpriteArmor... armors);
+    Sprite setArmors(SpriteArmor... armors);
 
     SpriteWeapon[] getWeapons();
 
-    void setWeapons(SpriteWeapon... weapons);
+    Sprite setWeapons(SpriteWeapon... weapons);
 
     int getLife();
 
-    void setLife(int life);
+    Sprite setLife(int life);
 
     int getMaxLife();
 
-    void setMaxLife(int maxLife);
+    Sprite setMaxLife(int maxLife);
 
     public int getStyle();
 
-    public void setStyle(int variation);
+    public Sprite setStyle(int variation);
 
-    SceneEngineModel getSceneEngineModel();
+    SceneEngine getSceneEngine();
 
-    void setSceneEngineModel(SceneEngineModel sceneModel);
+    Sprite setSceneEngine(SceneEngine sceneEngine);
+
+    Sprite setTask(SpriteTask task);
+
+    SpriteCollisionManager getCollisionManager();
+
+    Sprite setCollisionManager(SpriteCollisionManager collisionManager);
 
     public boolean isAt(ModelPoint point);
 
@@ -62,29 +74,29 @@ public interface Sprite extends Serializable {
 
     public ModelPoint getLocation();
 
-    public void setLocation(ModelPoint point);
+    public Sprite setLocation(ModelPoint point);
 
-    public void setLocation(int x, int y);
+    public Sprite setLocation(double x, double y);
 
     public boolean isMoving();
 
-    public void setMoving(boolean moving);
+    public Sprite setMoving(boolean moving);
 
     public ModelDimension getSize();
 
-    public void setSize(ModelDimension dimension);
+    public Sprite setSize(ModelDimension dimension);
 
-    public void setSize(double width, double height);
+    public Sprite setSize(double width, double height);
 
     public ModelBox getBounds();
 
     public String getName();
 
-    public void setName(String name);
+    public Sprite setName(String name);
 
     public String getKind();
 
-    public void setKind(String type);
+    public Sprite setKind(String type);
 
     //    public void setSelectable(boolean value);
     public boolean isSelectable();
@@ -95,11 +107,11 @@ public interface Sprite extends Serializable {
 
     public int getPlayerId();
 
-    public void setPlayerId(int player);
+    public Sprite setPlayerId(int player);
 
     public int getId();
 
-    public void setId(int id);
+    public Sprite setId(int id);
 
     public double getHeight();
 
@@ -115,41 +127,41 @@ public interface Sprite extends Serializable {
 
     public boolean isCrossable();
 
-    public void setCrossable(boolean crossable);
+    public Sprite setCrossable(boolean crossable);
 
-    void addPropertyChangeListener(PropertyChangeListener listener);
+    Sprite addPropertyChangeListener(PropertyChangeListener listener);
 
-    void addPropertyChangeListener(String property, PropertyChangeListener listener);
+    Sprite addPropertyChangeListener(String property, PropertyChangeListener listener);
 
-    void removePropertyChangeListener(PropertyChangeListener listener);
+    Sprite removePropertyChangeListener(PropertyChangeListener listener);
 
-    void removePropertyChangeListener(String property, PropertyChangeListener listener);
+    Sprite removePropertyChangeListener(String property, PropertyChangeListener listener);
 
     public double getDirection();
 
-    public void setDirection(double value);
+    public Sprite setDirection(double value);
 
-    public void setDirection(Direction value);
+    public Sprite setDirection(Direction value);
 
     public double getSpeed();
 
-    public void setSpeed(double speed);
+    public Sprite setSpeed(double speed);
 
     public double getAngularSpeed();
 
-    public void setAngularSpeed(double speed);
+    public Sprite setAngularSpeed(double speed);
 
     /**
      * setLife(0)
      */
-    public void die();
+    public Sprite die();
 
     /**
      * setLife(getLife()+x)
      *
      * @param x
      */
-    public void addLife(int x);
+    public Sprite addLife(int x);
 
     public ModelPoint validatePosition(ModelPoint position);
 
@@ -161,7 +173,7 @@ public interface Sprite extends Serializable {
      * @param sight
      * @throws IllegalArgumentException raised when <code>sight<code> is negative
      */
-    public void setSight(int sight);
+    public Sprite setSight(int sight);
 
     public double distance(Sprite b);
 
@@ -174,28 +186,28 @@ public interface Sprite extends Serializable {
     public Object getProperty(String name);
 
     /**
-     * Adds or Removes custom properties. If
-     * <code>value</code> is not null, the property is added If
-     * <code>value</code> is null, the property is removed Names starting with $
-     * are not supported. Fires a property change event with key
-     * $<code>name</code> (name prefixed with a leading $) and the value setMap.
+     * Adds or Removes custom properties. If <code>value</code> is not null, the
+     * property is added If <code>value</code> is null, the property is removed
+     * Names starting with $ are not supported. Fires a property change event
+     * with key $<code>name</code> (name prefixed with a leading $) and the
+     * value setMap.
      *
-     * @param name  custom property name
+     * @param name custom property name
      * @param value custom property value or null
-     * @throws NullPointerException     raised when <code>name</name> is null
+     * @throws NullPointerException raised when <code>name</name> is null
      * @throws IllegalArgumentException raised when name starts with a leading
-     *                                  '$' character. Leading '$' are not supported because property change
-     *                                  events will add '$' to custom properties.
+     * '$' character. Leading '$' are not supported because property change
+     * events will add '$' to custom properties.
      */
-    public void setProperty(String name, Object value);
+    public Sprite setProperty(String name, Object value);
 
     public ModelVector getVelocity();
 
-    public void setVelocity(ModelVector velocityVector);
+    public Sprite setVelocity(ModelVector velocityVector);
 
-    public void copyFrom(Sprite sprite);
+    public Sprite copyFrom(Sprite sprite);
 
     public int getMovementStyle();
 
-    public DefaultSprite setMovementStyle(int movementStyle);
+    public Sprite setMovementStyle(int movementStyle);
 }

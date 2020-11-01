@@ -27,22 +27,23 @@ public class HelloWorldNoAnnotations {
         sceneEngine.setSize(20, 10);
 
         //configure ball
-        Sprite ball = sceneEngine.createSprite("ball");
-        ball.setLocation(2, 2);
-        ball.setSpeed(0.2);
-        ball.setDirection(Math.PI/4);
+        Sprite ball = sceneEngine
+                .createSprite("ball")
+                .setLocation(2, 2)
+                .setSpeed(0.2)
+                .setDirection(Math.PI / 4)
+                .setTask(new MoveSpriteTask())
+                .setCollisionManager(new SimpleSpriteCollisionManager());
         sceneEngine.addSprite(ball);
-        sceneEngine.setSpriteTask("ball", new MoveSpriteTask());
-        sceneEngine.setSpriteCollisionManager("ball", new SimpleSpriteCollisionManager());
-        
+
         //configure scene
         Scene scene = game.addScene(sceneEngine);
         scene.addLayer(new DebugLayer(false));
         scene.setTitle("HelloWorld");
         scene.setTileSize(30);
         scene.setSpriteView("ball", new ImageSpriteView("/ball.png", 8, 4));
-        scene.addSceneController(new SpriteController(ball));
-        scene.addSceneController(new AdjustViewController());
+        scene.addController(new SpriteController(ball));
+        scene.addController(new AdjustViewController());
         scene.addComponent(new SLabel("Click CTRL-D to switch debug mode, use Arrows to move ball"));
 
         //start game

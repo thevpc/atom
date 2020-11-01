@@ -39,8 +39,8 @@ import java.util.List;
  * <p/>
  * Usually, it is appropriate (though not necessary if sprites are very dynamic)
  * to define one own SceneModel which contains one's sprites. One can initialize
- * model in the overridden method
- * <code>sceneActivating()</code> Here is another more accurate example :
+ * model in the overridden method <code>sceneActivating()</code> Here is another
+ * more accurate example :
  * <pre>
  *  public class MySceneEngine extends DefaultSceneEngine {
  *
@@ -147,56 +147,56 @@ public interface SceneEngine {
     /**
      * Start the Scene Engine. The scene passes to the state "DEACTIVATED"
      *
-     * @throws IllegalStateException raised when transition from actual State
-     *                               to STARTING is not allowed
+     * @throws IllegalStateException raised when transition from actual State to
+     * STARTING is not allowed
      */
     public void start();
 
     /**
      * Stop the Scene Engine. The scene passes to the state "STOPPED"
      *
-     * @throws IllegalStateException raised when transition from actual State
-     *                               to STOPPING is not allowed
+     * @throws IllegalStateException raised when transition from actual State to
+     * STOPPING is not allowed
      */
     public void stop();
 
     /**
      * Pause the Scene Engine. The scene passes to the state "PAUSED"
      *
-     * @throws IllegalStateException raised when transition from actual State
-     *                               to PAUSING is not allowed
+     * @throws IllegalStateException raised when transition from actual State to
+     * PAUSING is not allowed
      */
     public void pause();
 
     /**
      * Resume the Scene Engine. The scene passes to the state "ACTIVATED"
      *
-     * @throws IllegalStateException raised when transition from actual State
-     *                               to RESUMING is not allowed
+     * @throws IllegalStateException raised when transition from actual State to
+     * RESUMING is not allowed
      */
     public void resume();
 
     /**
      * Activate the Scene Engine. The scene passes to the state "ACTIVATED"
      *
-     * @throws IllegalStateException raised when transition from actual State
-     *                               to ACTIVATING is not allowed
+     * @throws IllegalStateException raised when transition from actual State to
+     * ACTIVATING is not allowed
      */
     public void activate();
 
     /**
      * Deactivate the Scene Engine. The scene passes to the state "DECATIVATED"
      *
-     * @throws IllegalStateException raised when transition from actual State
-     *                               to DEACTIVATING is not allowed
+     * @throws IllegalStateException raised when transition from actual State to
+     * DEACTIVATING is not allowed
      */
     public void deactivate();
 
     /**
      * Dispose the Scene Engine. The scene passes to the state "DISPOSED"
      *
-     * @throws IllegalStateException raised when transition from actual State
-     *                               to DISPOSING is not allowed
+     * @throws IllegalStateException raised when transition from actual State to
+     * DISPOSING is not allowed
      */
     public void dispose();
 
@@ -232,14 +232,14 @@ public interface SceneEngine {
 
     /**
      * Anticipates Sprite move to check if any collision will be fired when
-     * sprite location changes to
-     * <code>newLocation</code>. This method does not update Sprite location. It
-     * does only check for collision using the defined Collision Manager.
+     * sprite location changes to <code>newLocation</code>. This method does not
+     * update Sprite location. It does only check for collision using the
+     * defined Collision Manager.
      *
-     * @param sprite          sprite to move
-     * @param newLocation     new sprite location
+     * @param sprite sprite to move
+     * @param newLocation new sprite location
      * @param borderCollision check borderCollision
-     * @param tileCollision   check tile borderCollision
+     * @param tileCollision check tile borderCollision
      * @param spriteCollision check Sprite Collision
      * @return Detected Collisions or empty array (not null)
      */
@@ -267,9 +267,9 @@ public interface SceneEngine {
 
     public void setSpriteCollisionManager(String kind, SpriteCollisionManager collisionManager);
 
-    public void setSpriteCollisionManager(int spriteId, Class<? extends SpriteCollisionManager> collisionManager) ;
+    public void setSpriteCollisionManager(int spriteId, Class<? extends SpriteCollisionManager> collisionManager);
 
-    public void setSpriteCollisionManager(String spriteKind, Class<? extends SpriteCollisionManager> collisionManager) ;
+    public void setSpriteCollisionManager(String spriteKind, Class<? extends SpriteCollisionManager> collisionManager);
 
     public SpriteCollisionManager getSpriteCollisionManager(int spriteId);
 
@@ -277,10 +277,9 @@ public interface SceneEngine {
 
     public SpriteCollisionManager getSpriteCollisionManager(String sprite);
 
-    public List<Sprite> findSpritesByName(String name) ;
+    public List<Sprite> findSpritesByName(String name);
 
-    public List<Sprite> findSpritesByKind(String name) ;
-
+    public List<Sprite> findSpritesByKind(String name);
 
     /**
      * add a SceneEngineChangeListener
@@ -329,9 +328,9 @@ public interface SceneEngine {
      * add a SceneEngineExtension
      *
      * @param extension listener to register
-     * @throws NullPointerException     raised when <code>extension</code> is null
+     * @throws NullPointerException raised when <code>extension</code> is null
      * @throws IllegalArgumentException raised when un extension with the same
-     *                                  ID than <code>extension</code> is already registered
+     * ID than <code>extension</code> is already registered
      */
     public void installExtension(SceneEngineExtension extension);
 
@@ -339,9 +338,9 @@ public interface SceneEngine {
      * remove a SceneEngineExtension
      *
      * @param extensionId extension ID
-     * @throws NullPointerException     raised when <code>extensionId</code> is null
+     * @throws NullPointerException raised when <code>extensionId</code> is null
      * @throws IllegalArgumentException raised when extension is not yet
-     *                                  installed
+     * installed
      */
     public void uninstallExtension(String extensionId);
 
@@ -357,7 +356,7 @@ public interface SceneEngine {
     /**
      * return Extension with Class Name
      *
-     * @param <T>           Extension Type
+     * @param <T> Extension Type
      * @param extensionType Extension Class
      * @return Extension with id <code>extensionType.getName()</code>
      */
@@ -453,7 +452,7 @@ public interface SceneEngine {
 
     public void setSpriteTask(String spriteName, SpriteTask task);
 
-    public void setSpriteTask(String spriteKind, Class<? extends SpriteTask> task) ;
+    public void setSpriteTask(String spriteKind, Class<? extends SpriteTask> task);
 
     public long getFrame();
 
@@ -479,6 +478,8 @@ public interface SceneEngine {
     public <T extends Sprite> List<T> findSpritesByPlayer(Class<T> type, int playerId);
 
     public <T extends Sprite> T findSprite(Class<T> type);
+
+    public <T extends Sprite> T findSpriteByPlayer(String kind, int playerId);
 
     public <T extends Sprite> T findSpriteByPlayer(Class<T> type, int playerId);
 
@@ -516,6 +517,7 @@ public interface SceneEngine {
     void removeSprite(int sprite);
 
     void resetSprites();
+
     void resetPlayers();
 
     public Tile[] getObstacleTiles();
@@ -528,7 +530,7 @@ public interface SceneEngine {
 
     public void synchronizePlayers(List<Player> players);
 
-    public Player createPlayer() ;
+    public Player createPlayer();
 
     public Sprite createSprite(String kind);
 
@@ -567,9 +569,8 @@ public interface SceneEngine {
 
     public ModelPoint getLastSpritePosition(int s);
 
+    public Object getCompanionObject();
 
-    public Object getCompanionObject() ;
-
-    public void setCompanionObject(Object companionObject) ;
+    public void setCompanionObject(Object companionObject);
 
 }

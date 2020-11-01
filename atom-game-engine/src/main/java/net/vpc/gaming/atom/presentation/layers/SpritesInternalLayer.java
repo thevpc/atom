@@ -122,7 +122,7 @@ public class SpritesInternalLayer extends DefaultLayer implements InteractiveLay
 
     private Sprite findSprite(MouseEvent e) {
         //if(is)
-//            DPoint p = getView().toModel(e.getPoint());
+//            ModelPoint p = getView().toModel(e.getPoint());
         Collection<Sprite> allPossible = getScene().findSprites(new ViewPoint(e.getPoint()));
         allPossible.retainAll(spritesSet);
         int found = allPossible.size();

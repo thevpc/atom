@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Created-By: 1.7.0
+
+Name: tn/edu/eniso/kombla
+Specification-Title: Simple Bomb Game Demo
+Specification-Version: 1.3
+Specification-Vendor: Taha Ben Salah
+Implementation-Title: tn.edu.eniso.kombla
+Implementation-Version: 1.3
+Implementation-Vendor: Taha Ben Salah
+

@@ -27,6 +27,7 @@ import net.vpc.gaming.atom.engine.collision.SceneCollisionManager;
 import net.vpc.gaming.atom.engine.collision.SpriteCollision;
 import net.vpc.gaming.atom.engine.collision.SpriteCollisionManager;
 import net.vpc.gaming.atom.engine.collision.TileCollision;
+import net.vpc.gaming.atom.model.AbstractSceneEngineModel;
 import net.vpc.gaming.atom.model.DamageEffects;
 import net.vpc.gaming.atom.model.DefaultSceneEngineModel;
 import net.vpc.gaming.atom.model.DefaultSprite;
@@ -104,8 +105,8 @@ public class DefaultSceneEngine implements SceneEngine {
         setModel0(new DefaultSceneEngineModel(1, 1));
         spriteArmorActions.put(InvincibleSpriteArmor.class, new InvincibleSpriteArmorAction());
         spriteArmorActions.put(LevelSpriteArmor.class, new LevelSpriteArmorAction());
-        spriteCollisionManagers=new SpriteExtManager<SpriteCollisionManager>(this);
-        spriteTasks=new SpriteExtManager<SpriteTask>(this);
+        spriteCollisionManagers = new SpriteExtManager<SpriteCollisionManager>(this);
+        spriteTasks = new SpriteExtManager<SpriteTask>(this);
     }
 
     public DefaultSceneEngine(String id) {
@@ -215,9 +216,9 @@ public class DefaultSceneEngine implements SceneEngine {
     public void setSpriteCollisionManager(int spriteId, SpriteCollisionManager collisionManager) {
         Sprite sprite = getSprite(spriteId);
         SpriteCollisionManager old = spriteCollisionManagers.getInstanceById(spriteId);
-        spriteCollisionManagers.setInstanceById(spriteId,collisionManager);
+        spriteCollisionManagers.setInstanceById(spriteId, collisionManager);
         if (collisionManager == null) {
-            if(old!=null) {
+            if (old != null) {
                 old.uninstall(this, sprite);
             }
         } else {
@@ -227,26 +228,30 @@ public class DefaultSceneEngine implements SceneEngine {
 
     public void setSpriteCollisionManager(int spriteId, Class<? extends SpriteCollisionManager> collisionManager) {
         SpriteCollisionManager spriteCollisionManager = spriteCollisionManagers.create(collisionManager);
-        spriteCollisionManagers.setInstanceById(spriteId,spriteCollisionManager);
+        spriteCollisionManagers.setInstanceById(spriteId, spriteCollisionManager);
     }
 
     public void setSpriteCollisionManager(String spriteKind, Class<? extends SpriteCollisionManager> collisionManager) {
-        spriteCollisionManagers.setBeanByKind(spriteKind,collisionManager);
+        spriteCollisionManagers.setBeanByKind(spriteKind, collisionManager);
     }
 
     @Override
     public void setSpriteCollisionManager(String kind, SpriteCollisionManager collisionManager) {
-        spriteCollisionManagers.setInstanceByKind(kind,collisionManager);
+        spriteCollisionManagers.setInstanceByKind(kind, collisionManager);
     }
 
     public SpriteCollisionManager getSpriteCollisionManager(int spriteId) {
         return spriteCollisionManagers.get(getSprite(spriteId));
     }
 
-
     @Override
     public SpriteCollisionManager getSpriteCollisionManager(String sprite) {
-        return getSpriteCollisionManager(findUniqueSpriteByName(sprite));
+        return getSpriteCollisionManager((Sprite) findUniqueSpriteByName(sprite));
+    }
+
+    @Override
+    public SpriteCollisionManager getSpriteCollisionManager(Sprite sprite) {
+        return getSpriteCollisionManager(getSpriteId(sprite));
     }
 
     @Override
@@ -268,6 +273,7 @@ public class DefaultSceneEngine implements SceneEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void installExtension(SceneEngineExtension extension) {
         String extensionId = extension.getExtensionId();
         SceneEngineExtension old = engineExtensions.get(extensionId);
@@ -281,6 +287,7 @@ public class DefaultSceneEngine implements SceneEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void uninstallExtension(String extensionId) {
         if (extensionId == null) {
             throw new NullPointerException("Extension ID should not be null");
@@ -319,6 +326,7 @@ public class DefaultSceneEngine implements SceneEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addStateListener(SceneEngineStateListener listener) {
         engineStateListeners.add(listener);
     }
@@ -326,6 +334,7 @@ public class DefaultSceneEngine implements SceneEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeStateListener(SceneEngineStateListener listener) {
         engineStateListeners.remove(listener);
     }
@@ -333,6 +342,7 @@ public class DefaultSceneEngine implements SceneEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addSceneFrameListener(SceneEngineFrameListener listener) {
         engineFrameListeners.add(listener);
     }
@@ -340,6 +350,7 @@ public class DefaultSceneEngine implements SceneEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeSceneFrameListener(SceneEngineFrameListener listener) {
         engineFrameListeners.remove(listener);
     }
@@ -678,12 +689,18 @@ public class DefaultSceneEngine implements SceneEngine {
             SceneEngineModel old = this.model;
             this.model = model;
             if (old != null) {
+                if (old instanceof AbstractSceneEngineModel) {
+                    ((AbstractSceneEngineModel) old).setSceneEngine(null);
+                }
                 old.removeSceneEngineModelListener(modelTracker);
                 old.removePropertyChangeListener(modelListenerBridge);
             }
             if (this.model != null) {
                 this.model.addSceneEngineModelListener(modelTracker);
                 this.model.addPropertyChangeListener(modelListenerBridge);
+                if (model instanceof AbstractSceneEngineModel) {
+                    ((AbstractSceneEngineModel) model).setSceneEngine(this);
+                }
             }
             for (SceneEngineChangeListener listener : engineUpdateListeners) {
                 listener.modelChanged(this, old, model);
@@ -838,10 +855,8 @@ public class DefaultSceneEngine implements SceneEngine {
      * Called periodically (each 1/FPS) by the timer in the Engine Single
      * Thread. calls in that order <ol> <li>updateTime();</li>
      * <li>consumeFrameEvents();</li> <li>updateModel();</li> <li>Update Model
-     * by Calling
-     * <code>SpriteTask.nextFrame</code> on each Sprite</li>
-     * <li>Update Model by Calling
-     * <code>SceneEngineTask.nextFrame</code></li>
+     * by Calling <code>SpriteTask.nextFrame</code> on each Sprite</li>
+     * <li>Update Model by Calling <code>SceneEngineTask.nextFrame</code></li>
      * <li>validateModel();</li>
      * <li>modelUpdated();</li> <li>Fire
      * <code>SceneEngineUpdateListener.modelUpdated</code> to notify of the new
@@ -912,7 +927,7 @@ public class DefaultSceneEngine implements SceneEngine {
         }
         chronometer.snapshot("engineFrameListeners.modelUpdated");
         if (chronometer.getTime() > 100L) {
-            System.out.println(chronometer);
+//            System.out.println(chronometer);
         }
 
 //        System.out.println("###### nextFrame ending : "+getModel().getFrame());
@@ -1050,12 +1065,12 @@ public class DefaultSceneEngine implements SceneEngine {
 
     @Override
     public void setSpriteTask(String spriteKind, SpriteTask task) {
-        spriteTasks.setInstanceByKind(spriteKind,task);
+        spriteTasks.setInstanceByKind(spriteKind, task);
     }
 
     @Override
     public void setSpriteTask(String spriteKind, Class<? extends SpriteTask> task) {
-        spriteTasks.setBeanByKind(spriteKind,task);
+        spriteTasks.setBeanByKind(spriteKind, task);
     }
 
     @Override
@@ -1074,10 +1089,6 @@ public class DefaultSceneEngine implements SceneEngine {
         return getSpriteTask(findUniqueSpriteByName(spriteId).getId());
     }
 
-    public SpriteCollisionManager getSpriteCollisionManager(Sprite sprite) {
-        return getSpriteCollisionManager(getSpriteId(sprite));
-    }
-
     public <T extends SpriteTask> T getSpriteTask(Sprite sprite, Class<T> type) {
         return getSpriteTask(getSpriteId(sprite), type);
     }
@@ -1092,13 +1103,13 @@ public class DefaultSceneEngine implements SceneEngine {
 
     public void setSpriteTask(int spriteId, SpriteTask task) {
         Sprite sp = getSprite(spriteId);
-        spriteTasks.setInstanceById(spriteId,task);
+        spriteTasks.setInstanceById(spriteId, task);
 
         Sprite sprite = getSprite(spriteId);
         SpriteTask old = spriteTasks.getInstanceById(spriteId);
-        spriteTasks.setInstanceById(spriteId,task);
+        spriteTasks.setInstanceById(spriteId, task);
         if (task == null) {
-            if(old!=null) {
+            if (old != null) {
                 //old.uninstall(this, sprite);
             }
         } else {
@@ -1109,7 +1120,7 @@ public class DefaultSceneEngine implements SceneEngine {
     public void setSpriteTask(int spriteId, Class<? extends SpriteTask> task) {
         Sprite sp = getSprite(spriteId);
         SpriteTask spriteTask = spriteTasks.create(task);
-        setSpriteTask(spriteId,spriteTask);
+        setSpriteTask(spriteId, spriteTask);
     }
 
     @Override
@@ -1513,7 +1524,6 @@ public class DefaultSceneEngine implements SceneEngine {
         return findSpriteByName(name, null, null);
     }
 
-
     @Override
     public <T extends Sprite> T findUniqueSpriteByName(String name) {
         Sprite ok = findUniqueSpriteByNameOrNull(name);
@@ -1587,10 +1597,22 @@ public class DefaultSceneEngine implements SceneEngine {
         return null;
     }
 
+    public <T extends Sprite> T findSpriteByPlayer(String kind, int playerId) {
+        for (Sprite sprite : getSprites()) {
+            if (playerId == sprite.getPlayerId()) {
+                if (kind == null || kind.equals(sprite.getKind())) {
+                    return ((T) sprite);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
     public <T extends Sprite> T findSpriteByPlayer(Class<T> type, int playerId) {
         for (Sprite sprite : getSprites()) {
             if (playerId == sprite.getPlayerId()) {
-                if (type.isAssignableFrom(sprite.getClass())) {
+                if (type==null || type.isAssignableFrom(sprite.getClass())) {
                     return ((T) sprite);
                 }
             }
@@ -1616,7 +1638,7 @@ public class DefaultSceneEngine implements SceneEngine {
             }
 //            fireCollisionEvents(sprite, null, sprite.getLocation());
             String kind = sprite.getKind();
-            if(kind!=null) {
+            if (kind != null) {
                 SpriteTask instanceByKind = spriteTasks.getInstanceByKind(kind);
                 if (instanceByKind != null) {
                     setSpriteTask(sprite.getId(), instanceByKind);
@@ -1641,8 +1663,8 @@ public class DefaultSceneEngine implements SceneEngine {
 
         @Override
         public void spriteRemoving(SceneEngineModel model, Sprite sprite) {
-            setSpriteTask(sprite.getId(),(SpriteTask) null);
-            setSpriteCollisionManager(sprite.getId(),(SpriteCollisionManager) null);
+            setSpriteTask(sprite.getId(), (SpriteTask) null);
+            setSpriteCollisionManager(sprite.getId(), (SpriteCollisionManager) null);
         }
 
         /**
@@ -1712,7 +1734,8 @@ public class DefaultSceneEngine implements SceneEngine {
                 }
             }
         }
-        public void reset(){
+
+        public void reset() {
             movingSprites.clear();
         }
     }
@@ -1724,4 +1747,6 @@ public class DefaultSceneEngine implements SceneEngine {
     public void setCompanionObject(Object companionObject) {
         this.companionObject = companionObject;
     }
+
+
 }
