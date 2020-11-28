@@ -106,7 +106,7 @@ public class CanonGameModel extends GameModel {
             for (Iterator<? extends Sprite> j = second.iterator(); j.hasNext();) {
                 Sprite b = j.next();
                 if (b.isCollideWith(a)) {
-                    System.out.println("collision " + a + "/" + b);
+                    System.out.println("collisiontasks " + a + "/" + b);
                     a.collideWith(b, Sprite.Side.NORTH);
                     b.collideWith(a, Sprite.Side.SOUTH);
                 }

@@ -2,10 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.vpc.games</groupId>
+    <groupId>net.thevpc.gaming</groupId>
     <artifactId>atom-game-engine</artifactId>
     <version>1.5.4.2</version>
-    <name>net.vpc.games.atom-game-engine</name>
+    <name>net.thevpc.gaming.atom-game-engine</name>
     <packaging>jar</packaging>
 
     <url>http://maven.apache.org</url>
@@ -32,8 +32,8 @@
             <version>0.11.1</version>
         </dependency>-->
         <dependency>
-            <groupId>net.vpc.common</groupId>
-            <artifactId>vpc-common-classpath</artifactId>
+            <groupId>net.thevpc.common</groupId>
+            <artifactId>thevpc-common-classpath</artifactId>
             <version>1.3.2</version>
         </dependency>
     </dependencies>

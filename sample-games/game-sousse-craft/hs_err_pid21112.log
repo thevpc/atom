@@ -104,7 +104,7 @@ j  sun.java2d.pipe.SpanShapeRenderer.fill(Lsun/java2d/SunGraphics2D;Ljava/awt/Sh
 j  sun.java2d.pipe.PixelToShapeConverter.fillRoundRect(Lsun/java2d/SunGraphics2D;IIIIII)V+28
 j  sun.java2d.pipe.ValidatePipe.fillRoundRect(Lsun/java2d/SunGraphics2D;IIIIII)V+23
 j  sun.java2d.SunGraphics2D.fillRoundRect(IIIIII)V+14
-j  tn.edu.eniso.soussecraft.main.presentation.view.layers.DashboardLayer.draw(Lorg/vpc/gaming/presentation/SceneDrawingContext;)V+111
+j  net.thevpc.gaming.atom.examples.soussecraft.main.presentation.view.layers.DashboardLayer.draw(Lorg/vpc/gaming/presentation/SceneDrawingContext;)V+111
 j  org.vpc.gaming.presentation.DefaultScene.buildFrame()V+220
 j  org.vpc.gaming.presentation.DefaultScene.frameStep()V+38
 j  org.vpc.gaming.presentation.DefaultScene$FrameBuilder.modelUpdated(Lorg/vpc/gaming/engine/SceneEngine;Lorg/vpc/gaming/model/SceneModel;)V+4
@@ -151,7 +151,7 @@ j  sun.java2d.pipe.SpanShapeRenderer.fill(Lsun/java2d/SunGraphics2D;Ljava/awt/Sh
 j  sun.java2d.pipe.PixelToShapeConverter.fillRoundRect(Lsun/java2d/SunGraphics2D;IIIIII)V+28
 j  sun.java2d.pipe.ValidatePipe.fillRoundRect(Lsun/java2d/SunGraphics2D;IIIIII)V+23
 j  sun.java2d.SunGraphics2D.fillRoundRect(IIIIII)V+14
-j  tn.edu.eniso.soussecraft.main.presentation.view.layers.DashboardLayer.draw(Lorg/vpc/gaming/presentation/SceneDrawingContext;)V+111
+j  net.thevpc.gaming.atom.examples.soussecraft.main.presentation.view.layers.DashboardLayer.draw(Lorg/vpc/gaming/presentation/SceneDrawingContext;)V+111
 j  org.vpc.gaming.presentation.DefaultScene.buildFrame()V+220
 j  org.vpc.gaming.presentation.DefaultScene.frameStep()V+38
 j  org.vpc.gaming.presentation.DefaultScene$FrameBuilder.modelUpdated(Lorg/vpc/gaming/engine/SceneEngine;Lorg/vpc/gaming/model/SceneModel;)V+4
@@ -726,7 +726,7 @@ ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsysca
 
 VM Arguments:
 jvm_args: -Dfile.encoding=UTF-8 
-java_command: tn.edu.eniso.soussecraft.SousseCraftGame arg1 arg2 creerfils
+java_command: net.thevpc.gaming.atom.examples.soussecraft.SousseCraftGame arg1 arg2 creerfils
 Launcher Type: SUN_STANDARD
 
 Environment Variables:

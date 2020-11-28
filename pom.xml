@@ -2,10 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.vpc.games</groupId>
+    <groupId>net.thevpc.gaming</groupId>
     <artifactId>atom-builder</artifactId>
     <version>1.5.4.2</version>
-    <name>net.vpc.games.atom-builder</name>
+    <name>net.thevpc.gaming.atom-builder</name>
     <packaging>pom</packaging>
 
     <url>http://maven.apache.org</url>

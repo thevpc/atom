@@ -2,10 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.vpc.games.atom.examples</groupId>
+    <groupId>net.thevpc.gaming.atom.examples</groupId>
     <artifactId>game-sousse-tanks</artifactId>
     <version>0.7.3</version>
-    <name>net.vpc.games.atom.examples.game-sousse-tanks</name>
+    <name>net.thevpc.gaming.atom.examples.game-sousse-tanks</name>
     <packaging>jar</packaging>
     <url>http://maven.apache.org</url>
     <properties>
@@ -13,7 +13,7 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>net.vpc.games</groupId>
+            <groupId>net.thevpc.gaming</groupId>
             <artifactId>atom-game-engine</artifactId>
             <version>1.5.4.2</version>
         </dependency>
