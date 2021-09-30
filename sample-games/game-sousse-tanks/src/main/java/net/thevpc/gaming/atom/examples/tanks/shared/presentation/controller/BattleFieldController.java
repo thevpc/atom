@@ -20,15 +20,15 @@ public class BattleFieldController extends DefaultSceneController {
     public void keyPressed(SceneKeyEvent e) {
         ServerBattleFieldEngine business = e.getScene().getSceneEngine();
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_RIGHT: {
+            case RIGHT: {
                 business.rotateRight(e.getPlayerId());
                 break;
             }
-            case KeyEvent.VK_LEFT: {
+            case LEFT: {
                 business.rotateLeft(e.getPlayerId());
                 break;
             }
-            case KeyEvent.VK_SPACE: {
+            case SPACE: {
                 business.fire(e.getPlayerId());
                 break;
             }

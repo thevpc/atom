@@ -1,34 +1,47 @@
 package net.thevpc.gaming.atom.ioc;
 
+import net.thevpc.gaming.atom.annotations.AtomScene;
 import net.thevpc.gaming.atom.annotations.AtomSceneEngine;
-import net.thevpc.gaming.atom.annotations.OnInstall;
-import net.thevpc.gaming.atom.engine.GameEngine;
 import net.thevpc.gaming.atom.engine.SceneEngine;
 import net.thevpc.gaming.atom.model.ModelDimension;
 import net.thevpc.gaming.atom.presentation.Game;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by vpc on 10/7/16.
  */
 class AtomSceneEngineCreationAction implements PostponedAction {
-    private AtomAnnotationsProcessor atomAnnotationsProcessor;
-    private final AtomSceneEngine s;
-    private final Class clazz;
-    private final Game game;
+    private final IoCContext context;
+    private final AtomAnnotationsProcessor atomAnnotationsProcessor;
 
-    public AtomSceneEngineCreationAction(AtomAnnotationsProcessor atomAnnotationsProcessor, AtomSceneEngine s, Class clazz, Game game) {
+    public AtomSceneEngineCreationAction(AtomAnnotationsProcessor atomAnnotationsProcessor, IoCContext context) {
         this.atomAnnotationsProcessor = atomAnnotationsProcessor;
-        this.s = s;
-        this.clazz = clazz;
-        this.game = game;
+        this.context = context;
     }
-
     @Override
-    public int getOrder() {
-        return AtomAnnotationsProcessor.ORDER_SCENE_ENGINE;
+    public String toString() {
+        return "@AtomSceneEngine{" +
+                "" + context.findCurrent().getClass().getSimpleName() +
+                ", sceneEngineId=" + context.getSceneEngineId() +
+                ", sceneEngine=" + context.getSceneId() +
+                '}';
+    }
+    public static String resolveSceneEngineId(IoCContext context) {
+        AtomSceneEngine annSceneEngine = context.find(AtomSceneEngine.class,null);
+        if (annSceneEngine != null) {
+            String id = annSceneEngine.id();
+            if (!id.isEmpty()) {
+                return id;
+            }
+        }
+        AtomScene annScene = context.find(AtomScene.class,null);
+        if (annScene != null) {
+            String id = annScene.id();
+            if (id.isEmpty()) {
+                return id;
+            }
+        }
+        Object o = context.findCurrent();
+        return o.getClass().getSimpleName();
     }
 
     @Override
@@ -37,63 +50,39 @@ class AtomSceneEngineCreationAction implements PostponedAction {
     }
 
     @Override
+    public int getOrder() {
+        return AtomAnnotationsProcessor.ORDER_SCENE_ENGINE;
+    }
+
+    @Override
     public void run() {
-        String sceneEngineId = s.id();
-        if (sceneEngineId.isEmpty()) {
-            sceneEngineId = clazz.getSimpleName();
-        }
-
-        Object instance = null;
-        final String finalSceneEngineId = sceneEngineId;
-        InstancePreparator prep = new InstancePreparator() {
-            @Override
-            public void postInject(Object o) {
-                SceneEngine sceneEngine = (SceneEngine) o;
-                sceneEngine.setId(finalSceneEngineId);
-                if(s.columns()>0) {
-                    sceneEngine.getModel().setSize(new ModelDimension(
-                            s.columns(),
-                            s.rows()<=0?s.columns():s.rows(),
-                            s.stacks()<=0?1:s.stacks()
-                    ));
-                }
-                if(s.fps()>0) {
-                    sceneEngine.setFps(s.fps());
-                }
+        Game game= context.get(Game.class,null);
+        AtomSceneEngine annSceneEngine = context.find(AtomSceneEngine.class,null);
+        if (annSceneEngine != null) {
+            String sceneEngineId = resolveSceneEngineId(context);
+            SceneEngine sceneEngine = context.findCurrentAs(SceneEngine.class);
+            if (sceneEngine == null) {
+                sceneEngine = game.getGameEngine().createSceneEngine(sceneEngineId);
+            } else {
+                sceneEngine.setId(sceneEngineId);
+                sceneEngine.setCompanionObject(sceneEngine);
             }
-        };
-        if (SceneEngine.class.isAssignableFrom(clazz)) {
-            HashMap<Class, Object> injects = new HashMap<>();
-            injects.put(Game.class, game);
-            injects.put(GameEngine.class, game.getGameEngine());
-            SceneEngine sceneEngine = (SceneEngine) atomAnnotationsProcessor.container.create(clazz, new InstancePreparator[]{
-                    new InstancePreparator() {
-                        @Override
-                        public void preInject(Object o, Map<Class, Object> injects) {
-                            injects.put(SceneEngine.class,o);
-                        }
-                    },
-                    prep
-            }, injects);
-            game.addSceneEngine(sceneEngine);
-            instance = sceneEngine;
-        } else {
-            SceneEngine sceneEngine = game.getGameEngine().createScene(sceneEngineId);
-            prep.postInject(sceneEngine);
-
-            game.addSceneEngine(sceneEngine);
-
-            HashMap<Class, Object> injects = new HashMap<>();
-            injects.put(Game.class, game);
-            injects.put(GameEngine.class, game.getGameEngine());
-            injects.put(SceneEngine.class, sceneEngine);
-            instance = atomAnnotationsProcessor.container.create(clazz, null, injects);
-            sceneEngine.setCompanionObject(instance);
-        }
-        atomAnnotationsProcessor.container.register(sceneEngineId, "SceneEngine", instance);
-        atomAnnotationsProcessor.container.invokeMethodsByAnnotation(instance, OnInstall.class, new Object[0]);
-        if(s.welcome()){
-            game.getGameEngine().setDefaultSceneId(sceneEngineId);
+            context.register(SceneEngine.class, sceneEngine,sceneEngine.getId());
+            game.getGameEngine().addSceneEngine(sceneEngine);
+            if (annSceneEngine.welcome()) {
+                game.getGameEngine().setDefaultSceneEngineId(sceneEngineId);
+            }
+            atomAnnotationsProcessor.container.register(sceneEngineId, "SceneEngine", sceneEngine.getId(), sceneEngine);
+            if (annSceneEngine.columns() > 0) {
+                sceneEngine.getModel()
+                        .setSize(new ModelDimension(annSceneEngine.columns(),
+                                annSceneEngine.rows() <= 0 ? annSceneEngine.columns() : annSceneEngine.rows(),
+                                annSceneEngine.stacks() <= 0 ? 1 : annSceneEngine.stacks()));
+            }
+            if (annSceneEngine.fps() > 0) {
+                sceneEngine.setFps(annSceneEngine.fps());
+            }
         }
     }
+
 }

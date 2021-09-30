@@ -5,7 +5,7 @@
 package net.thevpc.gaming.atom.examples.kombla.welcome;
 
 import net.thevpc.gaming.atom.annotations.AtomScene;
-import net.thevpc.gaming.atom.annotations.OnInstall;
+import net.thevpc.gaming.atom.annotations.OnInit;
 import net.thevpc.gaming.atom.model.Orientation;
 import net.thevpc.gaming.atom.model.ViewBox;
 import net.thevpc.gaming.atom.model.ViewPoint;
@@ -26,7 +26,7 @@ import java.awt.*;
  */
 @AtomScene(
         id = "welcome",
-        engine = "welcome",
+        sceneEngine = "welcome",
         title = "Kombla",
         tileWidth = 600,
         tileHeight = 400
@@ -78,7 +78,7 @@ public class WelcomeScene extends DefaultScene {
 
     }
 
-    @OnInstall
+    @OnInit
     public void onInstall() {
         // Fill Background with Gradient colored Layer
         addLayer(new FillScreenGradientLayer(new Color(200, 230, 126), Color.DARK_GRAY, Orientation.NORTH_EAST));

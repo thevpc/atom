@@ -12,15 +12,15 @@ public interface MainServerDAOListener {
      * @param name player name
      * @return player id and maze tiles
      */
-    public StartGameInfo onReceivePlayerJoined(String name);
+    StartGameInfo onReceivePlayerJoined(String name);
 
-    public void onReceiveMoveLeft(int playerId);
+    void onReceiveMoveLeft(int playerId);
 
-    public void onReceiveMoveRight(int playerId);
+    void onReceiveMoveRight(int playerId);
 
-    public void onReceiveMoveUp(int playerId);
+    void onReceiveMoveUp(int playerId);
 
-    public void onReceiveMoveDown(int playerId);
+    void onReceiveMoveDown(int playerId);
 
-    public void onReceiveReleaseBomb(int playerId);
+    void onReceiveReleaseBomb(int playerId);
 }

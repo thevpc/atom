@@ -34,23 +34,23 @@ package net.thevpc.gaming.atom.examples.kombla.main.server.presentation;
 //    public void keyPressedTask(SceneKeyEvent e) {
 //        MainServerEngine scene = e.getScene().getSceneEngine();
 //        switch (e.getKeyCode()) {
-//            case SceneKeyEvent.VK_LEFT: {
+//            case LEFT: {
 //                scene.move(Orientation.WEST);
 //                break;
 //            }
-//            case SceneKeyEvent.VK_RIGHT: {
+//            case RIGHT: {
 //                scene.move(Orientation.EAST);
 //                break;
 //            }
-//            case SceneKeyEvent.VK_UP: {
+//            case UP: {
 //                scene.move(Orientation.NORTH);
 //                break;
 //            }
-//            case SceneKeyEvent.VK_DOWN: {
+//            case DOWN: {
 //                scene.move(Orientation.SOUTH);
 //                break;
 //            }
-//            case SceneKeyEvent.VK_SPACE: {
+//            case SPACE: {
 //                scene.releaseBomb();
 //                break;
 //            }

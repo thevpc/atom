@@ -20,6 +20,7 @@ public class MainController extends DefaultSceneController {
 
 
     public MainController() {
+//        System.out.println("rr");
     }
     @Override
     public void keyPressed(SceneKeyEvent e) {
@@ -29,23 +30,23 @@ public class MainController extends DefaultSceneController {
     public void keyPressedTask(SceneKeyEvent e) {
         AbstractMainEngine scene = e.getScene().getSceneEngine();
         switch (e.getKeyCode()) {
-            case SceneKeyEvent.VK_LEFT: {
+            case LEFT: {
                 scene.move(Orientation.WEST);
                 break;
             }
-            case SceneKeyEvent.VK_RIGHT: {
+            case RIGHT: {
                 scene.move(Orientation.EAST);
                 break;
             }
-            case SceneKeyEvent.VK_UP: {
+            case UP: {
                 scene.move(Orientation.NORTH);
                 break;
             }
-            case SceneKeyEvent.VK_DOWN: {
+            case DOWN: {
                 scene.move(Orientation.SOUTH);
                 break;
             }
-            case SceneKeyEvent.VK_SPACE: {
+            case SPACE: {
                 scene.releaseBomb();
                 break;
             }

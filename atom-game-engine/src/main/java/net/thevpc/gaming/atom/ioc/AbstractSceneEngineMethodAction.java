@@ -3,6 +3,7 @@ package net.thevpc.gaming.atom.ioc;
 import net.thevpc.gaming.atom.annotations.AtomScene;
 import net.thevpc.gaming.atom.annotations.AtomSceneEngine;
 import net.thevpc.gaming.atom.engine.SceneEngine;
+import net.thevpc.gaming.atom.util.AtomUtils;
 
 import java.lang.reflect.Method;
 
@@ -12,10 +13,12 @@ import java.lang.reflect.Method;
 abstract class AbstractSceneEngineMethodAction implements PostponedAction {
     private AtomAnnotationsProcessor atomAnnotationsProcessor;
     private final Method method;
+    private final Object instance;
 
-    public AbstractSceneEngineMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor, Method method) {
+    public AbstractSceneEngineMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor, Method method,Object instance) {
         this.atomAnnotationsProcessor = atomAnnotationsProcessor;
         this.method = method;
+        this.instance = instance;
     }
 
     @Override
@@ -25,15 +28,15 @@ abstract class AbstractSceneEngineMethodAction implements PostponedAction {
 
     @Override
     public boolean isRunnable() {
-        final AtomSceneEngine sceneAnn = method.getDeclaringClass().getAnnotation(AtomSceneEngine.class);
-        if (sceneAnn != null) {
-            return atomAnnotationsProcessor.container.contains(sceneAnn.id(), "SceneEngine");
+        final AtomSceneEngine sceneEngineAnn = method.getDeclaringClass().getAnnotation(AtomSceneEngine.class);
+        if (sceneEngineAnn != null) {
+            return atomAnnotationsProcessor.container.contains(sceneEngineAnn.id(), "SceneEngine", AtomUtils.trimToNull(sceneEngineAnn.id()));
         }
-        final AtomScene sceneAnnScene = method.getDeclaringClass().getAnnotation(AtomScene.class);
-        if (sceneAnnScene != null) {
-            if (atomAnnotationsProcessor.container.contains(sceneAnnScene.id(), "Scene")) {
-                SceneEngine ee = atomAnnotationsProcessor.getGame().getScene(sceneAnnScene.id()).getSceneEngine();
-                return atomAnnotationsProcessor.container.contains(ee.getId(), "SceneEngine");
+        final AtomScene sceneAnn = method.getDeclaringClass().getAnnotation(AtomScene.class);
+        if (sceneAnn != null) {
+            if (atomAnnotationsProcessor.container.contains(sceneAnn.id(), "Scene", AtomUtils.trimToNull(sceneAnn.id()))) {
+                SceneEngine ee = atomAnnotationsProcessor.getGame().getScene(sceneAnn.id()).getSceneEngine();
+                return atomAnnotationsProcessor.container.contains(ee.getId(), "SceneEngine", AtomUtils.trimToNull(sceneAnn.id()));
             }
             return false;
         }
@@ -48,7 +51,7 @@ abstract class AbstractSceneEngineMethodAction implements PostponedAction {
         }
         final AtomSceneEngine sceneEngineAnn = method.getDeclaringClass().getAnnotation(AtomSceneEngine.class);
         if (sceneEngineAnn != null) {
-            run(atomAnnotationsProcessor.getGame().getGameEngine().getScene(sceneEngineAnn.id()));
+            run(atomAnnotationsProcessor.getGame().getGameEngine().getSceneEngine(sceneEngineAnn.id()));
         }
     }
 
@@ -56,15 +59,17 @@ abstract class AbstractSceneEngineMethodAction implements PostponedAction {
 
     public void invokeDefault() {
         try {
-            final AtomScene sceneAnn = method.getDeclaringClass().getAnnotation(AtomScene.class);
-            if (sceneAnn != null) {
-                method.invoke(atomAnnotationsProcessor.container.getBean(sceneAnn.id(), "Scene"));
-                run(atomAnnotationsProcessor.getGame().getScene(sceneAnn.id()).getSceneEngine());
-            }
-            final AtomSceneEngine sceneEngineAnn = method.getDeclaringClass().getAnnotation(AtomSceneEngine.class);
-            if (sceneEngineAnn != null) {
-                method.invoke(atomAnnotationsProcessor.container.getBean(sceneEngineAnn.id(), "SceneEngine"));
-            }
+
+//            final AtomScene sceneAnn = method.getDeclaringClass().getAnnotation(AtomScene.class);
+//            if (sceneAnn != null) {
+//                method.invoke(atomAnnotationsProcessor.container.getBean(sceneAnn.id(), "Scene"));
+//                run(atomAnnotationsProcessor.getGame().getScene(sceneAnn.id()).getSceneEngine());
+//            }
+//            final AtomSceneEngine sceneEngineAnn = method.getDeclaringClass().getAnnotation(AtomSceneEngine.class);
+//            if (sceneEngineAnn != null) {
+//                method.invoke(atomAnnotationsProcessor.container.getBean(sceneEngineAnn.id(), "SceneEngine"));
+//            }
+            method.invoke(instance);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

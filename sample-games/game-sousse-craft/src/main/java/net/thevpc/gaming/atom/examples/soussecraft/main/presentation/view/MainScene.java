@@ -6,7 +6,7 @@ import java.beans.PropertyChangeListener;
 
 import net.thevpc.gaming.atom.annotations.AtomScene;
 import net.thevpc.gaming.atom.debug.DebugLayer;
-import net.thevpc.gaming.atom.debug.DebugTilesHeatLayer;
+import net.thevpc.gaming.atom.engine.SpriteFilter;
 import net.thevpc.gaming.atom.model.*;
 import net.thevpc.gaming.atom.model.armors.InvincibleSpriteArmor;
 import net.thevpc.gaming.atom.model.armors.LevelSpriteArmor;
@@ -199,7 +199,7 @@ public class MainScene extends DefaultScene {
 
     public boolean isServer() {
         //server is always the first
-        WelcomeEngine scene = getSceneEngine().getGameEngine().getScene(WelcomeEngine.class);
+        WelcomeEngine scene = getSceneEngine().getGameEngine().getSceneEngine(WelcomeEngine.class);
         return scene.getRole() == AppRole.HOST_GAME;
     }
 
@@ -207,18 +207,18 @@ public class MainScene extends DefaultScene {
      * association entre modeles et vues
      */
     private void addSpriteViews() {
-        setSpriteView(Bullet.class,new BulletView());
-        setSpriteView(Worker.class,new WorkerView());
+        setSpriteView(SpriteFilter.byType(Bullet.class),new BulletView());
+        setSpriteView(SpriteFilter.byType(Worker.class),new WorkerView());
 
-        setSpriteView(Minerals.class,new MineralsView());
-        setSpriteView(Woods.class,new WoodsView());
+        setSpriteView(SpriteFilter.byType(Minerals.class),new MineralsView());
+        setSpriteView(SpriteFilter.byType(Woods.class),new WoodsView());
 
-        setSpriteView(CommandCenter.class,new CommandCenterView());
-        setSpriteView(Atomium.class,new AtomiumView() );
+        setSpriteView(SpriteFilter.byType(CommandCenter.class),new CommandCenterView());
+        setSpriteView(SpriteFilter.byType(Atomium.class),new AtomiumView() );
 
-        setSpriteView(GotoLocationIndicator.class,new GotoLocationIndicatorView());
-        setSpriteView(AttackLocationIndicator.class,new AttackLocationIndicatorView());
-        setSpriteView(GatherLocationIndicator.class,new GatherLocationIndicatorView());
+        setSpriteView(SpriteFilter.byType(GotoLocationIndicator.class),new GotoLocationIndicatorView());
+        setSpriteView(SpriteFilter.byType(AttackLocationIndicator.class),new AttackLocationIndicatorView());
+        setSpriteView(SpriteFilter.byType(GatherLocationIndicator.class),new GatherLocationIndicatorView());
 
     }
 
@@ -282,10 +282,7 @@ public class MainScene extends DefaultScene {
 
 
         //affichage des chemins
-        addLayer(new DebugLayer());
-
-        //affichage de la map de chaleur
-        addLayer(new DebugTilesHeatLayer());
+        addLayer(new DebugLayer(true));
 
         //afficher la zone de detection du scrolling
 //        addLayer(new DebugBordersScrollZonesLayer());

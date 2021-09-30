@@ -41,7 +41,7 @@ public class SImage extends DefaultSceneComponent {
         }
         switch (getAlignment()) {
             case CENTER: {
-                ViewPoint p = AtomUtils.getCenterdPosition(image.getWidth(null), image.getHeight(null), getViewBounds());
+                ViewPoint p = AtomUtils.getCenteredPosition(image.getWidth(null), image.getHeight(null), getViewBounds());
                 AtomDebug.DRAW_IMAGE_DRAW_COUNT++;
                 context.getGraphics().drawImage(image, p.getX(), p.getY(), null);
                 break;

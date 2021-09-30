@@ -22,15 +22,15 @@ public class MainController extends DefaultSceneController {
         AbstractMainEngine scene = e.getScene().getSceneEngine();
 
         switch (e.getKeyCode()) {
-            case SceneKeyEvent.VK_LEFT: {
+            case LEFT: {
                 scene.moveLeft(e.getPlayerId());
                 break;
             }
-            case SceneKeyEvent.VK_RIGHT: {
+            case RIGHT: {
                 scene.moveRight(e.getPlayerId());
                 break;
             }
-            case SceneKeyEvent.VK_SPACE: {
+            case SPACE: {
                 scene.releaseBall(e.getPlayerId());
                 break;
             }

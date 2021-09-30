@@ -9,8 +9,8 @@ import java.lang.reflect.Method;
  * Created by vpc on 10/7/16.
  */
 class SceneEngineActivatedMethodAction extends AbstractSceneEngineMethodAction {
-    public SceneEngineActivatedMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor,Method method) {
-        super(atomAnnotationsProcessor,method);
+    public SceneEngineActivatedMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor,Method method,Object instance) {
+        super(atomAnnotationsProcessor,method,instance);
     }
 
     public void run(SceneEngine sceneEngine) {

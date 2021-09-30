@@ -4,6 +4,7 @@ import net.thevpc.gaming.atom.Atom;
 import net.thevpc.gaming.atom.debug.AdjustViewController;
 import net.thevpc.gaming.atom.debug.DebugLayer;
 import net.thevpc.gaming.atom.engine.SceneEngine;
+import net.thevpc.gaming.atom.engine.SpriteFilter;
 import net.thevpc.gaming.atom.engine.collisiontasks.StopSpriteCollisionTask;
 import net.thevpc.gaming.atom.engine.maintasks.MoveSpriteMainTask;
 import net.thevpc.gaming.atom.model.Sprite;
@@ -41,8 +42,8 @@ public class HelloWorldNoAnnotations {
         scene.addLayer(new DebugLayer(false));
         scene.setTitle("HelloWorld");
         scene.setTileSize(30);
-        scene.setSpriteView("ball", new ImageSpriteView("/ball.png", 8, 4));
-        scene.addController(new SpriteController(ball));
+        scene.setSpriteView(SpriteFilter.byKind("ball"), new ImageSpriteView("/ball.png", 8, 4));
+        scene.addController(new SpriteController(SpriteFilter.byId(ball.getId())));
         scene.addController(new AdjustViewController());
         scene.addComponent(new SLabel("Click CTRL-D to switch debug mode, use Arrows to move ball"));
 

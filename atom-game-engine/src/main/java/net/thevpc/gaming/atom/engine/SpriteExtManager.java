@@ -1,6 +1,7 @@
 package net.thevpc.gaming.atom.engine;
 
 import net.thevpc.gaming.atom.ioc.AtomIoCContainer;
+import net.thevpc.gaming.atom.ioc.ClassNamedObjectMap;
 import net.thevpc.gaming.atom.model.Sprite;
 
 import java.util.HashMap;
@@ -70,9 +71,9 @@ public class SpriteExtManager<T> {
 
     public T create(Class<? extends T> type){
         AtomIoCContainer container=engine.getGameEngine().getContainer();
-        HashMap<Class, Object> map = new HashMap<>();
-        map.put(SceneEngine.class,engine);
-        map.put(GameEngine.class,engine.getGameEngine());
+        ClassNamedObjectMap map = new ClassNamedObjectMap();
+        map.add(SceneEngine.class, null, engine);
+        map.add(GameEngine.class, null, engine.getGameEngine());
         return (T) container.create(type, null, map);
     }
 
@@ -85,9 +86,9 @@ public class SpriteExtManager<T> {
         }
         Class<? extends T> t2 = extClassById.get(s.getId());
         if(t2!=null){
-            HashMap<Class, Object> map = new HashMap<>();
-            map.put(SceneEngine.class,engine);
-            map.put(GameEngine.class,engine.getGameEngine());
+            ClassNamedObjectMap map = new ClassNamedObjectMap();
+            map.add(SceneEngine.class, null, engine);
+            map.add(GameEngine.class, null, engine.getGameEngine());
             return (T) container.create(t2, null, map);
         }
 
@@ -97,9 +98,9 @@ public class SpriteExtManager<T> {
         }
         t2 = extClassByKind.get(s.getKind());
         if(t2!=null){
-            HashMap<Class, Object> map = new HashMap<>();
-            map.put(SceneEngine.class,engine);
-            map.put(GameEngine.class,engine.getGameEngine());
+            ClassNamedObjectMap map = new ClassNamedObjectMap();
+            map.add(SceneEngine.class, null, engine);
+            map.add(GameEngine.class, null, engine.getGameEngine());
             return (T) container.create(t2, null, map);
         }
         return null;

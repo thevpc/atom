@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AtomSpriteView {
+    String name() default "";
     String scene() default "";
     String kind() ;
 }

@@ -13,5 +13,6 @@ import net.thevpc.gaming.atom.examples.kombla.main.shared.engine.BaseMainEngine;
  */
 @AtomSceneEngine(id = "mainLocal", columns = 12, rows = 12)
 public class MainLocalEngine extends BaseMainEngine {
-
+    public MainLocalEngine() {
+    }
 }

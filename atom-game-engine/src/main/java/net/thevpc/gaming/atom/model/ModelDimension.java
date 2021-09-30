@@ -6,6 +6,8 @@
 package net.thevpc.gaming.atom.model;
 
 
+import net.thevpc.gaming.atom.util.AtomUtils;
+
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  */
@@ -74,6 +76,50 @@ public class ModelDimension extends Dimension {
     @Override
     public String toString() {
         return "ModelDimension{" + "width=" + width + ", height=" + height + ", altitude=" + altitude + '}';
+    }
+
+    public ModelDimension div(ModelDimension other) {
+        return new ModelDimension(
+                width / other.width,
+                height / other.height,
+                altitude / other.altitude
+        );
+    }
+
+    public ModelDimension multiply(ModelDimension other) {
+        return new ModelDimension(
+                width * other.width,
+                height * other.height,
+                altitude * other.altitude
+        );
+    }
+
+    public ModelDimension plus(ModelDimension other) {
+        return new ModelDimension(
+                width + other.width,
+                height + other.height,
+                altitude + other.altitude
+        );
+    }
+
+    public ModelDimension subtract(ModelDimension other) {
+        return new ModelDimension(
+                width - other.width,
+                height - other.height,
+                altitude - other.altitude
+        );
+    }
+
+    public ModelDimension boundBy(ModelDimension from, ModelDimension to) {
+        return new ModelDimension(
+                AtomUtils.boundBy(width, from.width, to.width),
+                AtomUtils.boundBy(height, from.height, to.height),
+                AtomUtils.boundBy(altitude, from.altitude, to.altitude)
+        );
+    }
+
+    public static ModelDimension of(ViewDimension d){
+        return new ModelDimension(d.getWidth(),d.getHeight(),d.getAltitude());
     }
 
 }

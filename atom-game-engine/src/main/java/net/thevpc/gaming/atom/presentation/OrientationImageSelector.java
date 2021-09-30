@@ -4,6 +4,8 @@ import net.thevpc.gaming.atom.model.Orientation;
 import net.thevpc.gaming.atom.model.OrientationType;
 import net.thevpc.gaming.atom.model.Sprite;
 
+import java.util.Objects;
+
 /**
  * Created with IntelliJ IDEA.
  * User: vpc
@@ -24,7 +26,7 @@ public abstract class OrientationImageSelector implements SpriteViewImageSelecto
         Orientation direction = orientationType.getOrientation(sprite.getDirection(), scene.isIsometric());
         double speed = sprite.getSpeed();
 //        SpriteMainTask t = sprite.getTask();
-        boolean moving = scene.getSceneEngine().hasMovedLastFrame(sprite.getId());
+        boolean moving = !Objects.equals(sprite.getPreviousLocation(),sprite.getLocation());
         if (!moving) {
             speed = 0;
         }

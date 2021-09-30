@@ -4,8 +4,7 @@
  */
 package net.thevpc.gaming.atom.examples.kombla.main.shared.engine.collision;
 
-import net.thevpc.gaming.atom.annotations.AtomSpriteCollisionManager;
-import net.thevpc.gaming.atom.engine.collisiontasks.DefaultSpriteCollisionTask;
+import net.thevpc.gaming.atom.annotations.AtomSpriteCollisionTask;
 import net.thevpc.gaming.atom.engine.collisiontasks.SpriteCollision;
 import net.thevpc.gaming.atom.engine.collisiontasks.SpriteCollisionTask;
 import net.thevpc.gaming.atom.model.Sprite;
@@ -13,8 +12,8 @@ import net.thevpc.gaming.atom.model.Sprite;
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  */
-@AtomSpriteCollisionManager(
-        engine = "mainLocal,mainServer",
+@AtomSpriteCollisionTask(
+        sceneEngine = "mainLocal,mainServer",
         kind = "Explosion"
 )
 public class ExplosionCollisionTask implements SpriteCollisionTask {

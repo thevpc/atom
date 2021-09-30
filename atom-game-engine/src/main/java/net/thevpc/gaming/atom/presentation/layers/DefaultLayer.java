@@ -8,11 +8,13 @@ import net.thevpc.gaming.atom.model.ModelPoint;
 import net.thevpc.gaming.atom.model.SceneModel;
 import net.thevpc.gaming.atom.model.ViewBox;
 import net.thevpc.gaming.atom.model.ViewPoint;
+import net.thevpc.gaming.atom.presentation.KeyCode;
 import net.thevpc.gaming.atom.presentation.Scene;
 import net.thevpc.gaming.atom.presentation.SceneKeyEvent;
 import net.thevpc.gaming.atom.presentation.SceneMouseEvent;
 
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -129,10 +131,11 @@ public abstract class DefaultLayer implements Layer {
                 this,
                 e.keyEvent.getWhen(),
                 e.keyEvent.getModifiers(),
-                e.keyEvent.getKeyCode(),
+                KeyCode.of(e.keyEvent.getKeyCode()),
                 e.keyEvent.getKeyChar(),
                 e.keyEvent.getKeyLocation(),
-                e.pressedKeys);
+                e.pressedKeys
+                );
     }
 
     protected SceneMouseEvent toSceneMouseEvent(MouseEvent e, Object object) {

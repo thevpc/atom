@@ -4,7 +4,7 @@
  */
 package net.thevpc.gaming.atom.examples.palace.main.engine;
 
-import net.thevpc.gaming.atom.annotations.AtomSpriteCollisionManager;
+import net.thevpc.gaming.atom.annotations.AtomSpriteCollisionTask;
 import net.thevpc.gaming.atom.engine.collisiontasks.*;
 import net.thevpc.gaming.atom.model.Sprite;
 import net.thevpc.gaming.atom.examples.palace.main.model.Brick;
@@ -13,7 +13,7 @@ import net.thevpc.gaming.atom.examples.palace.main.model.Brick;
  *
  * @author Taha Ben Salah
  */
-@AtomSpriteCollisionManager(kind = "Prince")
+@AtomSpriteCollisionTask(kind = "Prince")
 public class PrinceCollisionTask implements SpriteCollisionTask {
 
     @Override

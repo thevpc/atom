@@ -11,10 +11,12 @@ import java.lang.reflect.Method;
 abstract class AbstractSceneMethodAction implements PostponedAction {
     private AtomAnnotationsProcessor atomAnnotationsProcessor;
     private final Method method;
+    private final Object instance;
 
-    public AbstractSceneMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor, Method method) {
+    public AbstractSceneMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor, Method method,Object instance) {
         this.atomAnnotationsProcessor = atomAnnotationsProcessor;
         this.method = method;
+        this.instance = instance;
     }
 
     @Override
@@ -26,7 +28,7 @@ abstract class AbstractSceneMethodAction implements PostponedAction {
     public boolean isRunnable() {
         final AtomScene sceneAnn = method.getDeclaringClass().getAnnotation(AtomScene.class);
         if (sceneAnn != null) {
-            return atomAnnotationsProcessor.container.contains(sceneAnn.id(), "Scene");
+            return atomAnnotationsProcessor.container.contains(sceneAnn.id(), "Scene", null);
         }
 //                    final AtomSceneEngine sceneAnnSceneEngine = method.getDeclaringClass().getAnnotation(AtomSceneEngine.class);
 //                    if (sceneAnnSceneEngine != null) {
@@ -50,7 +52,8 @@ abstract class AbstractSceneMethodAction implements PostponedAction {
         final AtomScene sceneAnn = method.getDeclaringClass().getAnnotation(AtomScene.class);
         try {
             method.setAccessible(true);
-            method.invoke(atomAnnotationsProcessor.container.getBean(sceneAnn.id(), "Scene"));
+            //atomAnnotationsProcessor.container.getBean(sceneAnn.id(), "Scene")
+            method.invoke(instance);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

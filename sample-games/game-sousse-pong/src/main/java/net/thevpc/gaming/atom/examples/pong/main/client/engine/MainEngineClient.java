@@ -56,7 +56,7 @@ public class MainEngineClient extends AbstractMainEngine implements DALClientLis
 
     @Override
     public void sceneActivating() {
-        WelcomeModel hello = getGameEngine().getScene(WelcomeEngine.class).getModel();
+        WelcomeModel hello = getGameEngine().getSceneEngine(WelcomeEngine.class).getModel();
         dal = DALFactory.createClient(hello.getTransport());
         MainModel m = getModel();
         m.setPhase(AppPhase.WAITING);

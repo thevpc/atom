@@ -9,8 +9,8 @@ import java.lang.reflect.Method;
  * Created by vpc on 10/7/16.
  */
 class NextFrameMethodAction extends AbstractSceneMethodAction {
-    public NextFrameMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor,Method method) {
-        super(atomAnnotationsProcessor,method);
+    public NextFrameMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor,Method method,Object instance) {
+        super(atomAnnotationsProcessor,method,instance);
     }
 
     public void run(Scene scene) {

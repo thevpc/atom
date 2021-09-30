@@ -9,7 +9,7 @@ import net.thevpc.gaming.atom.Atom;
 public class HelloWorld {
 
     public static void main(String[] args) {
-        //create game
+        //create and start the game
         Atom.startGame();
     }
 }

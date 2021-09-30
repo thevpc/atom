@@ -87,7 +87,7 @@ public class PhysicsExtension extends DefaultSceneEngineExtension
 
     @Override
     public void collideWithBorder(BorderCollision borderCollision) {
-        if (borderCollision.isSpriteCollisionSouth()) {
+        if (borderCollision.getSpriteCollisionSides().isSouth()) {
             Sprite s = borderCollision.getSprite();
             ModelVector v = s.getVelocity();
             s.setVelocity(ModelVector.newCartesien(v.getX(), 0));
@@ -97,7 +97,7 @@ public class PhysicsExtension extends DefaultSceneEngineExtension
 
     @Override
     public void collideWithSprite(SpriteCollision spriteCollision) {
-        if (spriteCollision.isSpriteCollisionSouth()) {
+        if (spriteCollision.getSpriteCollisionSides().isSouth()) {
             Sprite s = spriteCollision.getSprite();
             ModelVector v = s.getVelocity();
             s.setVelocity(ModelVector.newCartesien(v.getX(), 0));
@@ -106,7 +106,7 @@ public class PhysicsExtension extends DefaultSceneEngineExtension
 
     @Override
     public void collideWithTile(TileCollision tileCollision) {
-        if (tileCollision.isSpriteCollisionSouth()) {
+        if (tileCollision.getSpriteCollisionSides().isSouth()) {
             Sprite s = tileCollision.getSprite();
             ModelVector v = s.getVelocity();
             s.setVelocity(ModelVector.newCartesien(v.getX(), 0));

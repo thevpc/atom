@@ -215,12 +215,12 @@ public class SList extends DefaultSceneComponent {
 
     protected void keyPressedImpl(SceneKeyEvent e) {
         switch (e.getKeyCode()) {
-            case SceneKeyEvent.VK_TAB: {
+            case TAB: {
                 propagateFocus(!e.isShiftPressed());
                 e.setConsumed(true);
                 break;
             }
-            case SceneKeyEvent.VK_DOWN: {
+            case DOWN: {
                 int size = size();
                 if (listType != ListComponentType.HORIZONTAL && size > 0) {
                     Integer i = getSelectedIndex();
@@ -237,7 +237,7 @@ public class SList extends DefaultSceneComponent {
                 }
                 break;
             }
-            case SceneKeyEvent.VK_UP: {
+            case UP: {
                 int size = size();
                 if (listType != ListComponentType.HORIZONTAL && size > 0) {
                     Integer i = getSelectedIndex();
@@ -255,7 +255,7 @@ public class SList extends DefaultSceneComponent {
                 break;
             }
 
-            case SceneKeyEvent.VK_LEFT: {
+            case LEFT: {
                 int size = size();
                 if (listType != ListComponentType.VERTICAL && size > 0) {
                     Integer i = getSelectedIndex();
@@ -272,7 +272,7 @@ public class SList extends DefaultSceneComponent {
                 }
                 break;
             }
-            case SceneKeyEvent.VK_RIGHT: {
+            case RIGHT: {
                 int size = size();
                 if (listType != ListComponentType.VERTICAL && size > 0) {
                     Integer i = getSelectedIndex();

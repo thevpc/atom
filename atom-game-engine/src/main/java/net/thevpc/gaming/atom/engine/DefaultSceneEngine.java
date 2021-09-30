@@ -81,7 +81,7 @@ public class DefaultSceneEngine implements SceneEngine {
     private SpriteExtManager<SpriteCollisionTask> spriteCollisionManagers;
     private SpriteExtManager<SpriteMainTask> spriteTasks;
     private List<SpriteCollisionTask> globalSpriteCollisionTasks = new ArrayList<SpriteCollisionTask>();
-    private HashMap<Integer, ModelPoint> movingSprites = new HashMap<Integer, ModelPoint>();
+//    private HashMap<Integer, ModelPoint> movingSprites = new HashMap<Integer, ModelPoint>();
     private HashMap<Class, SpriteArmorAction> spriteArmorActions = new HashMap<>();
     private ModelTracker modelTracker = new ModelTracker();
     private PlayerFactory playerFactory = new DefaultPlayerFactory();
@@ -413,8 +413,8 @@ public class DefaultSceneEngine implements SceneEngine {
     /**
      * {@inheritDoc }
      */
-    public List<Collision> detectCollisions(Sprite sprite, ModelPoint newPosition, boolean borderCollision, boolean tileCollision, boolean spriteCollision) {
-        return collisionManager.detectCollisions(this, sprite, sprite.getLocation(), newPosition, borderCollision, tileCollision, spriteCollision);
+    public List<Collision> detectCollisions(Sprite sprite, boolean borderCollision, boolean tileCollision, boolean spriteCollision) {
+        return collisionManager.detectCollisions(this, sprite, borderCollision, tileCollision, spriteCollision);
     }
 
     /**
@@ -860,7 +860,6 @@ public class DefaultSceneEngine implements SceneEngine {
     protected void nextFrame() {
         MultiChronometer chronometer = new MultiChronometer(20);
         //clear moving sprite status set
-        movingSprites.clear();
         modelUpdating();
         chronometer.snapshot("modelUpdating");
 
@@ -879,7 +878,7 @@ public class DefaultSceneEngine implements SceneEngine {
 
         //////////////////////////////
         //update model
-        modelTracker.reset();
+        modelTracker.initialize();
         updateModel();
         chronometer.snapshot("updateModel");
 
@@ -928,16 +927,16 @@ public class DefaultSceneEngine implements SceneEngine {
 //        System.out.println("###### nextFrame ending : "+getModel().getFrame());
     }
 
-    public ModelPoint getLastSpritePosition(int s) {
-        ModelPoint modelPoint = movingSprites.get(s);
-        if (modelPoint == null) {
-            Sprite sprite = getSprite(s);
-            if (sprite != null) {
-                modelPoint = sprite.getLocation();
-            }
-        }
-        return modelPoint;
-    }
+//    public ModelPoint getLastSpritePosition(int s) {
+//        ModelPoint modelPoint = movingSprites.get(s);
+//        if (modelPoint == null) {
+//            Sprite sprite = getSprite(s);
+//            if (sprite != null) {
+//                modelPoint = sprite.getLocation();
+//            }
+//        }
+//        return modelPoint;
+//    }
 
     /**
      * invokes all events (added by invokeLater) in the Engine Single Thread
@@ -1019,10 +1018,10 @@ public class DefaultSceneEngine implements SceneEngine {
         return null;
     }
 
-    @Override
-    public boolean hasMovedLastFrame(int spriteId) {
-        return movingSprites.containsKey(spriteId);
-    }
+//    @Override
+//    public boolean hasMovedLastFrame(int spriteId) {
+//        return movingSprites.containsKey(spriteId);
+//    }
 
     public <T extends SpriteMainTask> T getSpriteMainTask(int spriteId, Class<T> type) {
         SpriteMainTask t = getSpriteMainTask(spriteId);
@@ -1068,11 +1067,11 @@ public class DefaultSceneEngine implements SceneEngine {
         spriteTasks.setBeanByKind(spriteKind, task);
     }
 
-    @Override
-    public boolean hasMovedLastFrame(String spriteName) {
-        Sprite sprite = findUniqueSpriteByName(spriteName);
-        return hasMovedLastFrame(sprite.getId());
-    }
+//    @Override
+//    public boolean hasMovedLastFrame(String spriteName) {
+//        Sprite sprite = findUniqueSpriteByName(spriteName);
+//        return hasMovedLastFrame(sprite.getId());
+//    }
 
     @Override
     public <T extends SpriteMainTask> T getSpriteMainTask(String name, Class<T> type) {
@@ -1653,7 +1652,6 @@ public class DefaultSceneEngine implements SceneEngine {
                     }
                 }
             }
-            movingSprites.put(sprite.getId(), null);
         }
 
         @Override
@@ -1673,12 +1671,12 @@ public class DefaultSceneEngine implements SceneEngine {
             }
             //update movingSprites list
             int spriteId = sprite.getId();
-            ModelPoint initialLocation = movingSprites.get(spriteId);
-            if (initialLocation == null) {
-                movingSprites.put(spriteId, oldLocation);
-            } else if (newLocation != null && newLocation.equals(initialLocation)) {
-                movingSprites.remove(spriteId);
-            }
+//            ModelPoint initialLocation = movingSprites.get(spriteId);
+//            if (initialLocation == null) {
+//                movingSprites.put(spriteId, oldLocation);
+//            } else if (newLocation != null && newLocation.equals(initialLocation)) {
+//                movingSprites.remove(spriteId);
+//            }
 
             //fire Collision Events
             //fireCollisionEvents(sprite, oldLocation, newLocation);
@@ -1686,16 +1684,13 @@ public class DefaultSceneEngine implements SceneEngine {
 
         protected void fireCollisionEvents() {
             stillFiringCollisionEvents = true;
-            for (Map.Entry<Integer, ModelPoint> entry : movingSprites.entrySet()) {
-                Sprite s = getSprite(entry.getKey());
-                if (s != null) {
-                    fireCollisionEvents(s, entry.getValue(), s.getLocation());
-                }
-            }
+            getSprites().stream().filter(
+                    x->!Objects.equals(x.getBounds(),x.getPreviousBounds())
+            ).forEach(s-> fireCollisionEvents(s));
             stillFiringCollisionEvents = false;
         }
 
-        protected void fireCollisionEvents(Sprite sprite, ModelPoint oldLocation, ModelPoint newLocation) {
+        protected void fireCollisionEvents(Sprite sprite) {
             SpriteCollisionTask scm = getSpriteCollisionTask(sprite);
             for (Collision collision : collisionManager.detectCollisions(DefaultSceneEngine.this, sprite/*, oldLocation, newLocation*/, true, true, true)) {
                 if (collision instanceof SpriteCollision) {
@@ -1705,7 +1700,11 @@ public class DefaultSceneEngine implements SceneEngine {
                     }
                     SpriteCollisionTask oscm = getSpriteCollisionTask(sc.getOther());
                     if (oscm != null) {
-                        oscm.collideWithSprite(new SpriteCollision(sc.getSceneEngine(), sprite, sc.getSpriteCollisionSides(), sc.getOther(), sc.getOtherCollisionSides(), false, sc.getCollisionTiles(), sc.getOther().getLocation(), sc.getOther().getLocation()));
+                        oscm.collideWithSprite(new SpriteCollision(sc.getSceneEngine(), sprite, sc.getSpriteCollisionSides(), sc.getOther(), sc.getOtherCollisionSides(), false,
+                                sc.getCollisionTiles(),
+                                sc.getOtherLastValidPosition(),sc.getOtherNextValidPosition(),
+                                sc.getLastValidPosition(),sc.getNextValidLocation()
+                                ));
                     }
                     for (SpriteCollisionTask spriteCollisionTask : globalSpriteCollisionTasks) {
                         spriteCollisionTask.collideWithSprite(sc);
@@ -1730,8 +1729,11 @@ public class DefaultSceneEngine implements SceneEngine {
             }
         }
 
-        public void reset() {
-            movingSprites.clear();
+        public void initialize() {
+            for (Sprite sprite : getSprites()) {
+                sprite.setPreviousLocation(sprite.getLocation());
+                sprite.setPreviousSize(sprite.getSize());
+            }
         }
     }
 
@@ -1743,5 +1745,11 @@ public class DefaultSceneEngine implements SceneEngine {
         this.companionObject = companionObject;
     }
 
-
+    @Override
+    public List<Sprite> findSprites(SpriteFilter spriteFilter) {
+        if(spriteFilter==null){
+            return getSprites();
+        }
+        return spriteFilter.find(this);
+    }
 }

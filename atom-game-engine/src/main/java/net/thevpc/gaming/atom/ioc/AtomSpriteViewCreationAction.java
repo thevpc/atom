@@ -1,39 +1,40 @@
 package net.thevpc.gaming.atom.ioc;
 
 import net.thevpc.gaming.atom.annotations.AtomSpriteView;
-import net.thevpc.gaming.atom.annotations.OnInstall;
-import net.thevpc.gaming.atom.engine.GameEngine;
-import net.thevpc.gaming.atom.engine.SceneEngine;
+import net.thevpc.gaming.atom.engine.SpriteFilter;
 import net.thevpc.gaming.atom.presentation.Game;
 import net.thevpc.gaming.atom.presentation.LocationIndicatorView;
 import net.thevpc.gaming.atom.presentation.Scene;
 import net.thevpc.gaming.atom.presentation.SpriteView;
-
-import java.util.*;
+import net.thevpc.gaming.atom.util.AtomUtils;
 
 /**
  * Created by vpc on 10/7/16.
  */
 class AtomSpriteViewCreationAction implements PostponedAction {
-    private AtomAnnotationsProcessor atomAnnotationsProcessor;
-    private final Class clazz;
-    private final AtomSpriteView s;
-    private final Game game;
+    private final IoCContext context;
+    private final AtomAnnotationsProcessor atomAnnotationsProcessor;
 
-    public AtomSpriteViewCreationAction(AtomAnnotationsProcessor atomAnnotationsProcessor, Class clazz, AtomSpriteView s, Game game) {
+    public AtomSpriteViewCreationAction(AtomAnnotationsProcessor atomAnnotationsProcessor, IoCContext context) {
         this.atomAnnotationsProcessor = atomAnnotationsProcessor;
-        this.clazz = clazz;
-        this.s = s;
-        this.game = game;
+        this.context = context;
     }
-
+    @Override
+    public String toString() {
+        return "@AtomSpriteView{" +
+                "" + context.findCurrent().getClass().getSimpleName() +
+                ", sceneEngineId=" + context.getSceneEngineId() +
+                ", sceneEngine=" + context.getSceneId() +
+                '}';
+    }
     @Override
     public boolean isRunnable() {
+        AtomSpriteView s = context.get(AtomSpriteView.class,null);
         if (s.scene().isEmpty()) {
             return true;
         }
         for (String n : AtomAnnotationsProcessor.split(s.scene())) {
-            if (!atomAnnotationsProcessor.container.contains(n, "Scene")) {
+            if (!atomAnnotationsProcessor.container.contains(n, "Scene", n)) {
                 return false;
             }
         }
@@ -47,50 +48,19 @@ class AtomSpriteViewCreationAction implements PostponedAction {
 
     @Override
     public void run() {
-        for (String sceneId : AtomAnnotationsProcessor.splitOrAddEmpty(s.scene())) {
-            final List<Scene> scenes = sceneId.isEmpty() ? game.getScenes() : Arrays.asList(game.getScene(sceneId));
-            for (Scene scene : scenes) {
-                runOneScene(scene);
-            }
+        AtomSpriteView s = context.get(AtomSpriteView.class,null);
+        Game game = context.get(Game.class,null);
+        Scene scene = game.getScene(context.getSceneId());
+        SpriteView instance = context.findCurrentAs(SpriteView.class);
+        if (instance == null) {
+            instance = new LocationIndicatorView();
         }
-    }
-
-    private void runOneScene(Scene scene) {
-        InstancePreparator prep = new InstancePreparator() {
-            @Override
-            public void postInject(Object o) {
-
-            }
-        };
-        SpriteView spriteView = null;
-        Object instance = null;
-        HashMap<Class, Object> injects = new HashMap<>();
-        injects.put(Game.class, game);
-        injects.put(GameEngine.class, game.getGameEngine());
-        injects.put(Scene.class, scene);
-        injects.put(SceneEngine.class, scene.getSceneEngine());
-
-        if (SpriteView.class.isAssignableFrom(clazz)) {
-            spriteView = (SpriteView) atomAnnotationsProcessor.container.create(clazz, new InstancePreparator[]{
-                    new InstancePreparator() {
-                        @Override
-                        public void preInject(Object o, Map<Class, Object> injects) {
-                            injects.put(SpriteView.class,o);
-                        }
-                    },
-                    prep
-            }, injects);
-            instance = spriteView;
-        } else {
-            spriteView = new LocationIndicatorView();
-            injects.put(SpriteView.class, spriteView);
-            instance = atomAnnotationsProcessor.container.create(clazz, null, injects);
-            prep.postInject(spriteView);
-        }
-        scene.setSpriteView(s.kind(), spriteView);
+        //instance.setCompationObject(instance);
+        scene.setSpriteView(SpriteFilter.byKind(s.kind()), instance);
+        String name = AtomUtils.trimToNull(s.name());
+        context.register(SpriteView.class,instance, name);
         atomAnnotationsProcessor.container.register(
-                scene.getId() +"/"+instance.getClass().getName()
-                , "SpriteView", instance);
-        atomAnnotationsProcessor.container.invokeMethodsByAnnotation(instance, OnInstall.class, new Object[0]);
+                scene.getId() + "/" + instance.getClass().getName()
+                , "SpriteView", name, instance);
     }
 }

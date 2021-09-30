@@ -23,14 +23,11 @@ public interface SceneCollisionManager {
      *
      * @param engine          current sceneEngine
      * @param sprite          sprite to move
-     * @param newLocation     new sprite location
      * @param borderCollision check borderCollision
      * @param tileCollision   check tile borderCollision
      * @param spriteCollision check Sprite Collision
      * @return Detected Collisions or empty array (not null)
      */
-    List<Collision> detectCollisions(SceneEngine engine, Sprite sprite, ModelPoint oldLocation, ModelPoint newLocation, boolean borderCollision, boolean tileCollision, boolean spriteCollision);
-
     List<Collision> detectCollisions(SceneEngine engine, Sprite sprite, boolean borderCollision, boolean tileCollision, boolean spriteCollision);
 
     void nextFrame(SceneEngine engine);

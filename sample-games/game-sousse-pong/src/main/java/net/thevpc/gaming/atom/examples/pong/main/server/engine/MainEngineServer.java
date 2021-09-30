@@ -39,7 +39,7 @@ public class MainEngineServer extends AbstractMainEngine implements DALServerLis
     }
 
     private WelcomeModel getHelloModel() {
-        return getGameEngine().getScene(WelcomeEngine.class).getModel();
+        return getGameEngine().getSceneEngine(WelcomeEngine.class).getModel();
     }
 
     //    @Override

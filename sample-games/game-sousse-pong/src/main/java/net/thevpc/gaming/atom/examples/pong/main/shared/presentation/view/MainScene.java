@@ -4,6 +4,7 @@
  */
 package net.thevpc.gaming.atom.examples.pong.main.shared.presentation.view;
 
+import net.thevpc.gaming.atom.engine.SpriteFilter;
 import net.thevpc.gaming.atom.examples.pong.main.shared.model.Ball;
 import net.thevpc.gaming.atom.examples.pong.main.shared.model.Brick;
 import net.thevpc.gaming.atom.examples.pong.main.shared.model.Paddle;
@@ -23,9 +24,9 @@ public class MainScene extends DefaultScene {
     public MainScene(int player) {
         super("MainScene",new ViewDimension(20, 20));
 //        setIsometric(true);
-        setSpriteView(Ball.class, new ImageSpriteView("/ball.png", 8, 4));
-        setSpriteView(Paddle.class, new ImageSpriteView("/paddle.png", 1, 2,new SpritePlayerImageSelector()));
-        setSpriteView(Brick.class, new ImageSpriteView("/brick.png", 2, 2,new SpriteStyleImageSelector()));
+        setSpriteView(SpriteFilter.byType(Ball.class), new ImageSpriteView("/ball.png", 8, 4));
+        setSpriteView(SpriteFilter.byType(Paddle.class), new ImageSpriteView("/paddle.png", 1, 2,new SpritePlayerImageSelector()));
+        setSpriteView(SpriteFilter.byType(Brick.class), new ImageSpriteView("/brick.png", 2, 2,new SpriteStyleImageSelector()));
 //        addLayer(new FillBoxLayer(Color.BLACK));
         addLayer(new ImageBoardLayer("/bkg.png"));
 //        addLayer(new VelocityInfoLayer());

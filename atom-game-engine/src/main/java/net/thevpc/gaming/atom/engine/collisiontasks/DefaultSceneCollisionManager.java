@@ -4,19 +4,12 @@
  */
 package net.thevpc.gaming.atom.engine.collisiontasks;
 import net.thevpc.gaming.atom.engine.SceneEngine;
+import net.thevpc.gaming.atom.model.*;
 import net.thevpc.gaming.atom.util.GeometryUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import net.thevpc.gaming.atom.model.ModelBox;
-import net.thevpc.gaming.atom.model.ModelDimension;
-import net.thevpc.gaming.atom.model.ModelPoint;
-import net.thevpc.gaming.atom.model.ModelSegment;
-import net.thevpc.gaming.atom.model.ModelVector;
-import net.thevpc.gaming.atom.model.PolygonIntersect;
-import net.thevpc.gaming.atom.model.Sprite;
-import net.thevpc.gaming.atom.model.Tile;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -26,11 +19,6 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
     @Override
     public void nextFrame(SceneEngine engine) {
         //
-    }
-
-    @Override
-    public List<Collision> detectCollisions(SceneEngine engine, Sprite sprite, boolean borderCollision, boolean tileCollision, boolean spriteCollision) {
-        return detectCollisions(engine,sprite,engine.getLastSpritePosition(sprite.getId()), sprite.getLocation(),borderCollision, tileCollision, spriteCollision);
     }
 
     private static double[][] getMovingRectangleIntersection(ModelBox A, ModelVector velocity, ModelBox B, double borderDelta, double intersectionThreshold) {
@@ -104,7 +92,9 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
         return null;
     }
 
-    public List<Collision> detectCollisions(SceneEngine engine, Sprite sprite, ModelPoint oldLocation, ModelPoint newLocation, boolean borderCollision, boolean tileCollision, boolean spriteCollision) {
+    public List<Collision> detectCollisions(SceneEngine engine, Sprite sprite, boolean borderCollision, boolean tileCollision, boolean spriteCollision) {
+        ModelPoint oldLocation=sprite.getPreviousLocation();
+        ModelPoint newLocation=sprite.getLocation();
         newLocation = sprite.validatePosition(newLocation);
         ModelVector velocity = oldLocation == null ? null : ModelVector.newVector(oldLocation, newLocation);
         List<Collision> collisions = new ArrayList<Collision>();
@@ -120,23 +110,23 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
             boolean borderCollisionSouth = false;
             if (nextBound.getMinX() < 0) {
                 borderCollisionWest = true;
-                borderCollisionSides |= Collision.SIDE_WEST;
-                spriteCollisionSides |= Collision.SIDE_WEST;
+                borderCollisionSides |= CollisionSides.SIDE_WEST;
+                spriteCollisionSides |= CollisionSides.SIDE_WEST;
             }
             if (nextBound.getMaxX() > mwidth) {
                 borderCollisionEast = true;
-                borderCollisionSides |= Collision.SIDE_EAST;
-                spriteCollisionSides |= Collision.SIDE_EAST;
+                borderCollisionSides |= CollisionSides.SIDE_EAST;
+                spriteCollisionSides |= CollisionSides.SIDE_EAST;
             }
             if (nextBound.getMinY() < 0) {
                 borderCollisionNorth = true;
-                borderCollisionSides |= Collision.SIDE_NORTH;
-                spriteCollisionSides |= Collision.SIDE_NORTH;
+                borderCollisionSides |= CollisionSides.SIDE_NORTH;
+                spriteCollisionSides |= CollisionSides.SIDE_NORTH;
             }
             if (nextBound.getMaxY() > mheight) {
                 borderCollisionSouth = true;
-                borderCollisionSides |= Collision.SIDE_SOUTH;
-                spriteCollisionSides |= Collision.SIDE_SOUTH;
+                borderCollisionSides |= CollisionSides.SIDE_SOUTH;
+                spriteCollisionSides |= CollisionSides.SIDE_SOUTH;
             }
             if (borderCollisionSides != 0) {
                 if (borderCollision) {
@@ -160,7 +150,7 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
                     }
 
                     ModelPoint nextPoint = new ModelPoint(nextx, nexty, sprite.getAltitude());
-                    collisions.add(new BorderCollision(engine, borderCollisionSides, sprite, spriteCollisionSides, oldLocation, nextPoint));
+                    collisions.add(new BorderCollision(engine, CollisionSides.of(borderCollisionSides), sprite, CollisionSides.of(spriteCollisionSides), oldLocation, nextPoint));
                 }
             } else {
                 boolean change = false;
@@ -188,15 +178,15 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
                                     double x2 = x1;
                                     double y2 = y1;
                                     double z2 = z1;
-                                    if (tileSides == Collision.SIDE_EAST) {
+                                    if (tileSides == CollisionSides.SIDE_EAST) {
                                         x2 = _tile.getX() + _tile.getWidth();
-                                    } else if (tileSides == Collision.SIDE_WEST) {
+                                    } else if (tileSides == CollisionSides.SIDE_WEST) {
                                         x2 = _tile.getX() - sprite.getWidth();
-                                    } else if (tileSides == Collision.SIDE_NORTH) {
+                                    } else if (tileSides == CollisionSides.SIDE_NORTH) {
                                         y2 = _tile.getY() - sprite.getHeight();
-                                    } else if (tileSides == Collision.SIDE_SOUTH) {
+                                    } else if (tileSides == CollisionSides.SIDE_SOUTH) {
                                         y2 = _tile.getY() + _tile.getHeight();
-                                    } else if ((tileSides & (Collision.SIDE_NORTH | Collision.SIDE_WEST)) == (Collision.SIDE_NORTH | Collision.SIDE_WEST)) {
+                                    } else if ((tileSides & (CollisionSides.SIDE_NORTH | CollisionSides.SIDE_WEST)) == (CollisionSides.SIDE_NORTH | CollisionSides.SIDE_WEST)) {
                                         if (Math.abs(x2 - x0) > Math.abs(y2 - y0)) {
                                         }
                                     } else {
@@ -222,7 +212,8 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
                                 if (nextValidLocation == null) {
                                     nextValidLocation = sprite.getLocation();
                                 }
-                                collisions.add(new TileCollision(engine, tile, tileSides, sprite, sides[0], oldLocation, nextValidLocation));
+                                collisions.add(new TileCollision(engine, tile, CollisionSides.of(tileSides), sprite,
+                                        CollisionSides.of(sides[0]), oldLocation, nextValidLocation));
                             }
                         }
                         change = true;
@@ -245,17 +236,17 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
                                     double x = loc0.getX();
                                     double y = loc0.getY();
                                     double z = loc0.getZ();
-                                    if ((otherSides & Collision.SIDE_EAST) != 0) {
+                                    if ((otherSides & CollisionSides.SIDE_EAST) != 0) {
                                         x = other.getLocation().getX() + other.getWidth();
-                                    } else if ((otherSides & Collision.SIDE_WEST) != 0) {
+                                    } else if ((otherSides & CollisionSides.SIDE_WEST) != 0) {
                                         x = other.getLocation().getX() - sprite.getWidth();
                                     }
-                                    if ((otherSides & Collision.SIDE_NORTH) != 0) {
+                                    if ((otherSides & CollisionSides.SIDE_NORTH) != 0) {
                                         y = other.getLocation().getY() - sprite.getHeight();
-                                    } else if ((otherSides & Collision.SIDE_SOUTH) != 0) {
+                                    } else if ((otherSides & CollisionSides.SIDE_SOUTH) != 0) {
                                         y = other.getLocation().getY() + other.getHeight();
                                     }
-                                    ModelPoint nextValidLocation = new ModelPoint(x, y, z);
+                                     ModelPoint nextValidLocation = new ModelPoint(x, y, z);
 
                                     if (nextValidLocation.equals(oldLocation) || nextValidLocation.equals(loc0)) {
                                         nextValidLocation = null;
@@ -264,7 +255,7 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
                                         ModelBox nextBound2 = new ModelBox(nextValidLocation, sprite.getSize());
                                         int[] sides2 = getCollisionSides(nextBound2, oldLocation, oldLocation == null ? null : ModelVector.newVector(oldLocation, nextValidLocation), other.getBounds());
                                         if (sides2[0] != 0 || sides2[1] != 0) {
-                                            //some collisiontasks
+                                            //some collision tasks
                                             nextValidLocation = null;
                                         }
                                     }
@@ -276,7 +267,10 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
                                         nextValidLocation = sprite.getLocation();
                                     }
 
-                                    collisions.add(new SpriteCollision(engine, other, otherSides, sprite, spriteSides, true, collisionTiles, oldLocation, nextValidLocation));
+                                    collisions.add(new SpriteCollision(engine, other, CollisionSides.of(otherSides), sprite, CollisionSides.of(spriteSides), true, collisionTiles,
+                                            oldLocation, nextValidLocation,
+                                            oldLocation, nextValidLocation //TODO FIX ME
+                                    ));
                                 }
                                 //cc.getCollisionManager().collideWithSprite(new SpriteCollision(sprite, sCollisionSides, cc, ccCollisionSides, false, collisionTiles, oldPosition));
                             }
@@ -295,8 +289,8 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
     private int[] getCollisionSides(ModelBox colliderBounds, ModelPoint colliderOldLocation, ModelVector colliderVelocity, ModelBox collidedBounds, double intersectionThreshold) {
         if (colliderOldLocation == null) {
             return new int[]{
-                    Collision.SIDE_NORTH | Collision.SIDE_EAST | Collision.SIDE_SOUTH | Collision.SIDE_WEST
-                    , Collision.SIDE_NORTH | Collision.SIDE_EAST | Collision.SIDE_SOUTH | Collision.SIDE_WEST
+                    CollisionSides.SIDE_NORTH | CollisionSides.SIDE_EAST | CollisionSides.SIDE_SOUTH | CollisionSides.SIDE_WEST
+                    , CollisionSides.SIDE_NORTH | CollisionSides.SIDE_EAST | CollisionSides.SIDE_SOUTH | CollisionSides.SIDE_WEST
             };
         } else {
             if (colliderOldLocation != null) {
@@ -317,19 +311,19 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
                         sideCollides = true;
                         switch (j) {
                             case 0: {
-                                sides[1] |= Collision.SIDE_NORTH;
+                                sides[1] |= CollisionSides.SIDE_NORTH;
                                 break;
                             }
                             case 1: {
-                                sides[1] |= Collision.SIDE_EAST;
+                                sides[1] |= CollisionSides.SIDE_EAST;
                                 break;
                             }
                             case 2: {
-                                sides[1] |= Collision.SIDE_SOUTH;
+                                sides[1] |= CollisionSides.SIDE_SOUTH;
                                 break;
                             }
                             case 3: {
-                                sides[1] |= Collision.SIDE_WEST;
+                                sides[1] |= CollisionSides.SIDE_WEST;
                                 break;
                             }
                         }
@@ -339,19 +333,19 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
                 if (sideCollides) {
                     switch (i) {
                         case 0: {
-                            sides[0] |= Collision.SIDE_NORTH;
+                            sides[0] |= CollisionSides.SIDE_NORTH;
                             break;
                         }
                         case 1: {
-                            sides[0] |= Collision.SIDE_EAST;
+                            sides[0] |= CollisionSides.SIDE_EAST;
                             break;
                         }
                         case 2: {
-                            sides[0] |= Collision.SIDE_SOUTH;
+                            sides[0] |= CollisionSides.SIDE_SOUTH;
                             break;
                         }
                         case 3: {
-                            sides[0] |= Collision.SIDE_WEST;
+                            sides[0] |= CollisionSides.SIDE_WEST;
                             break;
                         }
                     }
@@ -361,7 +355,7 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
         }
 //        if (colliderOldLocation == null) {
 //            //add newly
-//            return new int[]{Collision.SIDE_NORTH, Collision.SIDE_SOUTH};
+//            return new int[]{CollisionSides.SIDE_NORTH, CollisionSides.SIDE_SOUTH};
 //        }
 ////        DRectangle ccbounds = sprite.getBounds();
 ////        DRectangle sbounds = collider.getBounds();
@@ -387,17 +381,17 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
 ////            // x movement
 ////            if (ay0 == ay) {
 ////                if (ax > ax0) {
-////                    return new int[]{Collision.SIDE_EAST, Collision.SIDE_WEST};
+////                    return new int[]{CollisionSides.SIDE_EAST, CollisionSides.SIDE_WEST};
 ////                } else if (ax < ax0) {
-////                    return new int[]{Collision.SIDE_WEST, Collision.SIDE_EAST};
+////                    return new int[]{CollisionSides.SIDE_WEST, CollisionSides.SIDE_EAST};
 ////                }
 ////            }
 ////        } else {
 ////            //y movement
 ////            if (ay > ay0) {
-////                return new int[]{Collision.SIDE_SOUTH, Collision.SIDE_NORTH};
+////                return new int[]{CollisionSides.SIDE_SOUTH, CollisionSides.SIDE_NORTH};
 ////            } else if (ay < ay0) {
-////                return new int[]{Collision.SIDE_NORTH, Collision.SIDE_SOUTH};
+////                return new int[]{CollisionSides.SIDE_NORTH, CollisionSides.SIDE_SOUTH};
 ////            }
 ////        }
 ////        int colliderSides = 0;
@@ -405,26 +399,26 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
 ////        switch (resolveJump(ay0, ay, by, by + bh)) {
 //////            case REMAIN_INSIDE:
 ////            case FORWARD_INSIDE: {
-////                colliderSides |= Collision.SIDE_SOUTH;
-////                collidedSides |= Collision.SIDE_NORTH;
+////                colliderSides |= CollisionSides.SIDE_SOUTH;
+////                collidedSides |= CollisionSides.SIDE_NORTH;
 ////                break;
 ////            }
 ////            case BACKWARD_INSIDE: {
-////                colliderSides |= Collision.SIDE_NORTH;
-////                collidedSides |= Collision.SIDE_SOUTH;
+////                colliderSides |= CollisionSides.SIDE_NORTH;
+////                collidedSides |= CollisionSides.SIDE_SOUTH;
 ////                break;
 ////            }
 ////        }
 ////        switch (resolveJump(ay0 + ah, ay + ah, by, by + bh)) {
 //////            case REMAIN_INSIDE:
 ////            case FORWARD_INSIDE: {
-////                colliderSides |= Collision.SIDE_SOUTH;
-////                collidedSides |= Collision.SIDE_NORTH;
+////                colliderSides |= CollisionSides.SIDE_SOUTH;
+////                collidedSides |= CollisionSides.SIDE_NORTH;
 ////                break;
 ////            }
 ////            case BACKWARD_INSIDE: {
-////                colliderSides |= Collision.SIDE_NORTH;
-////                collidedSides |= Collision.SIDE_SOUTH;
+////                colliderSides |= CollisionSides.SIDE_NORTH;
+////                collidedSides |= CollisionSides.SIDE_SOUTH;
 ////                break;
 ////            }
 ////        }
@@ -432,13 +426,13 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
 ////        switch (resolveJump(ax0, ax, bx, bx + bw)) {
 //////            case REMAIN_INSIDE:
 ////            case FORWARD_INSIDE: {
-////                colliderSides |= Collision.SIDE_EAST;
-////                collidedSides |= Collision.SIDE_WEST;
+////                colliderSides |= CollisionSides.SIDE_EAST;
+////                collidedSides |= CollisionSides.SIDE_WEST;
 ////                break;
 ////            }
 ////            case BACKWARD_INSIDE: {
-////                colliderSides |= Collision.SIDE_WEST;
-////                collidedSides |= Collision.SIDE_EAST;
+////                colliderSides |= CollisionSides.SIDE_WEST;
+////                collidedSides |= CollisionSides.SIDE_EAST;
 ////                break;
 ////            }
 ////        }
@@ -446,13 +440,13 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
 ////        switch (resolveJump(ax0 + aw, ax + aw, bx, bx + bw)) {
 //////            case REMAIN_INSIDE:
 ////            case FORWARD_INSIDE: {
-////                colliderSides |= Collision.SIDE_EAST;
-////                collidedSides |= Collision.SIDE_WEST;
+////                colliderSides |= CollisionSides.SIDE_EAST;
+////                collidedSides |= CollisionSides.SIDE_WEST;
 ////                break;
 ////            }
 ////            case BACKWARD_INSIDE: {
-////                colliderSides |= Collision.SIDE_WEST;
-////                collidedSides |= Collision.SIDE_EAST;
+////                colliderSides |= CollisionSides.SIDE_WEST;
+////                collidedSides |= CollisionSides.SIDE_EAST;
 ////                break;
 ////            }
 ////        }
@@ -469,30 +463,30 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
         int collided = intersectionSides(r1, new ModelPoint(r1.getLocation().getX() + dx, r1.getLocation().getY() + dy, r1.getLocation().getZ()), r2);
         int collider = intersectionSides(r2, new ModelPoint(r2.getLocation().getX() - dx, r2.getLocation().getY() - dy, r2.getLocation().getZ()), r1);
 
-        if ((collider & Collision.SIDE_NORTH) != 0) {
-            collided |= Collision.SIDE_SOUTH;
+        if ((collider & CollisionSides.SIDE_NORTH) != 0) {
+            collided |= CollisionSides.SIDE_SOUTH;
         }
-        if ((collider & Collision.SIDE_SOUTH) != 0) {
-            collided |= Collision.SIDE_NORTH;
+        if ((collider & CollisionSides.SIDE_SOUTH) != 0) {
+            collided |= CollisionSides.SIDE_NORTH;
         }
-        if ((collider & Collision.SIDE_EAST) != 0) {
-            collided |= Collision.SIDE_WEST;
+        if ((collider & CollisionSides.SIDE_EAST) != 0) {
+            collided |= CollisionSides.SIDE_WEST;
         }
-        if ((collider & Collision.SIDE_WEST) != 0) {
-            collided |= Collision.SIDE_EAST;
+        if ((collider & CollisionSides.SIDE_WEST) != 0) {
+            collided |= CollisionSides.SIDE_EAST;
         }
 
-        if ((collided & Collision.SIDE_NORTH) != 0) {
-            collider |= Collision.SIDE_SOUTH;
+        if ((collided & CollisionSides.SIDE_NORTH) != 0) {
+            collider |= CollisionSides.SIDE_SOUTH;
         }
-        if ((collided & Collision.SIDE_SOUTH) != 0) {
-            collider |= Collision.SIDE_NORTH;
+        if ((collided & CollisionSides.SIDE_SOUTH) != 0) {
+            collider |= CollisionSides.SIDE_NORTH;
         }
-        if ((collided & Collision.SIDE_EAST) != 0) {
-            collider |= Collision.SIDE_WEST;
+        if ((collided & CollisionSides.SIDE_EAST) != 0) {
+            collider |= CollisionSides.SIDE_WEST;
         }
-        if ((collided & Collision.SIDE_WEST) != 0) {
-            collider |= Collision.SIDE_EAST;
+        if ((collided & CollisionSides.SIDE_WEST) != 0) {
+            collider |= CollisionSides.SIDE_EAST;
         }
         return new int[]{collider, collided};
     }
@@ -544,16 +538,16 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
         double ry2 = r.getMaxY();
         int x = 0;
         if (sy1 != sy2 && GeometryUtils.isLineIntersectingLine(sx1, sy1, sx2, sy2, rx1, ry1, rx2, ry1)) {
-            x += Collision.SIDE_NORTH;
+            x += CollisionSides.SIDE_NORTH;
         }
         if (sx1 != sx2 && GeometryUtils.isLineIntersectingLine(sx1, sy1, sx2, sy2, rx1, ry1, rx1, ry2)) {
-            x += Collision.SIDE_WEST;
+            x += CollisionSides.SIDE_WEST;
         }
         if (sy1 != sy2 && GeometryUtils.isLineIntersectingLine(sx1, sy1, sx2, sy2, rx1, ry2, rx2, ry2)) {
-            x += Collision.SIDE_SOUTH;
+            x += CollisionSides.SIDE_SOUTH;
         }
         if (sx1 != sx2 && GeometryUtils.isLineIntersectingLine(sx1, sy1, sx2, sy2, rx2, ry1, rx2, ry2)) {
-            x += Collision.SIDE_EAST;
+            x += CollisionSides.SIDE_EAST;
         }
         return x;
     }
@@ -735,25 +729,25 @@ public class DefaultSceneCollisionManager implements SceneCollisionManager {
         boolean i_se = se.intersects(b);
 
         if (i_e) {
-            c |= Collision.SIDE_EAST;
+            c |= CollisionSides.SIDE_EAST;
             i_ne = false;
             i_se = false;
         }
 
         if (i_w) {
-            c |= Collision.SIDE_WEST;
+            c |= CollisionSides.SIDE_WEST;
             i_nw = false;
             i_sw = false;
         }
 
         if (i_n) {
-            c |= Collision.SIDE_NORTH;
+            c |= CollisionSides.SIDE_NORTH;
             i_nw = false;
             i_ne = false;
         }
 
         if (i_s) {
-            c |= Collision.SIDE_SOUTH;
+            c |= CollisionSides.SIDE_SOUTH;
             i_sw = false;
             i_se = false;
         }

@@ -27,15 +27,15 @@ public class WelcomeController implements SceneController {
     public void keyPressed(SceneKeyEvent e) {
         Scene scene = e.getScene();
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_DOWN: {
+            case DOWN: {
                 setRole(AppRole.HOST_GAME,scene.getGameEngine());
                 break;
             }
-            case KeyEvent.VK_UP: {
+            case UP: {
                 setRole(AppRole.JOIN_GAME,scene.getGameEngine());
                 break;
             }
-            case KeyEvent.VK_SPACE: {
+            case SPACE: {
                 GameEngine gameEngine = scene.getSceneEngine().getGameEngine();
                 switch (getRole(gameEngine)) {
                     case HOST_GAME: {

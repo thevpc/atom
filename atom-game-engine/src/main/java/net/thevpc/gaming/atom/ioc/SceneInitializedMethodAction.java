@@ -10,8 +10,8 @@ import java.lang.reflect.Method;
  */
 class SceneInitializedMethodAction extends AbstractSceneMethodAction {
 
-    public SceneInitializedMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor,Method method) {
-        super(atomAnnotationsProcessor,method);
+    public SceneInitializedMethodAction(AtomAnnotationsProcessor atomAnnotationsProcessor,Method method,Object instance) {
+        super(atomAnnotationsProcessor,method,instance);
     }
 
     public void run(Scene scene) {

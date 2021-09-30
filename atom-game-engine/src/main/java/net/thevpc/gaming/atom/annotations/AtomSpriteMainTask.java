@@ -10,8 +10,9 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AtomSpriteCollisionManager {
-    String engine() default "";
+public @interface AtomSpriteMainTask {
+    String sceneEngine() ;
     String kind() ;
+    String name() default "";
     Scope scope() default Scope.PROTOTYPE;
 }

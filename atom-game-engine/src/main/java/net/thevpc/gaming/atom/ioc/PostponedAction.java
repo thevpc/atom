@@ -5,7 +5,7 @@ package net.thevpc.gaming.atom.ioc;
  */
 interface PostponedAction {
 
-    boolean isRunnable();
+    default boolean isRunnable(){return true;}
 
     int getOrder();
 

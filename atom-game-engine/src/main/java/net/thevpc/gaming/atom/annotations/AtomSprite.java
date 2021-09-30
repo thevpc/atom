@@ -29,7 +29,7 @@ public @interface AtomSprite {
 
     double speed() default 0;
 
-    String scene();
+    String sceneEngine();
 
     String kind() default "";
 

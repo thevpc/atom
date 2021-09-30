@@ -23,7 +23,7 @@ public class GameIoCContainer extends AbstractAtomIoCContainer {
     public GameIoCContainer(Game game) {
         super(null);
         this.game = game;
-        register(null,Game.class,game);
+        register(null,Game.class, null, game);
     }
 
     public Game getGame() {
@@ -89,17 +89,13 @@ public class GameIoCContainer extends AbstractAtomIoCContainer {
 
     @Override
     public Object getBeanOrNull(String id) {
-        Object o = beansById.get(id);
-        if (o == null) {
-            throw new IllegalArgumentException("Bean Not Found " + id);
-        }
-        return o;
+        return beansById.get(id);
     }
 
 
 
     @Override
-    public void register(String id, Class cls, Object instance) {
+    public void register(String id, Class cls, String name, Object instance) {
         if(cls==null){
             cls=instance.getClass();
         }
@@ -116,7 +112,6 @@ public class GameIoCContainer extends AbstractAtomIoCContainer {
             beansByType.put(cls, objects);
         }
         objects.add(instance);
-
     }
 
     @Override

@@ -6,7 +6,6 @@ package net.thevpc.gaming.atom.examples.palace.main.presentation.view;
 
 import net.thevpc.gaming.atom.annotations.AtomScene;
 import net.thevpc.gaming.atom.debug.DebugLayer;
-import net.thevpc.gaming.atom.debug.DebugVelocityLayer;
 import net.thevpc.gaming.atom.presentation.*;
 import net.thevpc.gaming.atom.examples.palace.main.presentation.controller.MainController;
 
@@ -29,7 +28,8 @@ public class MainScene extends DefaultScene {
             if (index == 0) {
                 index = 0;//
             } else {
-                index = 3;//11+index%4;
+//                index = 3;//11+index%4;
+                index = 11+index%4;
             }
             return super.getImage(type, index);
         }
@@ -38,8 +38,7 @@ public class MainScene extends DefaultScene {
         super(30, 30);
         setImageProducer(WALL_IMAGE_PRODUCER);
         addController(new MainController());
-        addLayer(new DebugVelocityLayer());
-        addLayer(new DebugLayer());
+        addLayer(new DebugLayer(true));
         getCamera().followSprite(()->getSceneEngine().findSpriteByKind("Prince"));
         addLifeCycleListener(new SceneLifeCycleListener() {
             @Override

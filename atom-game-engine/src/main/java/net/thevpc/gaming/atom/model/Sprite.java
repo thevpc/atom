@@ -30,9 +30,9 @@ public interface Sprite extends Serializable {
      *
      * @return
      */
-    int getCollisionSides();
+    CollisionSides getCollisionSides();
 
-    Sprite setCollisionSides(int sides);
+    Sprite setCollisionSides(CollisionSides sides);
 
     int getLayer();
 
@@ -72,7 +72,11 @@ public interface Sprite extends Serializable {
 
     public boolean isAt(ModelBox rect);
 
-    public ModelPoint getLocation();
+    ModelPoint getLocation();
+
+    ModelPoint getPreviousLocation();
+
+    Sprite setPreviousLocation(ModelPoint point);
 
     public Sprite setLocation(ModelPoint point);
 
@@ -89,6 +93,8 @@ public interface Sprite extends Serializable {
     public Sprite setSize(double width, double height);
 
     public ModelBox getBounds();
+
+    public ModelBox getPreviousBounds();
 
     public String getName();
 
@@ -211,4 +217,8 @@ public interface Sprite extends Serializable {
     public int getMovementStyle();
 
     public Sprite setMovementStyle(int movementStyle);
+
+    ModelDimension getPreviousSize();
+
+    Sprite setPreviousSize(ModelDimension size);
 }

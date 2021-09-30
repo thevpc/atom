@@ -15,7 +15,7 @@ public @interface AtomScene {
 
     String title() default "Atom Scene";
 
-    String engine() default "";
+    String sceneEngine() default "";
 
     int tileWidth() default 20;
 

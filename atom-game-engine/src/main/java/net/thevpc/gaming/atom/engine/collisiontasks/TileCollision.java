@@ -4,6 +4,7 @@
  */
 package net.thevpc.gaming.atom.engine.collisiontasks;
 
+import net.thevpc.gaming.atom.model.CollisionSides;
 import net.thevpc.gaming.atom.model.ModelPoint;
 import net.thevpc.gaming.atom.model.Tile;
 import net.thevpc.gaming.atom.engine.SceneEngine;
@@ -17,9 +18,9 @@ import net.thevpc.gaming.atom.model.Sprite;
 public class TileCollision extends Collision {
 
     private Tile tile;
-    private int tileCollisionSides;
+    private CollisionSides tileCollisionSides;
 
-    public TileCollision(SceneEngine engine, Tile tile, int tileCollisionSides, Sprite sprite, int spriteCollisionSides, ModelPoint lastValidPosition, ModelPoint nextValidPosition) {
+    public TileCollision(SceneEngine engine, Tile tile, CollisionSides tileCollisionSides, Sprite sprite, CollisionSides spriteCollisionSides, ModelPoint lastValidPosition, ModelPoint nextValidPosition) {
         super(engine, sprite, spriteCollisionSides, lastValidPosition, nextValidPosition);
         this.tile = tile;
         this.tileCollisionSides = tileCollisionSides;
@@ -29,32 +30,16 @@ public class TileCollision extends Collision {
         return tile;
     }
 
-    public int getTileCollisionSides() {
+    public CollisionSides getTileCollisionSides() {
         return tileCollisionSides;
-    }
-
-    public boolean isTileCollisionNorth() {
-        return (tileCollisionSides & SIDE_NORTH) != 0;
-    }
-
-    public boolean isTileCollisionSouth() {
-        return (tileCollisionSides & SIDE_SOUTH) != 0;
-    }
-
-    public boolean isTileCollisionWest() {
-        return (tileCollisionSides & SIDE_WEST) != 0;
-    }
-
-    public boolean isTileCollisionEast() {
-        return (tileCollisionSides & SIDE_EAST) != 0;
     }
 
     @Override
     public String toString() {
-        return "TileCollision{" + "sprite=" + getSprite() + "::" + getSideString(getSpriteCollisionSides())
+        return "TileCollision{" + "sprite=" + getSprite() + "::" + getSpriteCollisionSides()
                 + ", location=" + getLastValidPosition()
                 + " => " + getSprite().getLocation()
                 + " => " + getNextValidLocation()
-                + ", tile=" + tile + "::" + getSideString(tileCollisionSides) + '}';
+                + ", tile=" + tile + "::" + tileCollisionSides + '}';
     }
 }

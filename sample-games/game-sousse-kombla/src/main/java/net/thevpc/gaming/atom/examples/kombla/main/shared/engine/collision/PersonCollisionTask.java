@@ -1,6 +1,6 @@
 package net.thevpc.gaming.atom.examples.kombla.main.shared.engine.collision;
 
-import net.thevpc.gaming.atom.annotations.AtomSpriteCollisionManager;
+import net.thevpc.gaming.atom.annotations.AtomSpriteCollisionTask;
 import net.thevpc.gaming.atom.engine.SceneEngine;
 import net.thevpc.gaming.atom.engine.collisiontasks.*;
 import net.thevpc.gaming.atom.model.MovementStyles;
@@ -16,14 +16,18 @@ import java.beans.PropertyChangeListener;
  * Time: 12:41 AM
  * To change this template use File | Settings | File Templates.
  */
-@AtomSpriteCollisionManager(
-        engine = "mainLocal,mainServer",
+@AtomSpriteCollisionTask(
+        sceneEngine = "mainLocal,mainServer",
         kind = "Person"
 )
 public class PersonCollisionTask implements SpriteCollisionTask, PropertyChangeListener {
     double lastDirection = Double.NaN;
     double currentDirection = Double.NaN;
     boolean updatingDirection = false;
+
+    public PersonCollisionTask() {
+        System.out.println("rr");
+    }
 
     @Override
     public void install(SceneEngine sceneEngine, Sprite sprite) {

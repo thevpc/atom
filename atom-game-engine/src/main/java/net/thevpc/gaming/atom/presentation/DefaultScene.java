@@ -1,10 +1,7 @@
 package net.thevpc.gaming.atom.presentation;
 
 import net.thevpc.gaming.atom.debug.AtomDebug;
-import net.thevpc.gaming.atom.engine.GameEngine;
-import net.thevpc.gaming.atom.engine.SceneEngine;
-import net.thevpc.gaming.atom.engine.SceneEngineChangeAdapter;
-import net.thevpc.gaming.atom.engine.SceneEngineFrameListener;
+import net.thevpc.gaming.atom.engine.*;
 import net.thevpc.gaming.atom.extension.SceneExtension;
 import net.thevpc.gaming.atom.extension.board.DefaultBoardTextureExtension;
 import net.thevpc.gaming.atom.extension.fogofwar.FogOfWarSceneExtension;
@@ -56,9 +53,10 @@ public class DefaultScene implements Scene {
     private java.util.List<SceneController> sceneControllers = new ArrayList<SceneController>();
     private java.util.List<SceneLifeCycleListener> lifecycleListeners = new ArrayList<SceneLifeCycleListener>();
     private Map<Class, Object> viewForModelType = new HashMap<Class, Object>();
-    private Map<Class<? extends Sprite>, SpriteView> spriteViewForModel = new HashMap<Class<? extends Sprite>, SpriteView>();
-    private Map<String, SpriteView> spriteViewForModelKind = new HashMap<String, SpriteView>();
-    private Map<Integer, SpriteView> spriteViewForModelId = new HashMap<Integer, SpriteView>();
+//    private Map<Class<? extends Sprite>, SpriteView> spriteViewForModel = new HashMap<Class<? extends Sprite>, SpriteView>();
+//    private Map<String, SpriteView> spriteViewForModelKind = new HashMap<String, SpriteView>();
+//    private Map<Integer, SpriteView> spriteViewForModelId = new HashMap<Integer, SpriteView>();
+    private SpriteFilterMap<SpriteView> spriteViews = new SpriteFilterMap<>();
     private String title = "Game";
     private AffineTransform screenAffineTransform;
     private AffineTransform boardAffineTransform;
@@ -563,6 +561,11 @@ public class DefaultScene implements Scene {
         return id;
     }
 
+    public Scene setId(String id) {
+        this.id = id;
+        return this;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -886,20 +889,13 @@ public class DefaultScene implements Scene {
     }
 
     @Override
-    public void setSpriteView(Class<? extends Sprite> sprite, SpriteView view) {
-        if (view == null) {
-            spriteViewForModel.remove(sprite);
-        } else {
-            spriteViewForModel.put(sprite, view);
-        }
-    }
-
-    @Override
-    public void setSpriteView(String spriteKind, SpriteView view) {
-        if (view == null) {
-            spriteViewForModelKind.remove(spriteKind);
-        } else {
-            spriteViewForModelKind.put(spriteKind, view);
+    public void setSpriteView(SpriteFilter sprites, SpriteView view) {
+        if(sprites!=null) {
+            if (view == null) {
+                spriteViews.remove(sprites);
+            } else {
+                spriteViews.put(sprites, view);
+            }
         }
     }
 
@@ -912,25 +908,9 @@ public class DefaultScene implements Scene {
 //                (int) (md.getHeight() * ratioBox.getHeight())));
 //    }
 
-    @Override
-    public void setSpriteView(int spriteId, SpriteView view) {
-        if (view == null) {
-            spriteViewForModelId.remove(spriteId);
-        } else {
-            spriteViewForModelId.put(spriteId, view);
-        }
-    }
 
     public SpriteView getSpriteView(Sprite sprite) {
-        SpriteView v = (SpriteView) spriteViewForModelId.get(sprite.getId());
-        if (v != null) {
-            return v;
-        }
-        v = (SpriteView) spriteViewForModelKind.get(sprite.getKind());
-        if (v != null) {
-            return v;
-        }
-        v = (SpriteView) spriteViewForModel.get(sprite.getClass());
+        SpriteView v=spriteViews.get(sprite);
         if (v != null) {
             return v;
         }
@@ -1759,6 +1739,7 @@ public class DefaultScene implements Scene {
                             if (ctrl != null) {
                                 if (ctrl.acceptEvent(SceneController.KEY_PRESSED)) {
                                     ctrl.keyPressed(e);
+                                    ctrl.keyChanged(e);
                                     if (e.isConsumed()) {
                                         break;
                                     }
@@ -1770,6 +1751,7 @@ public class DefaultScene implements Scene {
                         for (SceneController listener : listeners) {
                             if (listener.acceptEvent(SceneController.KEY_PRESSED)) {
                                 listener.keyPressed(e);
+                                listener.keyChanged(e);
                                 if (e.isDisabled()) {
                                     break;
                                 }
@@ -1786,6 +1768,7 @@ public class DefaultScene implements Scene {
                             if (ctrl != null) {
                                 if (ctrl.acceptEvent(SceneController.KEY_RELEASED)) {
                                     ctrl.keyReleased(e);
+                                    ctrl.keyChanged(e);
                                     if (e.isConsumed()) {
                                         break;
                                     }
@@ -1797,6 +1780,7 @@ public class DefaultScene implements Scene {
                         for (SceneController listener : listeners) {
                             if (listener.acceptEvent(SceneController.KEY_RELEASED)) {
                                 listener.keyReleased(e);
+                                listener.keyChanged(e);
                                 if (e.isDisabled()) {
                                     break;
                                 }
@@ -1843,7 +1827,7 @@ public class DefaultScene implements Scene {
 
     private class NativeInputListener implements MouseMotionListener, MouseListener, KeyListener {
 
-        Map<Integer, KeyEvent> pressed = new HashMap<Integer, KeyEvent>();
+        Map<KeyCode, KeyEvent> pressed = new HashMap<KeyCode, KeyEvent>();
 
         public void mouseDragged(MouseEvent e) {
             processMouseEvent(e, MouseEventType.MOUSE_DRAGGED);
@@ -1885,26 +1869,33 @@ public class DefaultScene implements Scene {
             processKeyEvent(e, KeyEventType.KEY_RELEASED);
         }
 
+        private KeyEventExt buildCodes(KeyEvent event){
+            KeyCode[] codes = new KeyCode[pressed.size()];
+            int x = 0;
+            for (KeyCode integer : pressed.keySet()) {
+                codes[x] = integer;
+                x++;
+            }
+            return new KeyEventExt(event, codes);
+        }
         public void processKeyEvent(KeyEvent event, KeyEventType eventType) {
+            KeyEventExt eventExt=null;
             switch (eventType) {
                 case KEY_PRESSED: {
-                    //System.out.println(eventType);
-                    pressed.put(event.getKeyCode(), event);
+                    pressed.put(KeyCode.of(event.getKeyCode()), event);
+                    eventExt=buildCodes(event);
                     break;
                 }
                 case KEY_RELEASED: {
                     //System.out.println("\t"+eventType);
-                    pressed.remove(event.getKeyCode());
+                    pressed.remove(KeyCode.of(event.getKeyCode()));
+                    eventExt=buildCodes(event);
                     break;
                 }
+                default:{
+                    eventExt=buildCodes(event);
+                }
             }
-            int[] codes = new int[pressed.size()];
-            int x = 0;
-            for (Integer integer : pressed.keySet()) {
-                codes[x] = integer;
-                x++;
-            }
-            KeyEventExt eventExt = new KeyEventExt(event, codes);
             for (int i = interactiveLayers.length - 1; i >= 0; i--) {
                 SceneKeyEvent gEvent = evalKeyEvent(interactiveLayers[i], eventExt, eventType);
                 if (gEvent != null) {

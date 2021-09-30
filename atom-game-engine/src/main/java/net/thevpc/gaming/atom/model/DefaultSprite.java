@@ -19,15 +19,18 @@ public class DefaultSprite implements Sprite {
     private int id;
     private int layer = SPRITES_LAYER;
     private ModelBox bounds = new ModelBox(0, 0, 0, 0, 0, 0);
+    private ModelBox previousBounds = new ModelBox(0, 0, 0, 0, 0, 0);
     private ModelPoint location = ModelPoint.ORIGIN;
+    private ModelPoint previousLocation = ModelPoint.ORIGIN;
     private boolean moving = false;
     private ModelPoint locationPrecision = new ModelPoint(0.0001, 0.0001, 0.0001);
     private int z;
     private boolean selectable = true;
     private int playerId;
-    private int collisionSides;
+    private CollisionSides collisionSides;
     private double direction = 0;
     private ModelDimension size = new ModelDimension(0, 0, 0);
+    private ModelDimension previousSize = new ModelDimension(0, 0, 0);
     private boolean crossable = false;
     private boolean attackable = true;
     private String name = "Unknown";
@@ -93,34 +96,14 @@ public class DefaultSprite implements Sprite {
         }
     }
 
-    private ModelBox rebuildBounds() {
-        ModelBox old = bounds;
-        ModelBox value = new ModelBox(location, size);
-        bounds = value;
-        getPropertyChangeSupport().firePropertyChange("bounds", old, bounds);
-        return old;
-    }
-
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{" + "id=" + id + ", name=" + name + ", " + bounds + '}';
-    }
-
-    public Sprite setAttackable(boolean attackable) {
-        boolean old = this.attackable;
-        this.attackable = attackable;
-        getPropertyChangeSupport().firePropertyChange("attackable", old, attackable);
-        return this;
-    }
-
-    @Override
-    public int getCollisionSides() {
+    public CollisionSides getCollisionSides() {
         return collisionSides;
     }
 
     @Override
-    public Sprite setCollisionSides(int collisionSides) {
-        int old = this.collisionSides;
+    public Sprite setCollisionSides(CollisionSides collisionSides) {
+        CollisionSides old = this.collisionSides;
         this.collisionSides = collisionSides;
         getPropertyChangeSupport().firePropertyChange("collisionSides", old, collisionSides);
         return this;
@@ -249,6 +232,21 @@ public class DefaultSprite implements Sprite {
         return location;
     }
 
+    @Override
+    public ModelPoint getPreviousLocation() {
+        return previousLocation;
+    }
+
+    public Sprite setPreviousLocation(ModelPoint location) {
+        ModelPoint old = this.previousLocation;
+        this.previousLocation = validatePosition(location);
+        //System.out.println(old+"  ---> "+this.location);
+//        System.out.println(this+" setLocation "+old+" ==> "+location);
+        getPropertyChangeSupport().firePropertyChange("previousLocation", old, this.previousLocation);
+        rebuildPreviousBounds();
+        return this;
+    }
+
     public Sprite setLocation(ModelPoint location) {
         ModelPoint old = this.location;
         this.location = validatePosition(location);
@@ -297,6 +295,10 @@ public class DefaultSprite implements Sprite {
 
     public ModelBox getBounds() {
         return bounds;
+    }
+
+    public ModelBox getPreviousBounds() {
+        return previousBounds;
     }
 
     public String getName() {
@@ -584,6 +586,8 @@ public class DefaultSprite implements Sprite {
         setCollisionSides(sprite.getCollisionSides());
         setStyle(sprite.getStyle());
         setWeapons(sprite.getWeapons());
+        setPreviousSize(sprite.getPreviousSize());
+        setPreviousLocation(sprite.getPreviousLocation());
         for (Map.Entry<String, Object> e : sprite.getProperties().entrySet()) {
             setProperty(e.getKey(), e.getValue());
         }
@@ -598,6 +602,48 @@ public class DefaultSprite implements Sprite {
         int old = this.movementStyle;
         this.movementStyle = movementStyle;
         getPropertyChangeSupport().firePropertyChange("movementStyle", old, movementStyle);
+        return this;
+    }
+
+    @Override
+    public ModelDimension getPreviousSize() {
+        ModelBox _bounds = getPreviousBounds();
+        return new ModelDimension(_bounds.getWidth(), _bounds.getHeight(), _bounds.getAltitude());
+    }
+
+    public Sprite setPreviousSize(ModelDimension size) {
+        ModelDimension old = this.previousSize;
+        this.previousSize = size;
+        getPropertyChangeSupport().firePropertyChange("previousSize", old, size);
+        rebuildPreviousBounds();
+        return this;
+    }
+
+    private ModelBox rebuildBounds() {
+        ModelBox old = bounds;
+        ModelBox value = new ModelBox(location, size);
+        bounds = value;
+        getPropertyChangeSupport().firePropertyChange("bounds", old, bounds);
+        return old;
+    }
+
+    private ModelBox rebuildPreviousBounds() {
+        ModelBox old = previousBounds;
+        ModelBox value = new ModelBox(previousLocation, previousSize);
+        previousBounds = value;
+        getPropertyChangeSupport().firePropertyChange("previousBounds", old, previousBounds);
+        return old;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" + "id=" + id + ", name=" + name + ", " + bounds + '}';
+    }
+
+    public Sprite setAttackable(boolean attackable) {
+        boolean old = this.attackable;
+        this.attackable = attackable;
+        getPropertyChangeSupport().firePropertyChange("attackable", old, attackable);
         return this;
     }
 }

@@ -65,7 +65,7 @@ public class SLabel extends DefaultSceneComponent {
 
     protected void keyPressedImpl(SceneKeyEvent e) {
         switch (e.getKeyCode()) {
-            case SceneKeyEvent.VK_TAB: {
+            case TAB: {
                 propagateFocus(!e.isShiftPressed());
                 e.setConsumed(true);
                 break;

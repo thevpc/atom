@@ -235,13 +235,12 @@ public interface SceneEngine {
      * defined Collision Manager.
      *
      * @param sprite sprite to move
-     * @param newLocation new sprite location
      * @param borderCollision check borderCollision
      * @param tileCollision check tile borderCollision
      * @param spriteCollision check Sprite Collision
      * @return Detected Collisions or empty array (not null)
      */
-    public List<Collision> detectCollisions(Sprite sprite, ModelPoint newLocation, boolean borderCollision, boolean tileCollision, boolean spriteCollision);
+    public List<Collision> detectCollisions(Sprite sprite, boolean borderCollision, boolean tileCollision, boolean spriteCollision);
 
     /**
      * Add a SpriteCollisionTask. SpriteCollisionTask will handle
@@ -428,9 +427,9 @@ public interface SceneEngine {
     /**
      * true if the spite has moved the last frame
      */
-    public boolean hasMovedLastFrame(int spriteId);
+//    public boolean hasMovedLastFrame(int spriteId);
 
-    public boolean hasMovedLastFrame(String spriteName);
+//    public boolean hasMovedLastFrame(String spriteName);
 
     public <T extends SpriteMainTask> T getSpriteMainTask(int spriteId, Class<T> type);
 
@@ -565,10 +564,11 @@ public interface SceneEngine {
 
     public void removePropertyChangeListener(String property, PropertyChangeListener listener);
 
-    public ModelPoint getLastSpritePosition(int s);
+//    public ModelPoint getLastSpritePosition(int s);
 
     public Object getCompanionObject();
 
     public void setCompanionObject(Object companionObject);
 
+    List<Sprite> findSprites(SpriteFilter spriteFilter);
 }

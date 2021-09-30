@@ -9,10 +9,7 @@ import net.thevpc.gaming.atom.engine.collisiontasks.TileCollision;
 import net.thevpc.gaming.atom.examples.pong.main.server.engine.tasks.BallFollowPaddleSpriteMainTask;
 import net.thevpc.gaming.atom.engine.collisiontasks.BorderCollision;
 import net.thevpc.gaming.atom.engine.collisiontasks.SpriteCollision;
-import net.thevpc.gaming.atom.model.DirectionTransform;
-import net.thevpc.gaming.atom.model.ModelPoint;
-import net.thevpc.gaming.atom.model.MovementStyles;
-import net.thevpc.gaming.atom.model.Sprite;
+import net.thevpc.gaming.atom.model.*;
 import net.thevpc.gaming.atom.examples.pong.main.shared.model.Paddle;
 
 /**
@@ -22,10 +19,11 @@ public class BallCollisionTask implements SpriteCollisionTask {
 
     @Override
     public void collideWithBorder(BorderCollision borderCollision) {
-        boolean north = borderCollision.isBorderCollisionNorth();
-        boolean south = borderCollision.isBorderCollisionSouth();
-        boolean east = borderCollision.isBorderCollisionEast();
-        boolean west = borderCollision.isBorderCollisionWest();
+        CollisionSides cs = borderCollision.getBorderCollisionSides();
+        boolean north = cs.isNorth();
+        boolean south = cs.isSouth();
+        boolean east = cs.isEast();
+        boolean west = cs.isWest();
         Sprite ball = borderCollision.getSprite();
         ModelPoint lastValidPosition = borderCollision.getLastValidPosition();
         if (north) {
@@ -54,10 +52,11 @@ public class BallCollisionTask implements SpriteCollisionTask {
     @Override
     public void collideWithSprite(SpriteCollision spriteCollision) {
         Sprite sprite = spriteCollision.getSprite();
-        boolean north = spriteCollision.isOtherCollisionNorth();
-        boolean south = spriteCollision.isOtherCollisionSouth();
-        boolean east = spriteCollision.isOtherCollisionEast();
-        boolean west = spriteCollision.isOtherCollisionWest();
+        CollisionSides os = spriteCollision.getOtherCollisionSides();
+        boolean north = os.isNorth();
+        boolean south = os.isSouth();
+        boolean east = os.isEast();
+        boolean west = os.isWest();
 //        System.out.println("collideWithSprite "+(north ? "N" : "-") + ";" + (east ? "E" : "-") + ";" + (south ? "S" : "-") + ";" + (west ? "W" : "-") + " :: " + velocity + " " + lastValidPosition + " -> " + sprite.getLocation());
         if ((north && west) || (north && east) || (south && west) || (south && east)) {
             sprite.setDirection(DirectionTransform.BACKWARD);
@@ -72,10 +71,11 @@ public class BallCollisionTask implements SpriteCollisionTask {
     @Override
     public void collideWithTile(TileCollision tileCollision) {
         Sprite sprite = tileCollision.getSprite();
-        boolean north = tileCollision.isTileCollisionNorth();
-        boolean south = tileCollision.isTileCollisionSouth();
-        boolean east = tileCollision.isTileCollisionEast();
-        boolean west = tileCollision.isTileCollisionWest();
+        CollisionSides ts = tileCollision.getTileCollisionSides();
+        boolean north = ts.isNorth();
+        boolean south = ts.isSouth();
+        boolean east = ts.isEast();
+        boolean west = ts.isWest();
 //        System.out.println("collideWithSprite "+(north ? "N" : "-") + ";" + (east ? "E" : "-") + ";" + (south ? "S" : "-") + ";" + (west ? "W" : "-") + " :: " + velocity + " " + lastValidPosition + " -> " + sprite.getLocation());
         if ((north && west) || (north && east) || (south && west) || (south && east)) {
             sprite.setDirection(DirectionTransform.BACKWARD);

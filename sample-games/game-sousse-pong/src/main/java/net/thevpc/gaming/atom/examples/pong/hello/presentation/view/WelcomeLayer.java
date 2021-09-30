@@ -44,7 +44,7 @@ public class WelcomeLayer extends DefaultLayer {
         if (logo == null) {
             logo = AtomUtils.createImage("/sousse-pong-logo.png");
         }
-        ViewPoint p = AtomUtils.getCenterdPosition(logo.getWidth(null), logo.getHeight(null), new ViewBox(0, 0, screenWidth, 200));
+        ViewPoint p = AtomUtils.getCenteredPosition(logo.getWidth(null), logo.getHeight(null), new ViewBox(0, 0, screenWidth, 200));
         graphics.drawImage(logo, p.getX(), p.getY(), null);
 //        drawLabel(graphics, "So Pong..."        , 5, 15, 70, 100, 400, 20, verdana50B, new Color(0,0,100+(int)(model.getFrame()%155)), null);
 

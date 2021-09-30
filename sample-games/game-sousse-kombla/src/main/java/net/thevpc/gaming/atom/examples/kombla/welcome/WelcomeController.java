@@ -61,8 +61,8 @@ public class WelcomeController extends DefaultSceneController {
         AppRole mode = (AppRole) modesList.getSelectedValue();
         //switch according to pressed key
         switch (e.getKeyCode()) {
-            case SceneKeyEvent.VK_SPACE:
-            case SceneKeyEvent.VK_ENTER: {
+            case SPACE:
+            case ENTER: {
                 GameEngine gameEngine = scene.getSceneEngine().getGameEngine();
                 switch (mode) {
                     case LOCAL_GAME: {

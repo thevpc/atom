@@ -13,11 +13,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.function.Supplier;
 
-public class DefaultSceneCamera implements SceneCamera{
-    private DefaultScene scene;
+public class DefaultSceneCamera implements SceneCamera {
+    private final DefaultScene scene;
     private ModelBox cameraModel = null;
-    private Supplier<ViewBox> cameraViewBoxSupplier;
-//    private Sprite cameraLockToSprite;
+    //    private Sprite cameraLockToSprite;
 //    SceneEngineFrameListener cameraLockToSpriteListener = new SceneEngineFrameListener() {
 //        @Override
 //        public void modelUpdated(SceneEngine sceneEngine, SceneEngineModel model) {
@@ -32,6 +31,8 @@ public class DefaultSceneCamera implements SceneCamera{
             cameraModel = null;
         }
     };
+    private Supplier<ViewBox> cameraViewBoxSupplier;
+
     public DefaultSceneCamera(DefaultScene scene) {
         this.scene = scene;
 
@@ -50,8 +51,8 @@ public class DefaultSceneCamera implements SceneCamera{
                 scene.getSceneEngine().addSceneFrameListener(new SceneEngineFrameListener() {
                     @Override
                     public void modelUpdated(SceneEngine sceneEngine, SceneEngineModel model) {
-                        ViewBox bounds= cameraViewBoxSupplier ==null?null: cameraViewBoxSupplier.get();
-                        if(bounds!=null) {
+                        ViewBox bounds = cameraViewBoxSupplier == null ? null : cameraViewBoxSupplier.get();
+                        if (bounds != null) {
                             setBounds(bounds);
                         }
                     }
@@ -59,6 +60,39 @@ public class DefaultSceneCamera implements SceneCamera{
 
             }
         });
+    }
+
+    @Override
+    public void moveTo(ModelPoint modelLocation) {
+        moveTo(scene.toViewPoint(modelLocation));
+    }
+
+    @Override
+    public boolean moveTo(ViewPoint point) {
+        ViewBox v = getViewBounds();
+        ViewBox rectangle = new ViewBox(point.getX(), point.getY(), v.getWidth(), v.getHeight());
+        if (!scene.getSceneScreen().intersects(rectangle)) {
+            return false;
+        }
+        setBounds(rectangle);
+        return true;
+    }
+
+    @Override
+    public void moveTo(RatioPoint ratioPoint) {
+        ViewDimension gm = scene.getSceneSize();
+        moveTo(new ViewPoint(
+                (int) (gm.getWidth() * ratioPoint.getX()),
+                (int) (gm.getHeight() * ratioPoint.getY()),
+                (int) (gm.getAltitude() * ratioPoint.getZ())));
+    }
+
+    @Override
+    public void moveTo(Sprite sprite) {
+        ViewBox v = getCenteredSpriteViewBound(sprite);
+        if (v != null) {
+            setBounds(v);
+        }
     }
 
     @Override
@@ -71,41 +105,6 @@ public class DefaultSceneCamera implements SceneCamera{
         setBounds(rectangle);
         return true;
     }
-
-
-    @Override
-    public ViewBox getViewBounds() {
-        RatioBox camera = scene.getModel().getCamera();
-        ViewBox sceneScreen = scene.getSceneScreen();
-        return new ViewBox(
-                (int) (sceneScreen.getX() + camera.getX() * sceneScreen.getWidth()),
-                (int) (sceneScreen.getY() + camera.getY() * sceneScreen.getHeight()),
-                (int) (sceneScreen.getZ() + camera.getZ() * sceneScreen.getAltitude()),
-                (int) (camera.getWidth() * sceneScreen.getWidth()),
-                (int) (camera.getHeight() * sceneScreen.getHeight()),
-                (int) (camera.getAltitude() * sceneScreen.getAltitude())
-        );
-    }
-
-
-    public void setBounds(ViewBox rect) {
-        ViewBox s = scene.getSceneScreen();
-        RatioBox r = new RatioBox(
-                (float)((double)rect.getX() / s.getWidth()),
-                (float)((double)rect.getY() / s.getHeight()),
-                (float)((double)rect.getZ() / s.getAltitude()),
-                (float)((double)rect.getWidth() / s.getWidth()),
-                (float)((double)rect.getHeight() / s.getHeight()),
-                (float)((double)rect.getAltitude() / s.getAltitude())
-        );
-        setBounds(r);
-    }
-
-    public void setBounds(RatioBox rect) {
-        //validateRatioViewBox(rect)
-        scene.getModel().setCamera(rect);
-    }
-
 
     @Override
     public Path2D getModelPolygon() {
@@ -126,7 +125,6 @@ public class DefaultSceneCamera implements SceneCamera{
         return scene.toPath2D(cam);
     }
 
-
     @Override
     public Path2D getViewPolygon() {
         ViewBox cam = getViewBounds();
@@ -143,6 +141,10 @@ public class DefaultSceneCamera implements SceneCamera{
         }
     }
 
+    @Override
+    public RatioBox getRatioViewBounds() {
+        return scene.getModel().getCamera();
+    }
 
     @Override
     public ModelBox getModelBounds() {
@@ -156,55 +158,28 @@ public class DefaultSceneCamera implements SceneCamera{
         return cameraModel;
     }
 
-
-
     @Override
-    public void moveTo(RatioPoint ratioPoint) {
-        ViewDimension gm = scene.getSceneSize();
-        moveTo(new ViewPoint(
-                (int) (gm.getWidth() * ratioPoint.getX()),
-                (int) (gm.getHeight() * ratioPoint.getY()),
-                (int) (gm.getAltitude() * ratioPoint.getZ())));
+    public ViewBox getViewBounds() {
+        RatioBox camera = scene.getModel().getCamera();
+        ViewBox sceneScreen = scene.getSceneScreen();
+        return new ViewBox(
+                (int) (sceneScreen.getX() + camera.getX() * sceneScreen.getWidth()),
+                (int) (sceneScreen.getY() + camera.getY() * sceneScreen.getHeight()),
+                (int) (sceneScreen.getZ() + camera.getZ() * sceneScreen.getAltitude()),
+                (int) (camera.getWidth() * sceneScreen.getWidth()),
+                (int) (camera.getHeight() * sceneScreen.getHeight()),
+                (int) (camera.getAltitude() * sceneScreen.getAltitude())
+        );
     }
 
     @Override
-    public void moveTo(ModelPoint modelLocation) {
-        moveTo(scene.toViewPoint(modelLocation));
+    public ViewBox getViewPort() {
+        return getViewBounds().getDimensionBox();
     }
 
     @Override
-    public boolean moveTo(ViewPoint point) {
-        ViewBox v = getViewBounds();
-        ViewBox rectangle = new ViewBox(point.getX(), point.getY(), v.getWidth(), v.getHeight());
-        if (!scene.getSceneScreen().intersects(rectangle)) {
-            return false;
-        }
-        setBounds(rectangle);
-        return true;
-    }
-
-    protected ViewBox getCenteredSpriteViewBound(Sprite sprite){
-        if(sprite==null){
-            return null;
-        }
-        ModelBox sbounds = sprite.getBounds();
-        SceneModel m = scene.getModel();
-        ViewDimension td = m.getTileSize();
-        ViewBox srect = new ViewBox(
-                (int) (sbounds.getX() * td.getWidth()),
-                (int) (sbounds.getY() * td.getHeight()),
-                (int) (sbounds.getWidth() * td.getWidth()),
-                (int) (sbounds.getHeight() * td.getHeight()));
-        ViewBox vp = getViewBounds();
-        return scene.validateViewBox(new ViewBox(srect.getX() - vp.getWidth() / 2, srect.getY() - vp.getHeight() / 2, vp.getWidth(), vp.getHeight()));
-    }
-
-    @Override
-    public void moveTo(Sprite sprite) {
-        ViewBox v = getCenteredSpriteViewBound(sprite);
-        if(v!=null) {
-            setBounds(v);
-        }
+    public ViewDimension getViewDimension() {
+        return getViewBounds().getSize();
     }
 
     @Override
@@ -220,16 +195,22 @@ public class DefaultSceneCamera implements SceneCamera{
         ));
     }
 
-    @Override
-    public RatioBox getRatioViewBounds() {
-        return scene.getModel().getCamera();
+    public void setBounds(ViewBox rect) {
+        ViewBox s = scene.getSceneScreen();
+        RatioBox r = new RatioBox(
+                AtomUtils.ratio(rect.getX(), s.getWidth()),
+                AtomUtils.ratio(rect.getY(), s.getHeight()),
+                AtomUtils.ratio(rect.getZ(), s.getAltitude()),
+                AtomUtils.ratio(rect.getWidth(), s.getWidth()),
+                AtomUtils.ratio(rect.getHeight(), s.getHeight()),
+                AtomUtils.ratio(rect.getAltitude(), s.getAltitude())
+        );
+        setBounds(r);
     }
 
-
-
-    @Override
-    public ViewDimension getViewDimension() {
-        return getViewBounds().getSize();
+    public void setBounds(RatioBox rect) {
+        //validateRatioViewBox(rect)
+        scene.getModel().setCamera(rect);
     }
 
     @Override
@@ -252,14 +233,13 @@ public class DefaultSceneCamera implements SceneCamera{
         }
     }
 
-
-    public void followSprite(Sprite s) {
-        followSprite(s==null?null:()->s);
-    }
-
     @Override
     public void followSprite(Supplier<Sprite> s) {
-        this.cameraViewBoxSupplier = s==null?null:()->getCenteredSpriteViewBound(s.get());
+        this.cameraViewBoxSupplier = s == null ? null : () -> getCenteredSpriteViewBound(s.get());
+    }
+
+    public void followSprite(Sprite s) {
+        followSprite(s == null ? null : () -> s);
     }
 
     @Override
@@ -271,9 +251,19 @@ public class DefaultSceneCamera implements SceneCamera{
         setFollowStrategy(null);
     }
 
-
-    @Override
-    public ViewBox getViewPort() {
-        return getViewBounds().getDimensionBox();
+    protected ViewBox getCenteredSpriteViewBound(Sprite sprite) {
+        if (sprite == null) {
+            return null;
+        }
+        ModelBox sbounds = sprite.getBounds();
+        SceneModel m = scene.getModel();
+        ViewDimension td = m.getTileSize();
+        ViewBox srect = new ViewBox(
+                (int) (sbounds.getX() * td.getWidth()),
+                (int) (sbounds.getY() * td.getHeight()),
+                (int) (sbounds.getWidth() * td.getWidth()),
+                (int) (sbounds.getHeight() * td.getHeight()));
+        ViewBox vp = getViewBounds();
+        return scene.validateViewBox(new ViewBox(srect.getX() - vp.getWidth() / 2, srect.getY() - vp.getHeight() / 2, vp.getWidth(), vp.getHeight()));
     }
 }

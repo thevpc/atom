@@ -6,7 +6,6 @@ package net.thevpc.gaming.atom.examples.kombla.welcome;
 
 import net.thevpc.gaming.atom.presentation.components.*;
 import net.thevpc.gaming.atom.presentation.Alignment;
-import net.thevpc.gaming.atom.presentation.components.*;
 
 import java.awt.*;
 

@@ -458,7 +458,7 @@ public class ModelBox extends Box {
 
     @Override
     public String toString() {
-        return "[" + "x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + ']';
+        return "[" + "x=" + (x+"->"+(x+width)) + ", y=" + (y +"->"+(y+height))+ ", width=" + width + ", height=" + height + ']';
     }
 
     public java.awt.Point[] getAWTPoints() {

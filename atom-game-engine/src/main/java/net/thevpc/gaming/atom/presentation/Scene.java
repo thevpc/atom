@@ -6,9 +6,10 @@ package net.thevpc.gaming.atom.presentation;
 
 import net.thevpc.gaming.atom.engine.GameEngine;
 import net.thevpc.gaming.atom.engine.SceneEngine;
+import net.thevpc.gaming.atom.engine.SpriteFilter;
 import net.thevpc.gaming.atom.extension.SceneExtension;
-import net.thevpc.gaming.atom.model.*;
 import net.thevpc.gaming.atom.model.Box;
+import net.thevpc.gaming.atom.model.*;
 import net.thevpc.gaming.atom.presentation.components.SceneComponent;
 import net.thevpc.gaming.atom.presentation.layers.Layer;
 
@@ -22,23 +23,23 @@ import java.util.List;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  */
 public interface Scene {
-    public Object getCompanionObject();
+    Object getCompanionObject();
 
-    public void setCompanionObject(Object value);
+    void setCompanionObject(Object value);
 
-    public String getId();
+    String getId();
 
-    public String getTitle();
+    String getTitle();
 
-    public void setTitle(String title);
+    void setTitle(String title);
 
     JComponent toComponent();
 
-    public boolean isIsometric();
+    boolean isIsometric();
 
-    public void setIsometric(boolean isometricView);
+    void setIsometric(boolean isometricView);
 
-    public <T extends SceneModel> T getModel();
+    <T extends SceneModel> T getModel();
 
     SceneController[] getSceneControllers();
 
@@ -48,83 +49,80 @@ public interface Scene {
 
     SceneLifeCycleListener[] getLifecycleListeners();
 
-    public Game getGame();
+    Game getGame();
 
-    public <T extends GameEngine> T getGameEngine();
+    <T extends GameEngine> T getGameEngine();
 
-    public <T extends SceneEngine> T getSceneEngine();
+    <T extends SceneEngine> T getSceneEngine();
 
-    public void init(SceneEngine sceneEngine, Game game);
+    void init(SceneEngine sceneEngine, Game game);
 
-    public void start();
+    void start();
 
-    public void stop();
+    void stop();
 
-    public void setTileSize(int width, int height);
+    void setTileSize(int width, int height);
 
-    public void setTileSize(int width, int height, int altitude);
+    void setTileSize(int width, int height, int altitude);
 
-    public ViewDimension getTileSize();
+    ViewDimension getTileSize();
 
-    public void setTileSize(int size);
+    void setTileSize(int size);
 
-    public void setTileSize(ViewDimension tileSize);
+    void setTileSize(ViewDimension tileSize);
 
-    public void addChangeListener(SceneChangeListener listener);
+    void addChangeListener(SceneChangeListener listener);
 
-    public void removeChangeListener(SceneChangeListener listener);
+    void removeChangeListener(SceneChangeListener listener);
 
-    public SceneChangeListener[] getChangeListeners();
+    SceneChangeListener[] getChangeListeners();
 
-    public boolean containsSceneChangeListener(SceneChangeListener listener);
+    boolean containsSceneChangeListener(SceneChangeListener listener);
 
-    public void addController(SceneController listener);
+    void addController(SceneController listener);
 
-    public void removeController(SceneController listener);
+    void removeController(SceneController listener);
 
-    public <T extends Layer> T getLayer(Class<T> type);
+    <T extends Layer> T getLayer(Class<T> type);
 
-    public void installExtension(SceneExtension sceneExtension);
+    void installExtension(SceneExtension sceneExtension);
 
-    public void uninstallExtension(String sceneExtensionId);
+    void uninstallExtension(String sceneExtensionId);
 
-    public void uninstallExtension(Class sceneExtensionType);
+    void uninstallExtension(Class sceneExtensionType);
 
-    public boolean containsExtension(String sceneViewExtensionId);
+    boolean containsExtension(String sceneViewExtensionId);
 
-    public boolean containsExtension(Class sceneViewExtensionType);
+    boolean containsExtension(Class sceneViewExtensionType);
 
-    public SceneExtension[] getSceneExtensions();
+    SceneExtension[] getSceneExtensions();
 
-    public Layer[] getLayers();
+    Layer[] getLayers();
 
-    public boolean containsLayer(Class clazz);
+    boolean containsLayer(Class clazz);
 
-    public boolean containsLayer(Layer layer);
+    boolean containsLayer(Layer layer);
 
-    public void addLayer(Layer layer);
+    void addLayer(Layer layer);
 
-    public void removeLayer(Layer layer);
+    void removeLayer(Layer layer);
 
-    public void setViewBinding(Class model, Object view);
+    void setViewBinding(Class model, Object view);
 
-    public Object getViewBinding(Class model);
+    Object getViewBinding(Class model);
 
-    public void setSpriteView(Class<? extends Sprite> spriteType, SpriteView view);
+    void setSpriteView(SpriteFilter sprites, SpriteView view);
 
-    public void setSpriteView(String spriteKind, SpriteView view);
-
-    public void setSpriteView(int spriteId, SpriteView view);
-
-    public SpriteView getSpriteView(Sprite sprite);
+    SpriteView getSpriteView(Sprite sprite);
 
 
-    public ViewPoint toViewPoint(Point point);
-    public ModelBox toModelBox(Box rectangle);
+    ViewPoint toViewPoint(Point point);
 
-    public ModelPoint toModelPoint(Point point);
+    ModelBox toModelBox(Box rectangle);
 
-    public ViewPoint toIsometricViewPoint(ViewPoint point);
+    ModelPoint toModelPoint(Point point);
+
+    ViewPoint toIsometricViewPoint(ViewPoint point);
 
     //    public void addPropertyChangeListener(PropertyChangeListener listener);
 //
@@ -133,89 +131,89 @@ public interface Scene {
 //    public void removePropertyChangeListener(PropertyChangeListener listener);
 //
 //    public void removePropertyChangeListener(String property, PropertyChangeListener listener);
-    public List<Sprite> findDisplaySprites();
+    List<Sprite> findDisplaySprites();
 
-    public List<Sprite> findSprites(ViewPoint point);
+    List<Sprite> findSprites(ViewPoint point);
 
-    public Tile findTile(ModelPoint point);
+    Tile findTile(ModelPoint point);
 
-    public Tile findTile(ViewPoint point);
+    Tile findTile(ViewPoint point);
 
-    public int getEventPlayer(ModelPoint modelPoint, ViewPoint viewPoint, int clickCount, int button, int modifiers);
+    int getEventPlayer(ModelPoint modelPoint, ViewPoint viewPoint, int clickCount, int button, int modifiers);
 
-    public int getEventPlayer(int keyCode, int keyChar, int keyLocation);
+    int getEventPlayer(int keyCode, int keyChar, int keyLocation);
 
-    public boolean isWithinScreen(ViewBox viewBox);
+    boolean isWithinScreen(ViewBox viewBox);
 
-    public boolean isWithinScreen(Tile tile);
+    boolean isWithinScreen(Tile tile);
 
-    public boolean isWithinScreen(Sprite sprint);
+    boolean isWithinScreen(Sprite sprint);
 
-    public java.util.List<Tile> findDisplayTiles();
+    java.util.List<Tile> findDisplayTiles();
 
-    public List<Tile> findTiles(ModelBox modelBox);
+    List<Tile> findTiles(ModelBox modelBox);
 
-    public List<Tile> findTiles(ViewBox viewBox);
+    List<Tile> findTiles(ViewBox viewBox);
 
-    public Path2D toPath2D(ModelBox modelBox);
+    Path2D toPath2D(ModelBox modelBox);
 
 
     /**
      * toView(sprite.getBound()) return visible rectangle
      */
-    public ViewBox toViewBox(Sprite sprite);
+    ViewBox toViewBox(Sprite sprite);
 
-    public ViewBox toViewBox(Tile tile);
+    ViewBox toViewBox(Tile tile);
 
-    public ViewBox toViewBox(Box modelBox);
+    ViewBox toViewBox(Box modelBox);
 
 
-    public ViewDimension toViewDimension(Dimension dim);
+    ViewDimension toViewDimension(Dimension dim);
 
 
     //    public ViewBox getBounds();
 
-    public ViewBox getSceneScreen();
+    ViewBox getSceneScreen();
 
-    public ViewDimension getSceneSize();
+    ViewDimension getSceneSize();
 
-    public String getNextFocusComponent(String componentName);
+    String getNextFocusComponent(String componentName);
 
-    public String getPreviousFocusComponent(String componentName);
+    String getPreviousFocusComponent(String componentName);
 
-    public List<String> getFocusedComponents();
+    List<String> getFocusedComponents();
 
-    public List<String> getFocusableComponents();
+    List<String> getFocusableComponents();
 
-    public <T extends SceneComponent> T getComponent(String name);
+    <T extends SceneComponent> T getComponent(String name);
 
-    public void removeComponent(String name);
+    void removeComponent(String name);
 
-    public void addComponent(SceneComponent gameComponent);
+    void addComponent(SceneComponent gameComponent);
 
-    public void addComponent(SceneComponent gameComponent, Object constraints);
+    void addComponent(SceneComponent gameComponent, Object constraints);
 
-    public void addComponent(SceneComponent gameComponent, Object constraints, int layer);
+    void addComponent(SceneComponent gameComponent, Object constraints, int layer);
 
-    public void addComponent(SceneComponent gameComponent, Object constraints, int layer, boolean mapAligned);
+    void addComponent(SceneComponent gameComponent, Object constraints, int layer, boolean mapAligned);
 
-    public AffineTransform getScreenAffineTransform();
+    AffineTransform getScreenAffineTransform();
 
-    public void setScreenAffineTransform(AffineTransform affineTransform);
+    void setScreenAffineTransform(AffineTransform affineTransform);
 
-    public AffineTransform getBoardAffineTransform();
+    AffineTransform getBoardAffineTransform();
 
-    public void setBoardAffineTransform(AffineTransform boardAffineTransform);
+    void setBoardAffineTransform(AffineTransform boardAffineTransform);
 
-    public ViewBox getLayoutBox(ViewBox spriteTilesBox, boolean tilesAligned, SceneLayoutType boundsType, AffineTransform screenTransform);
+    ViewBox getLayoutBox(ViewBox spriteTilesBox, boolean tilesAligned, SceneLayoutType boundsType, AffineTransform screenTransform);
 
-    public ViewBox getLayoutBox(Sprite sprite);
+    ViewBox getLayoutBox(Sprite sprite);
 
-    public long getFrame();
+    long getFrame();
 
-    public ImageProducer getImageProducer();
+    ImageProducer getImageProducer();
 
-    public void setImageProducer(ImageProducer environmentImageProducer);
+    void setImageProducer(ImageProducer environmentImageProducer);
 
     void addPropertyChangeListener(PropertyChangeListener listener);
 
@@ -225,32 +223,32 @@ public interface Scene {
 
     void removePropertyChangeListener(String property, PropertyChangeListener listener);
 
-    public Player getPlayer(int id);
+    Player getPlayer(int id);
 
-    public List<Player> getPlayers();
+    List<Player> getPlayers();
 
-    public Sprite getSprite(int id);
+    Sprite getSprite(int id);
 
-    public void addControlPlayer(int id);
+    void addControlPlayer(int id);
 
-    public void addControlPlayer(Player player);
+    void addControlPlayer(Player player);
 
-    public void resetControlPlayers();
+    void resetControlPlayers();
 
-    public boolean removeControlPlayer(int id);
+    boolean removeControlPlayer(int id);
 
     /**
      * getControlPlayers()[0] or null if no player
      *
      * @return getControlPlayers()[0] or null if no player
      */
-    public Player getControlPlayer();
+    Player getControlPlayer();
 
     void setControlPlayer(int id);
 
-    public List<Player> getControlPlayers();
+    List<Player> getControlPlayers();
 
-    public boolean isControlPlayer(int id);
+    boolean isControlPlayer(int id);
 
     SceneCamera getCamera();
 }

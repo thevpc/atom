@@ -17,11 +17,11 @@ import java.util.*;
 public class GameEngineIoCContainer extends AbstractAtomIoCContainer {
     private GameEngine gameEngine;
     Map<String, Object> beansById = new HashMap<>();
-    Map<Class, List<Object>> beansByType = new HashMap<>();
+    ClassNamedObjectMap beansByType = new ClassNamedObjectMap();
     public GameEngineIoCContainer(GameEngine gameEngine) {
         super(null);
         this.gameEngine=gameEngine;
-        register(null,GameEngine.class,gameEngine);
+        register(null,GameEngine.class, null, gameEngine);
     }
 
     public GameEngine getGameEngine() {
@@ -79,15 +79,11 @@ public class GameEngineIoCContainer extends AbstractAtomIoCContainer {
 
     @Override
     public Object getBeanOrNull(String id){
-        Object o = beansById.get(id);
-        if(o==null){
-            throw new IllegalArgumentException("Bean Not Found "+id);
-        }
-        return o;
+        return beansById.get(id);
     }
 
     @Override
-    public void register(String id, Class cls,Object instance){
+    public void register(String id, Class cls, String name, Object instance){
         if(cls==null){
             cls=instance.getClass();
         }
@@ -98,19 +94,14 @@ public class GameEngineIoCContainer extends AbstractAtomIoCContainer {
             throw new RuntimeException("Bean Already registered "+id);
         }
         beansById.put(id,instance);
-        List<Object> objects = beansByType.get(cls);
-        if(objects==null){
-            objects=new ArrayList<Object>();
-            beansByType.put(cls,objects);
-        }
-        objects.add(instance);
+        beansByType.add(cls, name, instance);
     }
 
 
 
     @Override
     public List<Object> getBeans(Class type) {
-        List<Object> objects = beansByType.get(type);
+        List<Object> objects = beansByType.findAll(type);
         if(objects!=null){
             return objects;
         }

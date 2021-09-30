@@ -4,7 +4,7 @@
  */
 package net.thevpc.gaming.atom.examples.kombla.main.shared.engine.tasks;
 
-import net.thevpc.gaming.atom.annotations.AtomSpriteTask;
+import net.thevpc.gaming.atom.annotations.AtomSpriteMainTask;
 import net.thevpc.gaming.atom.engine.SceneEngine;
 import net.thevpc.gaming.atom.engine.SpriteMainTask;
 import net.thevpc.gaming.atom.model.*;
@@ -13,8 +13,8 @@ import net.thevpc.gaming.atom.examples.kombla.main.shared.engine.AbstractMainEng
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  */
-@AtomSpriteTask(
-        engine = "mainLocal,mainServer",
+@AtomSpriteMainTask(
+        sceneEngine = "mainLocal,mainServer",
         kind = "Explosion"
 )
 public class ExplosionSpriteMainTask implements SpriteMainTask {

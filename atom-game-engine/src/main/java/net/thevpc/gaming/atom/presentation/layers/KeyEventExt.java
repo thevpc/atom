@@ -4,6 +4,8 @@
  */
 package net.thevpc.gaming.atom.presentation.layers;
 
+import net.thevpc.gaming.atom.presentation.KeyCode;
+
 import java.awt.event.KeyEvent;
 
 /**
@@ -11,9 +13,9 @@ import java.awt.event.KeyEvent;
  */
 public class KeyEventExt {
     public KeyEvent keyEvent;
-    public int[] pressedKeys;
+    public KeyCode[] pressedKeys;
 
-    public KeyEventExt(KeyEvent keyEvent, int[] pressedKeys) {
+    public KeyEventExt(KeyEvent keyEvent, KeyCode[] pressedKeys) {
         this.keyEvent = keyEvent;
         this.pressedKeys = pressedKeys;
     }

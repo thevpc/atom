@@ -12,6 +12,7 @@ import net.thevpc.gaming.atom.presentation.layers.LayerDrawingContext;
 import net.thevpc.gaming.atom.util.AtomUtils;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 /**
  * @author Taha Ben Salah
@@ -65,12 +66,12 @@ public class STextField extends DefaultSceneComponent {
 
     private void keyPressedImpl(SceneKeyEvent e) {
         switch (e.getKeyCode()) {
-            case SceneKeyEvent.VK_TAB: {
+            case TAB: {
                 propagateFocus(!e.isShiftPressed());
                 e.setConsumed(true);
                 break;
             }
-            case SceneKeyEvent.VK_DELETE: {
+            case DELETE: {
                 if (text.length() > 0) {
                     if (cursorPosition >= text.length()) {
                         text = text.substring(0, text.length() - 1);
@@ -81,7 +82,7 @@ public class STextField extends DefaultSceneComponent {
                 }
                 break;
             }
-            case SceneKeyEvent.VK_BACK_SPACE: {
+            case BACK_SPACE: {
                 if (text.length() > 0) {
                     if (cursorPosition > 0) {
                         if (cursorPosition >= text.length()) {
@@ -95,14 +96,14 @@ public class STextField extends DefaultSceneComponent {
                 }
                 break;
             }
-            case SceneKeyEvent.VK_LEFT: {
+            case LEFT: {
                 if (cursorPosition > 0) {
                     cursorPosition--;
                     e.setConsumed(true);
                 }
                 break;
             }
-            case SceneKeyEvent.VK_RIGHT: {
+            case RIGHT: {
                 if (cursorPosition < text.length()) {
                     cursorPosition++;
                     e.setConsumed(true);
@@ -113,7 +114,7 @@ public class STextField extends DefaultSceneComponent {
                 char c = e.getKeyChar();
                 Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
                 boolean printable = (!Character.isISOControl(c))
-                        && c != SceneKeyEvent.CHAR_UNDEFINED
+                        && c != KeyEvent.CHAR_UNDEFINED
                         && block != null
                         && block != Character.UnicodeBlock.SPECIALS;
                 if (printable && text.length() < columns) {

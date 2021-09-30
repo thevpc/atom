@@ -6,11 +6,11 @@ package net.thevpc.gaming.atom.examples.kombla.main.client.presentation;
 
 //import net.thevpc.gaming.atom.debug.layers.DebugLayer;
 
+import net.thevpc.gaming.atom.annotations.OnInit;
 import net.thevpc.gaming.atom.examples.kombla.main.shared.prensentation.BomberScene;
 import net.thevpc.gaming.atom.examples.kombla.main.shared.prensentation.ScoreLayer;
 import net.thevpc.gaming.atom.annotations.AtomScene;
 import net.thevpc.gaming.atom.annotations.Inject;
-import net.thevpc.gaming.atom.annotations.OnInstall;
 import net.thevpc.gaming.atom.engine.SceneEngine;
 import net.thevpc.gaming.atom.model.Sprite;
 import net.thevpc.gaming.atom.examples.kombla.main.client.engine.MainClientEngine;
@@ -23,7 +23,7 @@ import java.beans.PropertyChangeListener;
  */
 @AtomScene(
         id = "mainClient",
-        engine = "mainClient",
+        sceneEngine = "mainClient",
         title = "Kombla - Client",
         tileWidth = 80,
         isometric = false
@@ -37,7 +37,7 @@ public class MainClientScene extends BomberScene {
     public MainClientScene() {
     }
 
-    @OnInstall
+    @OnInit
     private void onInstall() {
         this.addLayer(new ScoreLayer());
         getCamera().followSprite(()->engine.findSpriteByPlayer(Sprite.class,((MainClientEngine)engine).getCurrentPlayerId()));

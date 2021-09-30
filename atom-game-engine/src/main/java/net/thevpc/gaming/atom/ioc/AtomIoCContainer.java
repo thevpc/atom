@@ -1,7 +1,6 @@
 package net.thevpc.gaming.atom.ioc;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -10,13 +9,13 @@ import java.util.Set;
 public interface AtomIoCContainer {
     void start();
 
-    boolean contains(String id, String namespace);
+    boolean contains(String id, String namespace, String name);
 
     boolean contains(String id);
 
     boolean contains(Class type);
 
-    Object getBean(String id, String namespace);
+    Object getBean(String id, String namespace, String name);
 
     Object getBean(String id);
 
@@ -24,15 +23,20 @@ public interface AtomIoCContainer {
 
     public List<Object> getBeans(Class type);
 
-    void register(String id, String namespace, Object instance);
+    void register(String id, String namespace, String name, Object instance);
 
-    void register(String id, Object instance);
+    void register(String id, Object instance, String name);
 
-    void register(String id, Class cls, Object instance);
+    void register(String id, Class cls, String name, Object instance);
 
     Object create(Class cls,
                   InstancePreparator[] ts,
-                  Map<Class, Object> vals);
+                  ClassNamedObjectMap vals);
+
+    Object instantiate(Class cls);
+    void inject(Object  obj,
+                InstancePreparator[] ts,
+                ClassNamedObjectMap vals);
 
     Set<Class> getInjectedTypes(Class cls);
 

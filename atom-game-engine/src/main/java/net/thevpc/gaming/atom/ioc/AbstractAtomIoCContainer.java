@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -68,9 +67,7 @@ public abstract class AbstractAtomIoCContainer implements AtomIoCContainer {
     protected abstract Object getBeanOrNull(String id);
 
     @Override
-    public Object create(Class cls,
-                         InstancePreparator[] ts,
-                         Map<Class, Object> vals) {
+    public Object instantiate(Class cls) {
         Object o = null;
         try {
             o = cls.getConstructor().newInstance();
@@ -80,6 +77,13 @@ public abstract class AbstractAtomIoCContainer implements AtomIoCContainer {
             }
             throw new IllegalArgumentException(e);
         }
+        return o;
+    }
+
+    @Override
+    public void inject(Object o,
+                       InstancePreparator[] ts,
+                       ClassNamedObjectMap vals) {
         if(ts!=null){
             for (InstancePreparator t : ts) {
                 if (t != null) {
@@ -96,36 +100,41 @@ public abstract class AbstractAtomIoCContainer implements AtomIoCContainer {
             }
         }
         invokeMethodsByAnnotation(o, OnInit.class, new Object[0]);
+    }
+
+    @Override
+    public Object create(Class cls,
+                         InstancePreparator[] ts,
+                         ClassNamedObjectMap vals) {
+        Object o = instantiate(cls);
+        inject(o,ts,vals);
         return o;
     }
 
-    private void doInjects(Object instance, Map<Class, Object> vals) {
+    private void doInjects(Object instance, ClassNamedObjectMap vals) {
         if (instance != null && vals != null) {
             Class<?> cls = instance.getClass();
             while (cls != null && !cls.equals(Object.class)) {
                 for (Field field : cls.getDeclaredFields()) {
-                    if (field.getAnnotation(Inject.class) != null) {
-                        if (vals.containsKey(field.getType())) {
+                    Inject ii = field.getAnnotation(Inject.class);
+                    if (ii != null) {
+                        String n = ii.name();
+                        if(n.isEmpty()){
+                            n=null;
+                        }
+                        Object inj0 = vals.find(field.getType(), n);
+                        if (inj0 ==null) {
                             try {
-                                field.setAccessible(true);
-                                field.set(instance, vals.get(field.getType()));
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            Object bean = null;
-                            try {
-                                bean = getBean(field.getType());
+                                inj0 = getBean(field.getType());
                             } catch (Exception e) {
                                 throw new IllegalArgumentException("Unsupported Inject Type " + field.getType() + " for field " + field,e);
                             }
-                            try {
-                                field.setAccessible(true);
-                                field.set(instance, bean);
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-
+                        }
+                        try {
+                            field.setAccessible(true);
+                            field.set(instance, inj0);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -199,27 +208,27 @@ public abstract class AbstractAtomIoCContainer implements AtomIoCContainer {
     }
 
     @Override
-    public boolean contains(String id, String namespace) {
+    public boolean contains(String id, String namespace, String name) {
         return contains(buildId(id, namespace));
     }
 
 
     @Override
-    public Object getBean(String id, String namespace) {
+    public Object getBean(String id, String namespace, String name) {
         return getBean(buildId(id, namespace));
     }
 
     @Override
-    public void register(String id, String namespace, Object instance) {
+    public void register(String id, String namespace, String name, Object instance) {
         if (id == null) {
             id = instance.getClass().getName();
         }
-        register(buildId(id, namespace), instance);
+        register(buildId(id, namespace), instance, name);
     }
 
 
     @Override
-    public void register(String id, Object instance) {
-        register(id, (Class) null, instance);
+    public void register(String id, Object instance, String name) {
+        register(id, (Class) null, name, instance);
     }
 }

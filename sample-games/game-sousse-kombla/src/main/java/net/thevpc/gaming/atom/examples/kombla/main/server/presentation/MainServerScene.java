@@ -7,7 +7,7 @@ package net.thevpc.gaming.atom.examples.kombla.main.server.presentation;
 //import net.thevpc.gaming.atom.debug.layers.DebugLayer;
 
 import net.thevpc.gaming.atom.annotations.AtomScene;
-import net.thevpc.gaming.atom.annotations.OnInstall;
+import net.thevpc.gaming.atom.annotations.OnInit;
 import net.thevpc.gaming.atom.examples.kombla.main.shared.prensentation.BomberScene;
 import net.thevpc.gaming.atom.examples.kombla.main.shared.prensentation.ScoreLayer;
 
@@ -16,7 +16,7 @@ import net.thevpc.gaming.atom.examples.kombla.main.shared.prensentation.ScoreLay
  */
 @AtomScene(
         id = "mainServer",
-        engine = "mainServer",
+        sceneEngine = "mainServer",
         title = "Kombla - Server",
         tileWidth = 80,
         isometric = false
@@ -24,7 +24,7 @@ import net.thevpc.gaming.atom.examples.kombla.main.shared.prensentation.ScoreLay
 )
 public class MainServerScene extends BomberScene {
 
-    @OnInstall
+    @OnInit
     public void onInstall(){
         this.addLayer(new ScoreLayer());
     }

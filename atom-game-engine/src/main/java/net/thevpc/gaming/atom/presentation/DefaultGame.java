@@ -105,17 +105,17 @@ public class DefaultGame implements Game {
     }
 
     @Override
-    public void addScene(Scene scene, String sceneEnginId) {
-        if (sceneEnginId == null) {
-            sceneEnginId = scene.getId();
+    public void addScene(Scene scene, String sceneEngineId) {
+        if (sceneEngineId == null) {
+            sceneEngineId = scene.getId();
         }
         Scene old = loadedScenes.get(scene.getId());
         if (old != null) {
             return;
         }
-        SceneEngine engine = getGameEngine().getScene(sceneEnginId);
+        SceneEngine engine = getGameEngine().getSceneEngine(sceneEngineId);
         scene.init(engine, this);
-        loadedScenes.put(sceneEnginId, scene);
+        loadedScenes.put(sceneEngineId, scene);
     }
 
     @Override
@@ -125,22 +125,22 @@ public class DefaultGame implements Game {
         if (a != null && a.id().length() > 0) {
             sceneId = a.id();
         }
-        if (!getGameEngine().containsScene(sceneId)) {
+        if (!getGameEngine().containsSceneEngine(sceneId)) {
             SceneEngine b = (SceneEngine) getContainer().getBean(sceneType);
-            getGameEngine().addScene(b);
+            getGameEngine().addSceneEngine(b);
         }
         addScene(scene, sceneId);
     }
 
     @Override
     public void addScene(Scene scene, SceneEngine sceneEngine) {
-        getGameEngine().addScene(sceneEngine);
+        getGameEngine().addSceneEngine(sceneEngine);
         addScene(scene, sceneEngine.getId());
     }
 
     @Override
     public void addScene(Scene scene) {
-        getGameEngine().addScene(getGameEngine().createScene(scene.getId()));
+        getGameEngine().addSceneEngine(getGameEngine().createSceneEngine(scene.getId()));
         addScene(scene, scene.getId());
     }
 
@@ -158,21 +158,21 @@ public class DefaultGame implements Game {
 
     @Override
     public void addSceneEngine(SceneEngine sceneEngine) {
-        getGameEngine().addScene(sceneEngine);
+        getGameEngine().addSceneEngine(sceneEngine);
     }
 
     @Override
     public Scene addScene(String sceneId) {
         Scene scene = createScene();
-        SceneEngine sceneEngine = getGameEngine().createScene(sceneId);
-        getGameEngine().addScene(sceneEngine);
+        SceneEngine sceneEngine = getGameEngine().createSceneEngine(sceneId);
+        getGameEngine().addSceneEngine(sceneEngine);
         addScene(scene, sceneEngine.getId());
         return scene;
     }
 
     @Override
     public SceneEngine addSceneEngine(String sceneID) {
-        return getGameEngine().addScene(sceneID);
+        return getGameEngine().addSceneEngine(sceneID);
     }
 
     @Override
@@ -190,7 +190,7 @@ public class DefaultGame implements Game {
 
     @Override
     public SceneEngine getSceneEngine(String sceneEngineId) {
-        return getGameEngine().getScene(sceneEngineId);
+        return getGameEngine().getSceneEngine(sceneEngineId);
     }
 
     @Override
@@ -216,7 +216,7 @@ public class DefaultGame implements Game {
 //    }
 //    @Override
     public void updateSceneShowing(/*String sceneID*/) {
-        SceneEngine sceneEngine = gameEngine.getActiveScene();
+        SceneEngine sceneEngine = gameEngine.getActiveSceneEngine();
 
         Scene scene = getScene(sceneEngine.getId());
 
@@ -338,7 +338,7 @@ public class DefaultGame implements Game {
         }
         JFrame f = getWindow();
         String c0 = currentSceneEngineId;
-        SceneEngine se = gameEngine.getActiveScene();
+        SceneEngine se = gameEngine.getActiveSceneEngine();
         String c = se == null ? null : se.getId();
         if (!Objects.equals(c0, c)) {
             updateSceneShowing();

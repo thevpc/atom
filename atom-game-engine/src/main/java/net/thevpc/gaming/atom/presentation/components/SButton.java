@@ -80,12 +80,12 @@ public class SButton extends DefaultSceneComponent {
 
     protected void keyPressedImpl(SceneKeyEvent e) {
         switch (e.getKeyCode()) {
-            case SceneKeyEvent.VK_TAB: {
+            case TAB: {
                 propagateFocus(!e.isShiftPressed());
                 e.setConsumed(true);
                 break;
             }
-            case SceneKeyEvent.VK_ENTER: {
+            case ENTER: {
                 if (hasFocus()) {
                     for (SceneComponentActionListener listener : listeners) {
                         listener.onAction(new SceneComponentActionEvent(this));

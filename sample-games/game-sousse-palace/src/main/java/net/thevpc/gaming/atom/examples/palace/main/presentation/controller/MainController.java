@@ -6,6 +6,7 @@ package net.thevpc.gaming.atom.examples.palace.main.presentation.controller;
 
 import java.awt.event.KeyEvent;
 
+import net.thevpc.gaming.atom.presentation.KeyCode;
 import net.thevpc.gaming.atom.presentation.SceneController;
 import net.thevpc.gaming.atom.presentation.SceneKeyEvent;
 import net.thevpc.gaming.atom.examples.palace.main.engine.MainEngine;
@@ -33,17 +34,17 @@ public class MainController implements SceneController {
         boolean left = false;
         boolean right = false;
         boolean jump = false;
-        for (int kc : e.getKeyCodes()) {
+        for (KeyCode kc : e.getKeyCodes()) {
             switch (kc) {
-                case KeyEvent.VK_LEFT: {
+                case LEFT: {
                     left = true;
                     break;
                 }
-                case KeyEvent.VK_RIGHT: {
+                case RIGHT: {
                     right = true;
                     break;
                 }
-                case KeyEvent.VK_SPACE: {
+                case SPACE: {
                     jump = true;
                     break;
                 }

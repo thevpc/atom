@@ -4,6 +4,7 @@
  */
 package net.thevpc.gaming.atom.presentation.layers;
 
+import net.thevpc.gaming.atom.presentation.KeyCode;
 import net.thevpc.gaming.atom.presentation.SceneKeyEvent;
 import net.thevpc.gaming.atom.presentation.SceneMouseEvent;
 
@@ -29,7 +30,7 @@ public class EventsConsumerLayer extends DefaultLayer implements InteractiveLaye
     @Override
     protected SceneKeyEvent createSceneKeyEvent(KeyEventExt e) {
         if (consumeKeyEvents) {
-            SceneKeyEvent evt = new SceneKeyEvent(getScene(), this, -1, 0, 0, -1, '\0', -1);
+            SceneKeyEvent evt = new SceneKeyEvent(getScene(), this, -1, 0, 0, KeyCode.UNDEFINED, '\0', -1);
             evt.setConsumed(true);
             return evt;
         }

@@ -42,6 +42,14 @@ public interface SceneController {
 
     }
 
+    /**
+     * Invoked when a key pressed or released. See the class description for
+     * {@link SceneKeyEvent} for a definition of a key pressed event.
+     */
+    default void keyChanged(SceneKeyEvent e){
+
+    }
+
 
     /**
      * Invoked when a key has been released. See the class description for

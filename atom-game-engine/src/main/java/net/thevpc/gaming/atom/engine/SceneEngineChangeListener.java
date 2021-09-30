@@ -33,7 +33,7 @@ public interface SceneEngineChangeListener {
     void fpsChanged(SceneEngine sceneEngine, int oldValue, int newValue);
 
     /**
-     * called when collisiontasks manager changes
+     * called when collision tasks manager changes
      *
      * @param sceneEngine
      * @param oldValue    old value

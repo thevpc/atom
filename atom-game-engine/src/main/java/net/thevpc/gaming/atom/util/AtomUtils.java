@@ -5,12 +5,13 @@
 package net.thevpc.gaming.atom.util;
 
 import net.thevpc.gaming.atom.debug.AtomDebug;
+import net.thevpc.gaming.atom.model.*;
+import net.thevpc.gaming.atom.presentation.Alignment;
 import net.thevpc.gaming.atom.presentation.ImageMap;
 import net.thevpc.gaming.atom.presentation.ResizableImage;
 import net.thevpc.gaming.atom.presentation.SequenceGenerator;
 import net.thevpc.gaming.atom.presentation.components.TextStyle;
 import net.thevpc.gaming.atom.presentation.layers.LayerDrawingContext;
-import net.thevpc.gaming.atom.presentation.Alignment;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -31,12 +32,6 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.thevpc.gaming.atom.model.ModelBox;
-import net.thevpc.gaming.atom.model.ModelPoint;
-import net.thevpc.gaming.atom.model.ModelSegment;
-import net.thevpc.gaming.atom.model.ViewBox;
-import net.thevpc.gaming.atom.model.ViewPoint;
 
 /**
  * @author vpc
@@ -154,7 +149,7 @@ public class AtomUtils {
         }
     }
 
-    public static ViewPoint getCenterdPosition(int width, int height, ViewBox bounds) {
+    public static ViewPoint getCenteredPosition(int width, int height, ViewBox bounds) {
         int w = width;
         int h = height;
         int x0 = bounds.getX() + bounds.getWidth() / 2 - w / 2;
@@ -244,7 +239,7 @@ public class AtomUtils {
         int chunkWidth = image.getWidth() / cols; // determines the chunk width and height
         int chunkHeight = image.getHeight() / rows;
         int count = 0;
-        BufferedImage imgs[] = new BufferedImage[chunks]; //Image array to hold image chunks
+        BufferedImage[] imgs = new BufferedImage[chunks]; //Image array to hold image chunks
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 //Initialize the image array with image chunks
@@ -313,7 +308,7 @@ public class AtomUtils {
         int chunkWidth = image.getWidth() / cols; // determines the chunk width and height
         int chunkHeight = image.getHeight() / rows;
         int count = 0;
-        BufferedImage imgs[][] = new BufferedImage[rows][cols]; //Image array to hold image chunks
+        BufferedImage[][] imgs = new BufferedImage[rows][cols]; //Image array to hold image chunks
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 BufferedImage ii = new BufferedImage(chunkWidth, chunkHeight, BufferedImage.TYPE_INT_ARGB);
@@ -749,5 +744,48 @@ public class AtomUtils {
             return -v < precision;
         }
         return v < precision;
+    }
+
+    public static String trimToNull(String s) {
+        if (s != null) {
+            s = s.trim();
+            if (s.isEmpty()) {
+                s = null;
+            }
+        }
+        return s;
+    }
+
+    public static double boundBy(double a, double from, double to) {
+        if (a < from) {
+            return from;
+        }
+        if (a > to) {
+            return to;
+        }
+        return a;
+    }
+    public static int boundBy(int a, int from, int to) {
+        if (a < from) {
+            return from;
+        }
+        if (a > to) {
+            return to;
+        }
+        return a;
+    }
+
+    public static float ratio(double a, double A) {
+        float f = (float) (a / A);
+        if (Float.isNaN(f)) {
+            return 1;
+        }
+        if (f > 1) {
+            f = 1;
+        }
+        if (f < 0) {
+            f = 0;
+        }
+        return f;
     }
 }

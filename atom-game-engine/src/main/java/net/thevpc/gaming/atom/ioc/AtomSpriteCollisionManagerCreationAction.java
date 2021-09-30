@@ -1,44 +1,45 @@
 package net.thevpc.gaming.atom.ioc;
 
-import net.thevpc.gaming.atom.annotations.AtomSpriteCollisionManager;
-import net.thevpc.gaming.atom.annotations.OnInstall;
+import net.thevpc.gaming.atom.annotations.AtomSpriteCollisionTask;
 import net.thevpc.gaming.atom.annotations.Scope;
-import net.thevpc.gaming.atom.engine.GameEngine;
 import net.thevpc.gaming.atom.engine.SceneEngine;
-import net.thevpc.gaming.atom.engine.collisiontasks.DefaultSpriteCollisionTask;
 import net.thevpc.gaming.atom.engine.collisiontasks.SpriteCollisionTask;
 import net.thevpc.gaming.atom.presentation.Game;
+import net.thevpc.gaming.atom.util.AtomUtils;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by vpc on 10/7/16.
  */
 class AtomSpriteCollisionManagerCreationAction implements PostponedAction {
-    private AtomAnnotationsProcessor atomAnnotationsProcessor;
-    private final Class clazz;
-    private final AtomSpriteCollisionManager s;
-    private final Game game;
+    private final IoCContext context;
+    private final AtomAnnotationsProcessor atomAnnotationsProcessor;
 
-    public AtomSpriteCollisionManagerCreationAction(AtomAnnotationsProcessor atomAnnotationsProcessor, Class clazz, AtomSpriteCollisionManager s, Game game) {
+    public AtomSpriteCollisionManagerCreationAction(AtomAnnotationsProcessor atomAnnotationsProcessor, IoCContext context) {
         this.atomAnnotationsProcessor = atomAnnotationsProcessor;
-        this.clazz = clazz;
-        this.s = s;
-        this.game = game;
+        this.context = context;
     }
-
+    @Override
+    public String toString() {
+        return "@AtomSpriteCollisionTask{" +
+                "" + context.findCurrent().getClass().getSimpleName() +
+                ", sceneEngineId=" + context.getSceneEngineId() +
+                ", sceneEngine=" + context.getSceneId() +
+                '}';
+    }
     @Override
     public boolean isRunnable() {
-        if (s.engine().isEmpty()) {
+        AtomSpriteCollisionTask s = context.get(AtomSpriteCollisionTask.class, null);
+        Game game = context.get(Game.class, null);
+        if (s.sceneEngine().isEmpty()) {
             return true;
         }
-        for (String sceneId : AtomAnnotationsProcessor.splitOrAddEmpty(s.engine())) {
-            final List<SceneEngine> scenes = sceneId.isEmpty() ? game.getGameEngine().getScenes() : Arrays.asList(game.getGameEngine().getScene(sceneId));
+        for (String sceneId : AtomAnnotationsProcessor.splitOrAddEmpty(s.sceneEngine())) {
+            final List<SceneEngine> scenes = sceneId.isEmpty() ? game.getGameEngine().getSceneEngines() : Arrays.asList(game.getGameEngine().getSceneEngine(sceneId));
             for (SceneEngine scene : scenes) {
-                if (!atomAnnotationsProcessor.container.contains(scene.getId(), "SceneEngine")) {
+                if (!atomAnnotationsProcessor.container.contains(scene.getId(), "SceneEngine", scene.getId())) {
                     return false;
                 }
             }
@@ -53,52 +54,30 @@ class AtomSpriteCollisionManagerCreationAction implements PostponedAction {
 
     @Override
     public void run() {
-        for (String sceneId : AtomAnnotationsProcessor.splitOrAddEmpty(s.engine())) {
-            final List<SceneEngine> scenes = sceneId.isEmpty() ? game.getGameEngine().getScenes() : Arrays.asList(game.getGameEngine().getScene(sceneId));
-            for (SceneEngine sceneEngine : scenes) {
-                if (s.scope() == Scope.PROTOTYPE) {
-                    sceneEngine.setSpriteCollisionTask(
-                            s.kind(), clazz
-                    );
-                } else {
-
-                    InstancePreparator prep = new InstancePreparator() {
-                        @Override
-                        public void postInject(Object o) {
-
-                        }
-                    };
-                    SpriteCollisionTask spriteCollisionTask = null;
-                    Object instance = null;
-                    HashMap<Class, Object> injects = new HashMap<>();
-                    injects.put(Game.class, game);
-                    injects.put(GameEngine.class, game.getGameEngine());
-                    injects.put(SceneEngine.class, sceneEngine);
-
-                    if (SpriteCollisionTask.class.isAssignableFrom(clazz)) {
-                        spriteCollisionTask = (SpriteCollisionTask) atomAnnotationsProcessor.container.create(clazz, new InstancePreparator[]{
-                                new InstancePreparator() {
-                                    @Override
-                                    public void preInject(Object o, Map<Class, Object> injects) {
-                                        injects.put(SpriteCollisionTask.class, o);
-                                    }
-                                },
-                                prep
-                        }, injects);
-                        instance = spriteCollisionTask;
-                    } else {
-                        spriteCollisionTask = new DefaultSpriteCollisionTask();
-                        injects.put(SpriteCollisionTask.class, spriteCollisionTask);
-                        instance = atomAnnotationsProcessor.container.create(clazz, null, injects);
-                        prep.postInject(spriteCollisionTask);
-                    }
-                    sceneEngine.setSpriteCollisionTask(s.kind(), spriteCollisionTask);
-                    atomAnnotationsProcessor.container.register(
-                            sceneEngine.getId() + "/" + instance.getClass().getName(), "SpriteCollisionTask", instance);
-                    atomAnnotationsProcessor.container.invokeMethodsByAnnotation(instance, OnInstall.class, new Object[0]);
+        Game game = context.get(Game.class, null);
+        SceneEngine[] sceneEngines = context.getSceneEngineId().equals("*") ? game.getGameEngine().getSceneEngines().toArray(new SceneEngine[0])
+                : new SceneEngine[]{game.getGameEngine().getSceneEngine(context.getSceneEngineId())};
+        for (SceneEngine sceneEngine : sceneEngines) {
+            AtomSpriteCollisionTask s = context.get(AtomSpriteCollisionTask.class, null);
+            if (s.scope() == Scope.PROTOTYPE) {
+                if (!SpriteCollisionTask.class.isAssignableFrom(context.findCurrent().getClass())) {
+                    throw new IllegalArgumentException("class " + context.findCurrent().getClass().getName() + " must implement SpriteCollisionTask if scope is prototype");
                 }
+                sceneEngine.setSpriteCollisionTask(
+                        s.kind(), (Class<? extends SpriteCollisionTask>) context.findCurrent().getClass()
+                );
+            } else {
+
+                SpriteCollisionTask spriteCollisionTask = context.findCurrentAs(SpriteCollisionTask.class);
+                if (spriteCollisionTask == null) {
+                    throw new IllegalArgumentException("class " + context.findCurrent().getClass().getName() + " must implement SpriteCollisionTask if scope is prototype");
+                }
+                sceneEngine.setSpriteCollisionTask(s.kind(), spriteCollisionTask);
+                String name = AtomUtils.trimToNull(s.name());
+                context.register(SpriteCollisionTask.class, spriteCollisionTask, name);
+                atomAnnotationsProcessor.container.register(
+                        sceneEngine.getId() + "/" + context.findCurrent().getClass().getName(), "SpriteCollisionTask", name, spriteCollisionTask);
             }
         }
-
     }
 }

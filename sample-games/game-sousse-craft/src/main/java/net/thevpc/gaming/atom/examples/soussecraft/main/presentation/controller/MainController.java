@@ -38,7 +38,7 @@ public class MainController implements SceneController {
             case STARING: {
                 if (engine instanceof MainEngineServer) {
                     switch (e.getKeyCode()) {
-                        case KeyEvent.VK_SPACE: {
+                        case SPACE: {
                             ((MainEngineServer) engine).startGame();
                             break;
                         }
@@ -50,19 +50,19 @@ public class MainController implements SceneController {
                 int w = scene.getTileSize().getWidth();
                 int h = scene.getTileSize().getHeight();
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT: {
+                    case LEFT: {
                         scene.getCamera().moveBy(new ViewPoint(-w, 0));
                         break;
                     }
-                    case KeyEvent.VK_RIGHT: {
+                    case RIGHT: {
                         scene.getCamera().moveBy(new ViewPoint(w, 0));
                         break;
                     }
-                    case KeyEvent.VK_UP: {
+                    case UP: {
                         scene.getCamera().moveBy(new ViewPoint(0, -h));
                         break;
                     }
-                    case KeyEvent.VK_DOWN: {
+                    case DOWN: {
                         scene.getCamera().moveBy(new ViewPoint(0, h));
                         break;
                     }
