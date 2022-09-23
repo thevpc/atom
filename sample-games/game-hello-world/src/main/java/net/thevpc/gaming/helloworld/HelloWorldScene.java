@@ -40,11 +40,11 @@ public class HelloWorldScene {
 
     @OnSceneStarted
     private void init() {
-        scene.addLayer(Layers.debug());
         scene.addLayer(Layers.fillBoardGradient(Color.GRAY,Color.CYAN, Orientation.NORTH));
+        scene.addLayer(Layers.debug());
 //        scene.addLayer(Layers.fillScreen(Color.red));
         scene.addController(new SpriteController(SpriteFilter.byName("Ball1")).setArrowKeysLayout());
-        scene.addController(new SpriteController(SpriteFilter.byName("Ball1")).setESDFLayout());
+        scene.addController(new SpriteController(SpriteFilter.byName("Ball2")).setESDFLayout());
         scene.addController(new AdjustViewController());
         scene.addComponent(
                 new SLabel("Click CTRL-D to switch debug mode, use Arrows to move the ball")
