@@ -29,7 +29,7 @@ public class DefaultSceneKeyEventFilter implements SceneKeyEventFilter {
     @Override
     public boolean accept(SceneKeyEvent event) {
         if (keyCodes != null) {
-            if (!event.getKeyCodes().equals(keyCodes)) {
+            if (!event.getKeyCodes().is(keyCodes)) {
                 return false;
             }
         }
