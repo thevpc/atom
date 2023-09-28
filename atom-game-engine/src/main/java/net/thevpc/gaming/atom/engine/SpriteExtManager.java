@@ -15,6 +15,8 @@ public class SpriteExtManager<T> {
     private Map<Integer, Class<? extends T>> extClassById = new HashMap<Integer, Class<? extends T>>();
     private Map<String, T> extInstByKind = new HashMap<String, T>();
     private Map<String, Class<? extends T>> extClassByKind = new HashMap<String, Class<? extends T>>();
+    private Map<String, T> extInstByName = new HashMap<String, T>();
+    private Map<String, Class<? extends T>> extClassByName = new HashMap<String, Class<? extends T>>();
     private SceneEngine engine;
 
     public SpriteExtManager(SceneEngine engine) {
@@ -60,12 +62,26 @@ public class SpriteExtManager<T> {
             extInstByKind.put(kind,instance);
         }
     }
+    public void setInstanceByName(String kind,T instance){
+        if(instance==null){
+            extInstByName.remove(kind);
+        }else{
+            extInstByName.put(kind,instance);
+        }
+    }
 
     public void setBeanByKind(String kind,Class<? extends T> type){
         if(type==null){
             extClassByKind.remove(kind);
         }else{
             extClassByKind.put(kind,type);
+        }
+    }
+    public void setBeanByName(String name,Class<? extends T> type){
+        if(type==null){
+            extClassByName.remove(name);
+        }else{
+            extClassByName.put(name,type);
         }
     }
 
@@ -85,6 +101,18 @@ public class SpriteExtManager<T> {
             return t;
         }
         Class<? extends T> t2 = extClassById.get(s.getId());
+        if(t2!=null){
+            ClassNamedObjectMap map = new ClassNamedObjectMap();
+            map.add(SceneEngine.class, null, engine);
+            map.add(GameEngine.class, null, engine.getGameEngine());
+            return (T) container.create(t2, null, map);
+        }
+
+        t = extInstByName.get(s.getName());
+        if(t!=null){
+            return t;
+        }
+        t2 = extClassByName.get(s.getId());
         if(t2!=null){
             ClassNamedObjectMap map = new ClassNamedObjectMap();
             map.add(SceneEngine.class, null, engine);

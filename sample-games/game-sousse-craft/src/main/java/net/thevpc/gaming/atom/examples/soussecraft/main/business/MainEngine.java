@@ -28,7 +28,6 @@ public abstract class MainEngine extends DefaultSceneEngine {
         installExtension(strategyExtension);
         strategyExtension.declareResource(Woods.class);
         strategyExtension.declareResource(Minerals.class);
-        installExtension(new FogOfWarSceneEngineExtension());
     }
 
     public abstract void selectTile(int playerId, ModelPoint point, int idTile);

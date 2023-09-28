@@ -4,6 +4,8 @@
  */
 package net.thevpc.gaming.atom.presentation;
 
+import net.thevpc.gaming.atom.engine.maintasks.MoveToPointSpriteMainTask;
+
 /**
  * Adapter for SceneEventListener
  *

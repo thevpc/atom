@@ -4,6 +4,7 @@
  */
 package net.thevpc.gaming.atom.examples.soussecraft.main.business;
 
+import net.thevpc.gaming.atom.annotations.AtomScene;
 import net.thevpc.gaming.atom.annotations.AtomSceneEngine;
 import net.thevpc.gaming.atom.engine.SpriteMainTask;
 import net.thevpc.gaming.atom.engine.maintasks.AttackSpriteMainTask;
@@ -34,6 +35,7 @@ import net.thevpc.gaming.atom.examples.soussecraft.main.model.units.Worker;
  * @author Taha Ben Salah
  */
 @AtomSceneEngine(id = "mainServer")
+@AtomScene(id = "mainServer")
 public class MainEngineServer extends MainEngine {
 
     private DALServer dal;

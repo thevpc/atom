@@ -14,7 +14,7 @@ import net.thevpc.gaming.atom.model.ViewPoint;
 public class MineralsView extends MyResourceView{
 
     public MineralsView() {
-        super(1,1,"Minerals.png");
+        super(1,1, "/net/thevpc/gaming/atom/examples/soussecraft/main/presentation/view/resources/Minerals.png");
         setMargin(new ViewPoint(15, 45));
     }
 }

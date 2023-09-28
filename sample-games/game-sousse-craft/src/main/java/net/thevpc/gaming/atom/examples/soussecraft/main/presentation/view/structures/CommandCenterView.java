@@ -10,7 +10,8 @@ import net.thevpc.gaming.atom.examples.soussecraft.main.presentation.view.etc.De
 public class CommandCenterView extends DefaultDashboardSpriteView {
 
     public CommandCenterView() {
-        super(1,4,"CommandCenter.png");
+        ///net/thevpc/gaming/atom/examples/soussecraft/structures/
+        super(1,4, "CommandCenter.png");
         setMargin(new ViewPoint(0,60));
         setImageSelector((sprite, scene, frame, imagesCount) -> sprite.getPlayerId()-1);
     }

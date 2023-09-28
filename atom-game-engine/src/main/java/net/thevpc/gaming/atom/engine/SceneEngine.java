@@ -447,9 +447,19 @@ public interface SceneEngine {
 
     public void setSpriteMainTask(Sprite sprite, SpriteMainTask task);
 
-    public void setSpriteMainTask(String spriteName, SpriteMainTask task);
+    @Deprecated
+    public void setSpriteMainTask(String spriteKind, SpriteMainTask task);
 
+    @Deprecated
     public void setSpriteMainTask(String spriteKind, Class<? extends SpriteMainTask> task);
+
+    void setSpriteMainTaskByName(String spriteKind, SpriteMainTask task);
+
+    void setSpriteMainTaskByKind(String spriteKind, Class<? extends SpriteMainTask> task);
+
+    void setSpriteMainTaskByKind(String spriteKind, SpriteMainTask task);
+
+    void setSpriteMainTaskByName(String spriteKind, Class<? extends SpriteMainTask> task);
 
     public long getFrame();
 

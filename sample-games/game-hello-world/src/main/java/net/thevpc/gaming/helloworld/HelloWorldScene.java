@@ -29,7 +29,7 @@ import java.awt.*;
         id="hello",
         columns = 10,
         rows = 10,
-        fps = 3
+        fps = 25
 )
 public class HelloWorldScene {
 
@@ -50,30 +50,6 @@ public class HelloWorldScene {
                 new SLabel("Click CTRL-D to switch debug mode, use Arrows to move the ball")
                 .setLocation(Point.ratio(0.5f,0.5f))
         );
-//        scene.setSpriteView("Ball1", new DefaultSpriteView() {
-//            @Override
-//            public void draw(SpriteDrawingContext context) {
-//                ViewBox sb = context.getSpriteBounds();
-//                context.getGraphics().setPaint(Color.BLUE);
-//                context.getGraphics().fillRect(
-//                        sb.getX(),sb.getY(),
-//                        sb.getWidth(),
-//                        sb.getHeight()
-//                );
-//            }
-//        });
-//        scene.setSpriteView("Ball2", new DefaultSpriteView() {
-//            @Override
-//            public void draw(SpriteDrawingContext context) {
-//                ViewBox sb = context.getSpriteBounds();
-//                context.getGraphics().setPaint(Color.RED);
-//                context.getGraphics().fillRect(
-//                        sb.getX(),sb.getY(),
-//                        sb.getWidth(),
-//                        sb.getHeight()
-//                );
-//            }
-//        });
         scene.setSpriteView(SpriteFilter.byKind("Ball"), new ImageSpriteView("/ball.png", 8, 4));
     }
 

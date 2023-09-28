@@ -26,7 +26,6 @@ public class PersonCollisionTask implements SpriteCollisionTask, PropertyChangeL
     boolean updatingDirection = false;
 
     public PersonCollisionTask() {
-        System.out.println("rr");
     }
 
     @Override

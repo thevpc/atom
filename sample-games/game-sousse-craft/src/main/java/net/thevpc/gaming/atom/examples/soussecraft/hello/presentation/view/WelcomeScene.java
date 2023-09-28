@@ -26,7 +26,7 @@ import net.thevpc.gaming.atom.examples.soussecraft.hello.presentation.controller
  *
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  */
-@AtomScene(id = "welcome")
+@AtomScene(id = "welcome",tileWidth = 600,tileHeight = 400,title = "Sousse Craft")
 public class WelcomeScene extends DefaultScene {
 
     private SButton join = new SButton("Join Game");

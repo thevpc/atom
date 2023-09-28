@@ -17,7 +17,7 @@ import java.util.List;
 public class DefaultSceneModelReader {
 
     List<CellDef> currentCells = new ArrayList<CellDef>();
-    List<List<TileDef>> currentCellTiles = null;
+    List<List<TileDef>> currentCellTiles;
     List<List<Integer>> currentMapCells = null;
     int tileRowsPerCell = 1;
     int tileColumnsPerCell = 1;

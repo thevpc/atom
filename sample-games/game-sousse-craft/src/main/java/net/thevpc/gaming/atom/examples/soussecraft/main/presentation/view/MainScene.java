@@ -5,6 +5,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import net.thevpc.gaming.atom.annotations.AtomScene;
+import net.thevpc.gaming.atom.annotations.AtomSceneEngine;
 import net.thevpc.gaming.atom.debug.DebugLayer;
 import net.thevpc.gaming.atom.engine.SpriteFilter;
 import net.thevpc.gaming.atom.model.*;
@@ -62,11 +63,13 @@ import net.thevpc.gaming.atom.examples.soussecraft.main.presentation.view.units.
  * @author Taha Ben Salah (taha.bensalah@gmail.com) @creationtime 5 dec. 2006
  * 11:30:31
  */
-@AtomScene(id = "welcomeServer,welcomeClient")
+@AtomScene(id = "main")
+@AtomSceneEngine(id = "main")
 public class MainScene extends DefaultScene {
 
     private SLabel message = new SLabel("");
-    public static final ImageMatrixProducer WALL_IMAGE_PRODUCER = new ImageMatrixProducer("/wall.jpg", new ImageGrid(3, 5)
+    public static final ImageMatrixProducer WALL_IMAGE_PRODUCER = new ImageMatrixProducer(
+            "/net/thevpc/gaming/atom/examples/soussecraft/wall.jpg", new ImageGrid(3, 5)
     ) {
         @Override
         public Image getImage(int type, int index) {

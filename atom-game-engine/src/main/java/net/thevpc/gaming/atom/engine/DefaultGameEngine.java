@@ -4,6 +4,8 @@
  */
 package net.thevpc.gaming.atom.engine;
 
+import net.thevpc.gaming.atom.annotations.AtomScene;
+import net.thevpc.gaming.atom.annotations.AtomSceneEngine;
 import net.thevpc.gaming.atom.ioc.AtomIoCContainer;
 import net.thevpc.gaming.atom.ioc.GameEngineIoCContainer;
 import net.thevpc.gaming.atom.model.DefaultGameEngineProperties;
@@ -78,7 +80,7 @@ public class DefaultGameEngine implements GameEngine {
         String sceneId = sceneEngine.getId();
         SceneEngine s = scenes.get(sceneId);
         if (s != null) {
-            throw new IllegalArgumentException("Scene already registered");
+            throw new IllegalArgumentException("Scene "+sceneId+" already registered");
         }
         scenes.put(sceneId, sceneEngine);
         sceneEngine.init(this);
@@ -103,7 +105,20 @@ public class DefaultGameEngine implements GameEngine {
      */
     @Override
     public void setActiveSceneEngine(Class<? extends SceneEngine> sceneType) {
-        setActiveSceneEngine(sceneType.getName());
+
+        setActiveSceneEngine(resolveSceneId(sceneType));
+    }
+
+    private String resolveSceneId(Class sceneType){
+        AtomScene ss = (AtomScene) sceneType.getAnnotation(AtomScene.class);
+        if(ss!=null){
+            return ss.id();
+        }
+        AtomSceneEngine se = (AtomSceneEngine) sceneType.getAnnotation(AtomSceneEngine.class);
+        if(se!=null){
+            return se.id();
+        }
+        return sceneType.getName();
     }
 
     /**

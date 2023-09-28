@@ -55,6 +55,7 @@ public class WelcomeController implements SceneController {
         ge.getProperties().setProperty(AppRole.class.getName(),role);
     }
     public AppRole getRole(GameEngine ge) {
-        return ge.getProperties().getProperty(AppRole.class.getName());
+        AppRole z = ge.getProperties().getProperty(AppRole.class.getName());
+        return z==null?AppRole.HOST_GAME : z;
     }
 }

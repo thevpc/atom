@@ -4,6 +4,7 @@
  */
 package net.thevpc.gaming.atom.examples.soussecraft.main.business;
 
+import net.thevpc.gaming.atom.annotations.AtomScene;
 import net.thevpc.gaming.atom.annotations.AtomSceneEngine;
 import net.thevpc.gaming.atom.model.ModelPoint;
 import net.thevpc.gaming.atom.model.Tile;
@@ -17,6 +18,7 @@ import net.thevpc.gaming.atom.examples.soussecraft.main.model.GamePhase;
  * @author Taha Ben Salah
  */
 @AtomSceneEngine(id = "mainClient")
+@AtomScene(id = "mainClient")
 public class MainEngineClient extends MainEngine {
 
     private DALClient dal;

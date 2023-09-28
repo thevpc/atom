@@ -17,9 +17,5 @@ public class Tanks {
      */
     public static void main(String[] args) {
         Atom.startGame();
-//        
-//        Game game = Atom.createGame();
-//        game.addScene(new BattleFieldScene(), ServerBattleFieldEngine.class);
-//        game.start();
     }
 }

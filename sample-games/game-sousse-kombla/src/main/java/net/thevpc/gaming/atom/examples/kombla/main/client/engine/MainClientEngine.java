@@ -11,9 +11,6 @@ import net.thevpc.gaming.atom.examples.kombla.main.shared.model.DynamicGameModel
 import net.thevpc.gaming.atom.examples.kombla.main.shared.model.StartGameInfo;
 import net.thevpc.gaming.atom.annotations.AtomSceneEngine;
 import net.thevpc.gaming.atom.model.*;
-import net.thevpc.gaming.atom.model.*;
-
-import java.util.Map;
 
 
 /**
@@ -21,7 +18,7 @@ import java.util.Map;
  */
 @AtomSceneEngine(id = "mainClient", columns = 12, rows = 12)
 public class MainClientEngine extends AbstractMainEngine {
-    private MainClientDAO dao;
+    private MainClientDAO dao=null;//new TCPMainClientDAO();
     public MainClientEngine() {
     }
 

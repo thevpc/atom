@@ -20,7 +20,6 @@ public class MainController extends DefaultSceneController {
 
 
     public MainController() {
-//        System.out.println("rr");
     }
     @Override
     public void keyPressed(SceneKeyEvent e) {

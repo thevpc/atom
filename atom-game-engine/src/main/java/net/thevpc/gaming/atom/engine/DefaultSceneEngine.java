@@ -1067,6 +1067,26 @@ public class DefaultSceneEngine implements SceneEngine {
         spriteTasks.setBeanByKind(spriteKind, task);
     }
 
+    @Override
+    public void setSpriteMainTaskByName(String spriteKind, SpriteMainTask task) {
+        spriteTasks.setInstanceByName(spriteKind, task);
+    }
+
+    @Override
+    public void setSpriteMainTaskByKind(String spriteKind, Class<? extends SpriteMainTask> task) {
+        spriteTasks.setBeanByKind(spriteKind, task);
+    }
+
+    @Override
+    public void setSpriteMainTaskByKind(String spriteKind, SpriteMainTask task) {
+        spriteTasks.setInstanceByKind(spriteKind, task);
+    }
+
+    @Override
+    public void setSpriteMainTaskByName(String spriteKind, Class<? extends SpriteMainTask> task) {
+        spriteTasks.setBeanByName(spriteKind, task);
+    }
+
 //    @Override
 //    public boolean hasMovedLastFrame(String spriteName) {
 //        Sprite sprite = findUniqueSpriteByName(spriteName);
