@@ -21,8 +21,8 @@ import java.awt.*;
 @AtomScene(
         id = "hello",
         title = "Hello World",
-        tileWidth = 50,
-        tileHeight = 50
+        tileWidth = 80,
+        tileHeight = 80
         
 )
 @AtomSceneEngine(
@@ -40,9 +40,11 @@ public class HelloWorldScene {
 
     @OnSceneStarted
     private void init() {
-        scene.addLayer(Layers.fillBoardGradient(Color.GRAY,Color.CYAN, Orientation.NORTH));
+        scene.addLayer(Layers.fillBoardGradient(
+                Color.GRAY,
+                Color.RED, Orientation.NORTH));
         scene.addLayer(Layers.debug());
-//        scene.addLayer(Layers.fillScreen(Color.red));
+        scene.addLayer(Layers.fillScreen(Color.BLUE));
         scene.addController(new SpriteController(SpriteFilter.byName("Ball1")).setArrowKeysLayout());
         scene.addController(new SpriteController(SpriteFilter.byName("Ball2")).setESDFLayout());
         scene.addController(new AdjustViewController());
