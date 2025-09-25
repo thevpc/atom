@@ -29,7 +29,7 @@ public class MapProject {
         this.baseFile = baseFile;
         mapFile = AtomUtils.changeFileExtension(baseFile, "map");
         imageFile = AtomUtils.changeFileExtension(baseFile, "png");
-        figFile = AtomUtils.changeFileExtension(baseFile, "fig");
+        figFile = AtomUtils.changeFileExtension(baseFile, "mpr");
     }
 
     public DefaultSceneEngineModel getSceneEngineModel() {
