@@ -69,7 +69,7 @@ public class MainScene extends DefaultScene {
 
     private SLabel message = new SLabel("");
     public static final ImageMatrixProducer WALL_IMAGE_PRODUCER = new ImageMatrixProducer(
-            "/net/thevpc/gaming/atom/examples/soussecraft/wall.jpg", new ImageGrid(3, 5)
+            "/net/thevpc/gaming/atom/examples/soussecraft/MyBackground.jpg", new ImageGrid(3, 5)
     ) {
         @Override
         public Image getImage(int type, int index) {
