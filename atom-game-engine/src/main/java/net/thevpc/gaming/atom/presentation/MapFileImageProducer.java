@@ -19,7 +19,7 @@ public class MapFileImageProducer implements ImageProducer {
     private Image[] fullImages;
 
     public MapFileImageProducer(String imageUrl) {
-        InputStream figStream = AtomUtils.createStream(AtomUtils.changeFileExtension(imageUrl, "fig"));
+        InputStream figStream = AtomUtils.createStream(AtomUtils.changeFileExtension(imageUrl, "mpr"));
         InputStream imageStream = AtomUtils.createStreamVariant(AtomUtils.changeFileExtension(imageUrl, "png"));
         Properties p = new Properties();
         try {
